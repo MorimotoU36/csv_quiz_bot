@@ -18,3 +18,14 @@ except Exception as e:
 
 
 print(quizfilename)
+
+#問題csv読み込み
+df=""
+try:
+    df=pd.read_csv('csv/'+quizfilename)
+except Exception as e:
+    print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
+    print(e)
+    sys.exit()
+
+print(df.shape)
