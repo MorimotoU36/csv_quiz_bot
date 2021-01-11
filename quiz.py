@@ -1,6 +1,7 @@
 import pandas as pd
 import configparser
 import sys
+import random
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -29,3 +30,15 @@ except Exception as e:
     sys.exit()
 
 print(df.shape)
+
+#全問題数
+total=df.shape[0]
+#ランダムに1個選ぶ
+quiz_id=random.randrange(total)
+#その問題を(リスト形式で)取ってくる
+quiz=df.iloc[quiz_id,:].values.tolist()
+
+print(quiz)
+quiz_num,question,answer,correct_num,incorrect_num=*quiz
+
+
