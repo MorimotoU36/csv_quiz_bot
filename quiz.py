@@ -39,6 +39,10 @@ quiz_id=random.randrange(total)
 quiz=df.iloc[quiz_id,:].values.tolist()
 
 print(quiz)
-quiz_num,question,answer,correct_num,incorrect_num=*quiz
+quiz_num=quiz[0]
+question=quiz[1]
 
+#問題文作成
+quiz_sentense="["+quiz_num+"]:"+question
 
+print(quiz_sentense)
