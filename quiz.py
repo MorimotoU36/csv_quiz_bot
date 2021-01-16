@@ -3,6 +3,7 @@ import configparser
 import sys
 import random
 import requests
+import time
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -35,15 +36,20 @@ quiz=df.iloc[quiz_id,:].values.tolist()
 
 quiz_num=quiz[0]
 question=quiz[1]
+answer=quiz[2]
 
 #問題文作成
 quiz_sentense="["+quiz_num+"]:"+question
+
+#答えの文作成
+quiz_answer="["+quiz_num+"]答:"+answer
 
 try:
     #設定値読み込み
     slackapi=ini['Slack']['SLACK_API_URL']
     slacktoken=ini['Slack']['SLACK_API_TOKEN']
     slackchannel=ini['Slack']['SLACK_CHANNEL']
+    thinkingtime=int(ini['Slack']['THINKING_TIME'])
 
     #Slack APIへPOSTするためのデータ作成
     data = {
@@ -54,9 +60,26 @@ try:
 
     #Slack APIへPOSTする
     response = requests.post(slackapi, data=data)
+
+    print("問題をPOSTしました:"+quiz_sentense)
+
+    #指定秒スリープ
+    time.sleep(thinkingtime)
+
+    #Slack APIへ答えをPOSTするためのデータ作成
+    data = {
+        'token': slacktoken,
+        'channel': slackchannel,
+        'text': quiz_answer
+    }
+
+    #Slack APIへ答えをPOSTする
+    response = requests.post(slackapi, data=data)
+
+    print("答えをPOSTしました:"+quiz_answer)
+
+
 except Exception as e:
     print("エラー：問題メッセージ作成時にエラーが発生しました")
     print(e)
     sys.exit()
-
-#TODO 何秒かした後に答えもPOSTさせた方が良い
