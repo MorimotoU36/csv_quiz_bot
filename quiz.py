@@ -39,10 +39,10 @@ question=quiz[1]
 answer=quiz[2]
 
 #問題文作成
-quiz_sentense="["+quiz_num+"]:"+question
+quiz_sentense="["+str(quiz_num)+"]:"+question
 
 #答えの文作成
-quiz_answer="["+quiz_num+"]答:"+answer
+quiz_answer="["+str(quiz_num)+"]答:"+answer
 
 try:
     #設定値読み込み
