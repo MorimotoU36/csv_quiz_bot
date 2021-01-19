@@ -45,14 +45,14 @@ try:
         ans=r['result']
         
         #quiz_idが何行目にあるかを調べる
-        index=df.loc[df['問題番号'] == quiz_id].index[0]
+        idx=df.loc[df['問題番号'] == int(quiz_id)].index[0]
 
         if(ans != "0"):
             #正解
-            df.at[index,'正解数'] = str(int(df.at[index,'正解数']) + 1)
+            df.at[idx,'正解数'] = str(int(df.at[idx,'正解数']) + 1)
         else:
             #不正解
-            df.at[index,'不正解数'] = str(int(df.at[index,'不正解数']) + 1)
+            df.at[idx,'不正解数'] = str(int(df.at[idx,'不正解数']) + 1)
         
         print("問題["+quiz_id+"]:"+("正解" if ans != "0" else "不正解")+"+1")
     
