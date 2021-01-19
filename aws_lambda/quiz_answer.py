@@ -37,7 +37,7 @@ def lambda_handler(event, context):
             }
         )
         
-        res="問題["+str(quiz_id)+"]:"+("正解" if flag != 0 else "不正解")
+        res="Question["+str(quiz_id)+"]:"+ ("Correct!" if flag != "0" else "Incorrect")
         return res
             
     except Exception as e:
