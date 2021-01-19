@@ -3,6 +3,7 @@
 # 正解不正解データを取ってきてcsvに正解/不正解数を登録する
 #
 import boto3
+import json
 
 dynamodb = boto3.resource('dynamodb')
 table    = dynamodb.Table('テーブル名')
@@ -14,7 +15,10 @@ def lambda_handler(event, context):
         
         #0件なら処理終了
         if(len(response)==0):
-            return []
+            data = {
+                'text' : []
+            }
+            return data
         
         #scan結果からデータを取り出す
         records=list(response['Items'])
@@ -23,6 +27,9 @@ def lambda_handler(event, context):
         for r in records:
             table.delete_item(Key={'time': r['time']})
         
-        return records
+        data = {
+            'text' : records
+        }
+        return data
     except Exception as e:
         return e

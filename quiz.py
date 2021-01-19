@@ -49,6 +49,7 @@ try:
     slackapi=ini['Slack']['SLACK_API_URL']
     slacktoken=ini['Slack']['SLACK_API_TOKEN']
     slackchannel=ini['Slack']['SLACK_CHANNEL']
+    slackanschannel=ini['Slack']['SLACK_ANSWER_CHANNEL']
     thinkingtime=int(ini['Slack']['THINKING_TIME'])
 
     #Slack APIへPOSTするためのデータ作成
@@ -69,7 +70,7 @@ try:
     #Slack APIへ答えをPOSTするためのデータ作成
     data = {
         'token': slacktoken,
-        'channel': slackchannel,
+        'channel': slackanschannel,
         'text': quiz_answer
     }
 
