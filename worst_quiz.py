@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pandas as pd
 import configparser
 import sys
@@ -33,8 +34,8 @@ total=df.shape[0]
 #正解率計算（回答数0回の場合は0にする）
 df['正解率']=df['正解数']/(df['正解数']+df['不正解数'])
 df['正解率'].fillna(0,inplace=True)
-#正解率、正解数でソートし、一番上の問題を選ぶ
-quiz=df.sort_values('正解率').sort_values('正解数').iloc[0,:].values.tolist()
+#正解率、不正解数でソートし、一番上の問題を選ぶ
+quiz=df.sort_values(['正解率','不正解数']).iloc[0,:].values.tolist()
 print(quiz)
 
 quiz_num=quiz[0]
@@ -42,7 +43,7 @@ question=quiz[1]
 answer=quiz[2]
 
 #問題文作成
-quiz_sentense="["+str(quiz_num)+"]:"+question
+quiz_sentense="(worst問題)["+str(quiz_num)+"]:"+question
 
 #答えの文作成
 quiz_answer="["+str(quiz_num)+"]答:"+answer
