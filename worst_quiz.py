@@ -43,7 +43,7 @@ question=quiz[1]
 answer=quiz[2]
 
 #問題文作成
-quiz_sentense="["+str(quiz_num)+"]:"+question
+quiz_sentense="(worst問題)["+str(quiz_num)+"]:"+question
 
 #答えの文作成
 quiz_answer="["+str(quiz_num)+"]答:"+answer
