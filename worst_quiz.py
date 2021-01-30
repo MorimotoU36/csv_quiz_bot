@@ -34,8 +34,11 @@ total=df.shape[0]
 #正解率計算（回答数0回の場合は0にする）
 df['正解率']=df['正解数']/(df['正解数']+df['不正解数'])
 df['正解率'].fillna(0,inplace=True)
+#正解率の悪い問題ワースト何問かの中から一問を選ぶ
+worst_num=min(int(ini['Slack']['WORST_GROUP_NUM']),total)
+selected_id=random.randint(0,worst_num-1)
 #正解率、不正解数でソートし、一番上の問題を選ぶ
-quiz=df.sort_values(['正解率','不正解数']).iloc[0,:].values.tolist()
+quiz=df.sort_values(['正解率','不正解数']).iloc[selected_id,:].values.tolist()
 print(quiz)
 
 quiz_num=quiz[0]
