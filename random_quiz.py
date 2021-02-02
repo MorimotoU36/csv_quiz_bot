@@ -42,7 +42,8 @@ correct_num=int(quiz[3])
 incorrect_num=int(quiz[4])
 
 #問題文作成
-quiz_sentense="["+str(quiz_num)+"]:"+question+("(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)))
+accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
+quiz_sentense="["+str(quiz_num)+"]:"+question+accuracy
 
 #答えの文作成
 quiz_answer="["+str(quiz_num)+"]答:"+answer
