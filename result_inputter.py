@@ -1,5 +1,6 @@
 import configparser
 import requests
+import shutil
 import pandas as pd
 import json
 import sys
@@ -27,11 +28,19 @@ if(results == []):
     print("データ0件です")
     sys.exit()
 
-#問題csv読み込み
-df=""
+#問題csvのバックアップファイル作成
 quizfilename=""
 try:
     quizfilename=ini['Filename']['QUIZFILE']
+    shutil.copyfile('csv/'+quizfilename,'csv/bkup/'+quizfilename+'.bkup')
+except Exception as e:
+    print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename))
+    print(e)
+    sys.exit()
+
+#問題csv読み込み
+df=""
+try:
     df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
