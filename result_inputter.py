@@ -53,6 +53,8 @@ try:
         quiz_id=r['quiz_id']
         ans=r['result']
         
+        #dfを問題番号でソート
+        df.sort_values('問題番号',inplace=True)
         #quiz_idが何行目にあるかを調べる
         idx=df.loc[df['問題番号'] == int(quiz_id)].index[0]
 
