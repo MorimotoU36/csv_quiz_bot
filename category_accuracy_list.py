@@ -41,7 +41,7 @@ for c in categories:
     #カテゴリiを含むデータのみ抽出
     dfi=df.query('カテゴリ.str.contains("'+str(c)+'")',engine='python')
     #各問題の正解率の平均値を算出
-    accuracy.append('{:.2f}%'.format(df['正解率'].mean()))
+    accuracy.append('{:.2f}%'.format(dfi['正解率'].mean()))
 
 #データフレーム化
 acc_df=pd.DataFrame([categories,accuracy])
