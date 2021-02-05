@@ -6,6 +6,9 @@ import random
 import requests
 import time
 
+#pandas文字幅設定
+pd.set_option('display.unicode.east_asian_width', True)
+
 #設定ファイル読み込み
 inifile="config/quiz.ini"
 ini=""
