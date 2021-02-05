@@ -9,6 +9,12 @@ slackからの応答はAWS API Gateway/Lambda/DynamoDBを利用し行う
 指定したcsvファイル内の問題からランダムに１問取得してslackに投稿するスクリプト
 引数なし
 
+## worst_quiz.py
+
+csvファイル内の問題から、正解率ワースト1~xの問題のうちランダムに１問取得してslackに投稿するスクリプト
+xは設定ファイル(quiz.ini)のWORST_GROUP_NUMで指定
+引数なし
+
 ## result_inputter.py
 
 DB(API Gateway/Lambda/AWS DynamoDB)から問題の正解不正解データを取得し
