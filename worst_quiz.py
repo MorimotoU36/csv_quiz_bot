@@ -39,7 +39,6 @@ worst_num=min(int(ini['Slack']['WORST_GROUP_NUM']),total)
 selected_id=random.randint(0,worst_num-1)
 #正解率、不正解数でソートし、一番上の問題を選ぶ
 quiz=df.sort_values(['正解率','不正解数']).iloc[selected_id,:].values.tolist()
-print(quiz)
 
 quiz_num=quiz[0]
 question=quiz[1]
