@@ -19,9 +19,9 @@ except Exception as e:
 
 #問題csv読み込み
 df=""
-quizfilename="aws_quiz_new.csv"
+quizfilename=""
 try:
-    #quizfilename=ini['Filename']['QUIZFILE']
+    quizfilename=ini['Filename']['QUIZFILE']
     df=pd.read_csv('csv/'+quizfilename)
     #各問題の正解率算出
     df['正解率']=100*df['正解数']/(df['正解数']+df['不正解数'])
