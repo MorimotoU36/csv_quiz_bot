@@ -46,9 +46,11 @@ for c in categories:
     #各問題の正解率の平均値を算出
     accuracy.append('{:.2f}%'.format(dfi['正解率'].mean()))
 
-#データフレーム化
+#データフレーム化、表示
 acc_df=pd.DataFrame([categories,accuracy])
 acc_df=acc_df.T
 acc_df=acc_df.rename(columns={0: 'カテゴリ',1: '平均正解率'})
 print(acc_df)
 
+#カテゴリリストを保存
+acc_df.to_csv('category/category_list.csv',index=False)
