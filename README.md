@@ -4,6 +4,12 @@ csvをクイズのデータベースとし、問題をslackに投稿する
 slackからの応答はAWS API Gateway/Lambda/DynamoDBを利用し行う
 完全に個人用
 
+## select_quiz.py
+
+指定したcsvファイル内の問題から入力した問題番号の問題を取得してslackに投稿するスクリプト
+引数：問題番号
+
+
 ## random_quiz.py
 
 指定したcsvファイル内の問題からランダムに１問取得してslackに投稿するスクリプト
