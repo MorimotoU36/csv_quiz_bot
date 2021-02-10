@@ -52,6 +52,11 @@ try:
     for r in results:
         quiz_id=r['quiz_id']
         ans=r['result']
+
+        #エラーハンドリング：問題番号が数字であるか？または有効な範囲内の数字であるかを確認
+        if(not quiz_id.isdecimal() or int(quiz_id) >= df.shape[0]):
+            print('エラー：問題番号[{0}]はありません、飛ばします'.format(quiz_id),file=sys.stderr)
+            continue
         
         #dfを問題番号でソート
         df.sort_values('問題番号',inplace=True)
