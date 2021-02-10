@@ -53,4 +53,4 @@ acc_df=acc_df.rename(columns={0: 'カテゴリ',1: '平均正解率'})
 print(acc_df)
 
 #カテゴリリストを保存
-acc_df.to_csv('category/category_list.csv',index=False)
+acc_df.to_csv('category/category_of_{0}_list.csv'.format(quizfilename[:-4]),index=False)
