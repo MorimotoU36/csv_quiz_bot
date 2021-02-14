@@ -45,7 +45,7 @@ try:
     if(qst_df.shape[0]==0):
         print("検索語句「{0}」を問題文に含む問題はありません。".format(search_query))
     else:
-        qst_df=qst_df.loc[:,['問題番号','テスト問題']]
+        qst_df=qst_df.loc[:,['問題番号','テスト問題','正解']]
         print(qst_df.to_string(index=False))
     
     #答えに検索語句を含む問題を抽出
@@ -56,7 +56,7 @@ try:
     if(ans_df.shape[0]==0):
         print("検索語句「{0}」を答えに含む問題はありません。".format(search_query))
     else:
-        ans_df=ans_df.loc[:,['問題番号','テスト問題']]
+        ans_df=ans_df.loc[:,['問題番号','テスト問題','正解']]
         print(ans_df.to_string(index=False))
 
 
