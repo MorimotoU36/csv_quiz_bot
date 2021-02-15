@@ -54,7 +54,7 @@ try:
         ans=r['result']
 
         #エラーハンドリング：問題番号が数字であるか？または有効な範囲内の数字であるかを確認
-        if(not quiz_id.isdecimal() or int(quiz_id) >= df.shape[0]):
+        if(not quiz_id.isdecimal() or int(quiz_id) > df.shape[0]):
             print('エラー：問題番号[{0}]はありません、飛ばします'.format(quiz_id),file=sys.stderr)
             continue
         
