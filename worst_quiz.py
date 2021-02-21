@@ -13,8 +13,8 @@ try:
     ini = configparser.ConfigParser()
     ini.read(inifile, 'UTF-8')
 except Exception as e:
-    print("エラー：設定ファイル({0})が読み込めません".format(inifile))
-    print(e)
+    print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #問題csv読み込み
@@ -24,8 +24,8 @@ try:
     quizfilename=ini['Filename']['QUIZFILE']
     df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
-    print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
-    print(e)
+    print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #全問題数
@@ -37,7 +37,7 @@ df['正解率'].fillna(0,inplace=True)
 #正解率の悪い問題ワースト何問かの中から一問を選ぶ
 worst_num=min(int(ini['Slack']['WORST_GROUP_NUM']),total)
 selected_id=random.randint(0,worst_num-1)
-#正解率、不正解数でソートし、一番上の問題を選ぶ
+#正解率、不正解数でソートし、指定した問題を選ぶ
 quiz=df.sort_values(['正解率','不正解数']).iloc[selected_id,:].values.tolist()
 
 quiz_num=quiz[0]
@@ -90,6 +90,6 @@ try:
 
 
 except Exception as e:
-    print("エラー：問題メッセージ作成時にエラーが発生しました")
-    print(e)
+    print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
