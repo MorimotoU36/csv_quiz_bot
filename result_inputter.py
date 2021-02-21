@@ -12,8 +12,8 @@ try:
     ini = configparser.ConfigParser()
     ini.read(inifile, 'UTF-8')
 except Exception as e:
-    print("エラー：設定ファイル({0})が読み込めません".format(inifile))
-    print(e)
+    print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #AWS APIにアクセスして結果取得
@@ -34,8 +34,8 @@ try:
     quizfilename=ini['Filename']['QUIZFILE']
     shutil.copyfile('csv/'+quizfilename,'csv/bkup/'+quizfilename+'.bkup')
 except Exception as e:
-    print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename))
-    print(e)
+    print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #問題csv読み込み
@@ -43,8 +43,8 @@ df=""
 try:
     df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
-    print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
-    print(e)
+    print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #結果データを解析
@@ -75,7 +75,7 @@ try:
     #反映した結果をcsvに更新する
     df.to_csv('csv/'+quizfilename,index=False)
 except Exception as e:
-    print("エラー：csv({0})への正解データ登録時にエラーが発生しました".format(quizfilename))
-    print(e)
+    print("エラー：csv({0})への正解データ登録時にエラーが発生しました".format(quizfilename),file=sys.stderr)
+    print(e,file=sys.stderr)
     sys.exit()
 

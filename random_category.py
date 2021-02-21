@@ -14,7 +14,7 @@ try:
     ini.read(inifile, 'UTF-8')
 except Exception as e:
     print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
-    print(e)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #カテゴリリスト読み込み
@@ -27,7 +27,7 @@ try:
     cat_df=pd.read_csv('category/'+cat_name)
 except Exception as e:
     print("エラー：カテゴリリストが存在しません。category_accuracy_list.pyを実行して作成してください",file=sys.stderr)
-    print(e)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #ランダムにカテゴリを1個選ぶ
@@ -43,7 +43,7 @@ try:
     df=df.query('カテゴリ.str.contains("'+selected_cat+'")',engine='python')
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
-    print(e)
+    print(e,file=sys.stderr)
     sys.exit()
 
 #問題の出題順をランダムに決める
@@ -107,5 +107,5 @@ for i in id_lists:
 
     except Exception as e:
         print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
-        print(e)
+        print(e,file=sys.stderr)
         sys.exit()
