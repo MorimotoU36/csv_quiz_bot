@@ -37,7 +37,7 @@ df['正解率'].fillna(0,inplace=True)
 #正解率の悪い問題ワースト何問かの中から一問を選ぶ
 worst_num=min(int(ini['Slack']['WORST_GROUP_NUM']),total)
 selected_id=random.randint(0,worst_num-1)
-#正解率、不正解数でソートし、一番上の問題を選ぶ
+#正解率、不正解数でソートし、指定した問題を選ぶ
 quiz=df.sort_values(['正解率','不正解数']).iloc[selected_id,:].values.tolist()
 
 quiz_num=quiz[0]
