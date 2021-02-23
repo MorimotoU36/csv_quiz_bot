@@ -1,10 +1,24 @@
 # -*- coding: utf-8 -*-
+from argparse import ArgumentParser
 import pandas as pd
 import configparser
 import sys
 import random
 import requests
 import time
+
+#オプション設定
+def get_option():
+    argparser = ArgumentParser()
+    argparser.add_argument('-s', '--sort',
+                           action='store_true',
+                           help='正解率順で昇順にソート')
+    return argparser.parse_args()
+
+sortflag=False
+if __name__ == '__main__':
+    args = get_option()
+    sortflag=args.sort
 
 #pandas文字幅設定
 pd.set_option('display.unicode.east_asian_width', True)
@@ -44,12 +58,16 @@ for c in categories:
     #カテゴリiを含むデータのみ抽出
     dfi=df.query('カテゴリ.str.contains("'+str(c)+'")',engine='python')
     #各問題の正解率の平均値を算出
-    accuracy.append('{:.2f}%'.format(dfi['正解率'].mean()))
+    accuracy.append(dfi['正解率'].mean())
 
 #データフレーム化、表示
 acc_df=pd.DataFrame([categories,accuracy])
 acc_df=acc_df.T
-acc_df=acc_df.rename(columns={0: 'カテゴリ',1: '平均正解率'})
+acc_df=acc_df.rename(columns={0: 'カテゴリ',1: '平均正解率[%]'})
+
+#ソートオプションあったらソート
+if(sortflag):
+    acc_df=acc_df.sort_values('平均正解率[%]')
 print(acc_df)
 
 #カテゴリリストを保存
