@@ -1,10 +1,26 @@
 # -*- coding: utf-8 -*-
+from argparse import ArgumentParser
 import pandas as pd
 import configparser
 import sys
 import random
 import requests
 import time
+
+#オプション設定
+def get_option():
+    argparser = ArgumentParser()
+    argparser.add_argument('-w', '--worst',
+                           action='store_true',
+                           help='一番正解率が悪いカテゴリを選ぶ')
+    return argparser.parse_args()
+
+worstflag=False
+if __name__ == '__main__':
+    args = get_option()
+    worstflag=args.worst
+
+
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -30,10 +46,16 @@ except Exception as e:
     print(e,file=sys.stderr)
     sys.exit()
 
-#ランダムにカテゴリを1個選ぶ
-cat_total=cat_df.shape[0]
-cat_id=random.randrange(cat_total)
-selected_cat=cat_df.iloc[cat_id,:].values.tolist()[0]
+#カテゴリを選ぶ
+selected_cat=""
+if(worstflag):
+    #一番正解率が悪いカテゴリを選ぶ
+    selected_cat=cat_df.sort_values('平均正解率[%]').iloc[0,:].values.tolist()[0]
+else:
+    #ランダムにカテゴリを1個選ぶ
+    cat_total=cat_df.shape[0]
+    cat_id=random.randrange(cat_total)
+    selected_cat=cat_df.iloc[cat_id,:].values.tolist()[0]
 print("カテゴリ：{0}".format(selected_cat))
 
 #そのカテゴリの問題を取得する
