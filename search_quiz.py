@@ -1,13 +1,11 @@
 # -*- coding: utf-8 -*-
+from argparse import ArgumentParser
 import pandas as pd
 import configparser
 import sys
 import random
 import requests
 import time
-
-#pandas文字幅設定
-pd.set_option('display.unicode.east_asian_width', True)
 
 #引数チェック
 inputs=sys.argv
@@ -16,8 +14,22 @@ if(len(inputs) < 2):
     print('エラー：引数の数が正しくありません ({0} 検索語句)'.format(inputs[0]),file=sys.stderr)
     sys.exit()
 
-#検索語句読み取り
-search_query=inputs[1]
+#オプション,検索語句設定、読み取り
+i_flag=False
+search_query=""
+if __name__ == '__main__':
+    argparser = ArgumentParser()
+    argparser.add_argument('-i', '--ignorecase',
+                           action='store_true',
+                           help='半角英字の大文字小文字を無視')
+    argparser.add_argument('query')
+
+    args = argparser.parse_args()
+    i_flag=args.ignorecase
+    search_query=args.query
+
+#pandas文字幅設定
+pd.set_option('display.unicode.east_asian_width', True)
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -38,7 +50,7 @@ try:
     df=pd.read_csv('csv/'+quizfilename)
 
     #問題文に検索語句を含む問題を抽出
-    qst_df=df.query('テスト問題.str.contains("'+search_query+'")',engine='python')
+    qst_df=df.query('テスト問題.str.contains("'+search_query+'",case='+ str(not i_flag) +')',engine='python')
 
     #表示する
     print("--- 問 ---")
@@ -49,7 +61,7 @@ try:
         print(qst_df.to_string(index=False))
     
     #答えに検索語句を含む問題を抽出
-    ans_df=df.query('正解.str.contains("'+search_query+'")',engine='python')
+    ans_df=df.query('正解.str.contains("'+search_query+'",case='+ str(not i_flag) +')',engine='python')
 
     #表示する
     print("--- 答 ---")
