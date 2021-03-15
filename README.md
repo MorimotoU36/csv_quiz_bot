@@ -13,7 +13,11 @@ slackからの応答はAWS API Gateway/Lambda/DynamoDBを利用し行う
 ## random_quiz.py
 
 指定したcsvファイル内の問題からランダムに１問取得してslackに投稿するスクリプト
-引数なし
+引数なし（オプション指定しない場合）
+
+### オプション
+
+- -n 数値,--number 数値 ・・・ 指定した数の分だけ問題を出題する
 
 ## worst_quiz.py
 
