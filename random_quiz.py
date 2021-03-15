@@ -1,10 +1,28 @@
 # -*- coding: utf-8 -*-
+from argparse import ArgumentParser
 import pandas as pd
 import configparser
 import sys
 import random
 import requests
 import time
+
+
+#オプション,数値読み取り
+num=1
+if __name__ == '__main__':
+    argparser = ArgumentParser()
+    argparser.add_argument('-n', '--number',type=int,
+                            default=num,
+                            help='出題する問題数')
+    args = argparser.parse_args()
+
+    try:
+        num=int(args.number)
+    except Exception as e:
+        print("エラー：数値を入力してください({0})".format(args.num),file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -30,61 +48,62 @@ except Exception as e:
 
 #全問題数
 total=df.shape[0]
-#ランダムに1個選ぶ
-quiz_id=random.randrange(total)
-#その問題を(リスト形式で)取ってくる
-quiz=df.iloc[quiz_id,:].values.tolist()
 
-quiz_num=quiz[0]
-question=quiz[1]
-answer=quiz[2]
-correct_num=int(quiz[3])
-incorrect_num=int(quiz[4])
+for i in range(num):
+    #ランダムに1個選ぶ
+    quiz_id=random.randrange(total)
+    #その問題を(リスト形式で)取ってくる
+    quiz=df.iloc[quiz_id,:].values.tolist()
 
-#問題文作成
-accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-quiz_sentense="["+str(quiz_num)+"]:"+question+accuracy
+    quiz_num=quiz[0]
+    question=quiz[1]
+    answer=quiz[2]
+    correct_num=int(quiz[3])
+    incorrect_num=int(quiz[4])
 
-#答えの文作成
-quiz_answer="["+str(quiz_num)+"]答:"+answer
+    #問題文作成
+    accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
+    quiz_sentense="["+str(quiz_num)+"]:"+question+accuracy
 
-try:
-    #設定値読み込み
-    slackapi=ini['Slack']['SLACK_API_URL']
-    slacktoken=ini['Slack']['SLACK_API_TOKEN']
-    slackchannel=ini['Slack']['SLACK_CHANNEL']
-    slackanschannel=ini['Slack']['SLACK_ANSWER_CHANNEL']
-    thinkingtime=int(ini['Slack']['THINKING_TIME'])
+    #答えの文作成
+    quiz_answer="["+str(quiz_num)+"]答:"+answer
 
-    #Slack APIへPOSTするためのデータ作成
-    data = {
-        'token': slacktoken,
-        'channel': slackchannel,
-        'text': quiz_sentense
-    }
+    try:
+        #設定値読み込み
+        slackapi=ini['Slack']['SLACK_API_URL']
+        slacktoken=ini['Slack']['SLACK_API_TOKEN']
+        slackchannel=ini['Slack']['SLACK_CHANNEL']
+        slackanschannel=ini['Slack']['SLACK_ANSWER_CHANNEL']
+        thinkingtime=int(ini['Slack']['THINKING_TIME'])
 
-    #Slack APIへPOSTする
-    response = requests.post(slackapi, data=data)
+        #Slack APIへPOSTするためのデータ作成
+        data = {
+            'token': slacktoken,
+            'channel': slackchannel,
+            'text': quiz_sentense
+        }
 
-    print("問題をPOSTしました:"+quiz_sentense)
+        #Slack APIへPOSTする
+        response = requests.post(slackapi, data=data)
 
-    #指定秒スリープ
-    time.sleep(thinkingtime)
+        print("問題をPOSTしました:"+quiz_sentense)
 
-    #Slack APIへ答えをPOSTするためのデータ作成
-    data = {
-        'token': slacktoken,
-        'channel': slackanschannel,
-        'text': quiz_answer
-    }
+        #指定秒スリープ
+        time.sleep(thinkingtime)
 
-    #Slack APIへ答えをPOSTする
-    response = requests.post(slackapi, data=data)
+        #Slack APIへ答えをPOSTするためのデータ作成
+        data = {
+            'token': slacktoken,
+            'channel': slackanschannel,
+            'text': quiz_answer
+        }
 
-    print("答えをPOSTしました:"+quiz_answer)
+        #Slack APIへ答えをPOSTする
+        response = requests.post(slackapi, data=data)
 
+        print("答えをPOSTしました:"+quiz_answer)
 
-except Exception as e:
-    print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
-    print(e,file=sys.stderr)
-    sys.exit()
+    except Exception as e:
+        print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
