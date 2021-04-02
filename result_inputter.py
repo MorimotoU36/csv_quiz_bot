@@ -38,6 +38,16 @@ except Exception as e:
     print(e,file=sys.stderr)
     sys.exit()
 
+#DBからの解答データのバックアップファイル作成
+try:
+    db_df=pd.DataFrame(results)
+    db_df.to_csv('csv/bkup/DB_bkup.csv',index=False)
+except Exception as e:
+    print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename),file=sys.stderr)
+    print(e,file=sys.stderr)
+    sys.exit()
+
+
 #問題csv読み込み
 df=""
 try:
