@@ -35,6 +35,10 @@ DB(API Gateway/Lambda/AWS DynamoDB)から問題の正解不正解データを取
 csvに正解数データを更新するスクリプト
 引数なし
 
+また、以下バックアップファイルを作成する
+- (csvファイル名).bkup　・・・　正解数データを更新する前のcsvファイル
+- DB_bkup.csv　・・・　DBから取ってきた正解不正解データのcsvファイル
+
 ## category_accuracy_list.py
 
 csvにある問題を、カテゴリ毎に平均正解率を算出して表示するスクリプト
