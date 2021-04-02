@@ -23,7 +23,11 @@ slackからの応答はAWS API Gateway/Lambda/DynamoDBを利用し行う
 
 csvファイル内の問題から、正解率ワースト1~xの問題のうちランダムに１問取得してslackに投稿するスクリプト
 xは設定ファイル(quiz.ini)のWORST_GROUP_NUMで指定
-引数なし
+引数なし（オプション指定しない場合）
+
+### オプション
+
+- -n 数値,--number 数値 ・・・ ワースト1位~(指定した数)位の問題を順に出題する
 
 ## result_inputter.py
 
