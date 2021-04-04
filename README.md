@@ -68,7 +68,12 @@ category_accuracy_list.pyで作成したカテゴリリストを元に、
 ## minimum_correct_quiz.py
 
 最も正解数の低い問題(複数ある場合はランダム)をslackに投稿するスクリプト
-引数なし
+引数なし（オプション指定しない場合）
+
+### オプション
+
+- -n 数値,--number 数値 ・・・ 正解数ワースト1位~(指定した数)位の問題を順に出題する
+
 
 ## select_quiz_by_list.py
 
