@@ -5,7 +5,7 @@ import sys
 import random
 import requests
 import time
-
+import os
 
 #引数チェック
 inputs=sys.argv
@@ -13,6 +13,12 @@ if(len(inputs) < 2):
     #引数の数が少ないとエラー
     print('エラー：引数の数が正しくありません ({0} 問題番号)'.format(inputs[0]),file=sys.stderr)
     sys.exit()
+
+#カレントディレクトリからスクリプトのあるディレクトリへ移動
+pwd_dir=os.getcwd()
+pgm_dir=os.path.realpath(os.path.dirname(__file__))
+os.chdir(pgm_dir)
+
 
 #問題番号読み取り
 quiz_id=0
@@ -22,6 +28,7 @@ try:
 except Exception as e:
     print('エラー：引数({0})を数字に変換できません'.format(inputs[1]),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #設定ファイル読み込み
@@ -33,6 +40,7 @@ try:
 except Exception as e:
     print("エラー：設定ファイル({0})が読み込めません".format(inifile))
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #問題csv読み込み
@@ -44,6 +52,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #全問題数
@@ -52,6 +61,7 @@ total=df.shape[0]
 #入力した問題番号<全問題数　の場合はエラー終了
 if(quiz_id < 0 or quiz_id >= total):
     print('エラー：問題番号を1~{0}の間で入力してください'.format(total),file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #その問題を(リスト形式で)取ってくる
@@ -109,4 +119,8 @@ try:
 except Exception as e:
     print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
+
+#元のディレクトリに戻る
+os.chdir(pwd_dir)
