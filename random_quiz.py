@@ -6,6 +6,7 @@ import sys
 import random
 import requests
 import time
+import os
 
 
 #オプション,数値読み取り
@@ -24,6 +25,11 @@ if __name__ == '__main__':
         print(e,file=sys.stderr)
         sys.exit()
 
+#カレントディレクトリからスクリプトのあるディレクトリへ移動
+pwd_dir=os.getcwd()
+pgm_dir=os.path.realpath(os.path.dirname(__file__))
+os.chdir(pgm_dir)
+
 #設定ファイル読み込み
 inifile="config/quiz.ini"
 ini=""
@@ -33,6 +39,7 @@ try:
 except Exception as e:
     print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #問題csv読み込み
@@ -44,6 +51,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #全問題数
@@ -106,4 +114,8 @@ for i in range(num):
     except Exception as e:
         print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
         print(e,file=sys.stderr)
+        os.chdir(pwd_dir)
         sys.exit()
+
+#元のディレクトリに戻る
+os.chdir(pwd_dir)
