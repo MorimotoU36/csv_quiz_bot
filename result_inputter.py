@@ -4,6 +4,12 @@ import shutil
 import pandas as pd
 import json
 import sys
+import os
+
+#カレントディレクトリからスクリプトのあるディレクトリへ移動
+pwd_dir=os.getcwd()
+pgm_dir=os.path.realpath(os.path.dirname(__file__))
+os.chdir(pgm_dir)
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -14,6 +20,7 @@ try:
 except Exception as e:
     print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #AWS APIにアクセスして結果取得
@@ -36,6 +43,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #DBからの解答データのバックアップファイル作成
@@ -45,6 +53,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 
@@ -55,6 +64,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #結果データを解析
@@ -87,5 +97,8 @@ try:
 except Exception as e:
     print("エラー：csv({0})への正解データ登録時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
+#元のディレクトリに戻る
+os.chdir(pwd_dir)
