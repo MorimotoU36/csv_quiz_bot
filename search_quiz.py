@@ -18,15 +18,21 @@ if(len(inputs) < 2):
 i_flag=False
 search_query=""
 if __name__ == '__main__':
-    argparser = ArgumentParser()
-    argparser.add_argument('-i', '--ignorecase',
-                           action='store_true',
-                           help='半角英字の大文字小文字を無視')
-    argparser.add_argument('query')
+    try:
+        argparser = ArgumentParser()
+        argparser.add_argument('-i', '--ignorecase',
+                            action='store_true',
+                            help='半角英字の大文字小文字を無視')
+        argparser.add_argument('query')
 
-    args = argparser.parse_args()
-    i_flag=args.ignorecase
-    search_query=args.query
+        args = argparser.parse_args()
+        i_flag=args.ignorecase
+        search_query=args.query
+    except Exception as e:
+        print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
+
 
 #pandas文字幅設定
 pd.set_option('display.unicode.east_asian_width', True)

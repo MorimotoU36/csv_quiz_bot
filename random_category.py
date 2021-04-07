@@ -7,19 +7,21 @@ import random
 import requests
 import time
 
-#オプション設定
-def get_option():
-    argparser = ArgumentParser()
-    argparser.add_argument('-w', '--worst',
-                           action='store_true',
-                           help='一番正解率が悪いカテゴリを選ぶ')
-    return argparser.parse_args()
-
+#オプション読み取り
 worstflag=False
 if __name__ == '__main__':
-    args = get_option()
-    worstflag=args.worst
+    try:
+        argparser = ArgumentParser()
+        argparser.add_argument('-w', '--worst',
+                           action='store_true',
+                           help='一番正解率が悪いカテゴリを選ぶ')
 
+        args = argparser.parse_args()
+        worstflag=args.worst
+    except Exception as e:
+        print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
 
 
 #設定ファイル読み込み

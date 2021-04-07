@@ -8,17 +8,20 @@ import requests
 import time
 
 #オプション設定
-def get_option():
-    argparser = ArgumentParser()
-    argparser.add_argument('-s', '--sort',
-                           action='store_true',
-                           help='正解率順で昇順にソート')
-    return argparser.parse_args()
-
 sortflag=False
 if __name__ == '__main__':
-    args = get_option()
-    sortflag=args.sort
+    try:
+        argparser = ArgumentParser()
+        argparser.add_argument('-s', '--sort',
+                               action='store_true',
+                               help='正解率順で昇順にソート')
+        args = argparser.parse_args()
+        sortflag=args.sort
+    except Exception as e:
+        print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
+
 
 #pandas文字幅設定
 pd.set_option('display.unicode.east_asian_width', True)
