@@ -10,16 +10,16 @@ import time
 #オプション,数値読み取り
 num=1
 if __name__ == '__main__':
-    argparser = ArgumentParser()
-    argparser.add_argument('-n', '--number',type=int,
-                            default=num,
-                            help='出題する問題数')
-    args = argparser.parse_args()
-
     try:
+        argparser = ArgumentParser()
+        argparser.add_argument('-n', '--number',type=int,
+                                default=num,
+                                help='出題する問題数')
+        args = argparser.parse_args()
+
         num=int(args.number)
     except Exception as e:
-        print("エラー：数値を入力してください({0})".format(args.num),file=sys.stderr)
+        print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
         sys.exit()
 
