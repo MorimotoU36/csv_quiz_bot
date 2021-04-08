@@ -6,6 +6,7 @@ import sys
 import random
 import requests
 import time
+import os
 
 #オプション読み取り
 worstflag=False
@@ -23,6 +24,10 @@ if __name__ == '__main__':
         print(e,file=sys.stderr)
         sys.exit()
 
+#カレントディレクトリからスクリプトのあるディレクトリへ移動
+pwd_dir=os.getcwd()
+pgm_dir=os.path.realpath(os.path.dirname(__file__))
+os.chdir(pgm_dir)
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -33,6 +38,7 @@ try:
 except Exception as e:
     print("エラー：設定ファイル({0})が読み込めません".format(inifile),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #カテゴリリスト読み込み
@@ -46,6 +52,7 @@ try:
 except Exception as e:
     print("エラー：カテゴリリストが存在しません。category_accuracy_list.pyを実行して作成してください",file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #カテゴリを選ぶ
@@ -68,6 +75,7 @@ try:
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
     sys.exit()
 
 #問題の出題順をランダムに決める
@@ -132,4 +140,8 @@ for i in id_lists:
     except Exception as e:
         print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
         print(e,file=sys.stderr)
+        os.chdir(pwd_dir)
         sys.exit()
+
+#元のディレクトリに戻る
+os.chdir(pwd_dir)
