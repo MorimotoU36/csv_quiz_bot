@@ -94,6 +94,8 @@ try:
     
     #反映した結果をcsvに更新する
     df.to_csv('csv/'+quizfilename,index=False)
+
+    print('{0}個の解答データを登録しました'.format(len(results)))
 except Exception as e:
     print("エラー：csv({0})への正解データ登録時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
