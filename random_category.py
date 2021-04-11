@@ -9,6 +9,7 @@ import time
 import os
 
 #オプション読み取り
+num=1
 worstflag=False
 if __name__ == '__main__':
     try:
@@ -16,9 +17,12 @@ if __name__ == '__main__':
         argparser.add_argument('-w', '--worst',
                            action='store_true',
                            help='一番正解率が悪いカテゴリを選ぶ')
-
+        argparser.add_argument('-n', '--number',type=int,
+                                default=num,
+                                help='出題する問題数')
         args = argparser.parse_args()
         worstflag=args.worst
+        num=int(args.number)
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
@@ -81,7 +85,7 @@ except Exception as e:
 #問題の出題順をランダムに決める
 #iniファイルで設定している値かカテゴリに該当する問題数のうち少ない方の数だけ出す
 total=df.shape[0]
-id_lists=list(random.sample(list(range(total)),min(total,int(ini['Slack']['QUIZ_NUM_BY_CATEGORY']))))
+id_lists=list(random.sample(list(range(total)),min(total,num)))
 
 for i in id_lists:
 
