@@ -58,7 +58,8 @@ for ans_i in answer_list:
 
     #結果を表示
     print(response.text)
-
+else:
+    print('{0}個の解答データを登録しました'.format(len(answer_list)))
 
 #元のディレクトリに戻る
 os.chdir(pwd_dir)
