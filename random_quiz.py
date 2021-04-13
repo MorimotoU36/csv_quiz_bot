@@ -94,7 +94,7 @@ for i in range(num):
         #Slack APIへPOSTする
         response = requests.post(slackapi, data=data)
 
-        print("問題をPOSTしました:"+quiz_sentense)
+        print("問題をPOSTしました["+str(i+1)+"]:"+quiz_sentense)
 
         #指定秒スリープ
         time.sleep(thinkingtime)
@@ -109,7 +109,7 @@ for i in range(num):
         #Slack APIへ答えをPOSTする
         response = requests.post(slackapi, data=data)
 
-        print("答えをPOSTしました:"+quiz_answer)
+        print("答えをPOSTしました["+str(i+1)+"]:"+quiz_answer)
 
     except Exception as e:
         print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
