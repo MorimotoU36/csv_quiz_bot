@@ -105,3 +105,27 @@ category_accuracy_list.pyで作成したカテゴリリストを元に、
 ```
 
 - 問題番号１列のみ。
+
+
+# 設定ファイル
+
+## quiz.ini
+
+```
+[Filename]
+QUIZ_FILE_NAME=[(クイズ問題が書かれたファイル名,,,)]
+QUIZ_INDEX_LIST=(ランダムに出題したい問題番号を羅列したファイル名)
+DEFAULT_QUIZ_FILE_NUM=(出題したい問題ファイルのQUIZ_FILE_NAMEでのインデックス)
+
+[Slack]
+SLACK_API_URL=(SlackのチャンネルにメッセージをPOSTするためのURL)
+SLACK_API_TOKEN=(SlackのチャンネルにメッセージをPOSTするためのアクセストークン)
+SLACK_CHANNEL=(クイズを出題するためのSlackのチャンネル名)
+SLACK_ANSWER_CHANNEL=(クイズの解答をPOSTするためのSlackのチャンネル名)
+THINKING_TIME=(クイズ出題~解答をPOSTするための時間[秒])
+WORST_GROUP_NUM=5
+
+[AWS]
+ANSWER_REGISTER_API=(回答を登録するためのAWSのAPI)
+RESULT_GET_API=(回答を取得するためのAWSのAPI)
+```
