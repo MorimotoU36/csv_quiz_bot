@@ -5,6 +5,7 @@ import sys
 import random
 import requests
 import time
+import json
 import os
 
 #引数チェック
@@ -47,7 +48,9 @@ except Exception as e:
 df=""
 quizfilename=""
 try:
-    quizfilename=ini['Filename']['QUIZFILE']
+    quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
+    quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
+    quizfilename=quiz_file_names[quiz_file_ind]
     df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
@@ -60,7 +63,7 @@ total=df.shape[0]
 
 #入力した問題番号<全問題数　の場合はエラー終了
 if(quiz_id < 0 or quiz_id >= total):
-    print('エラー：問題番号を1~{0}の間で入力してください'.format(total),file=sys.stderr)
+    print('エラー：問題ファイル:{0}：問題番号を1~{1}の間で入力してください'.format(quizfilename,total),file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
