@@ -35,7 +35,7 @@ try:
     filename=quiz_file_names[quiz_file_ind-1]
     df=pd.read_csv('csv/'+filename)
 
-    filename=str(quiz_file_ind) + '_' + ini['Filename']['QUIZ_INDEX_LIST']
+    filename=ini['Filename']['QUIZ_INDEX_LIST_NAME'] + '_' + filename[:-4] + '.dat'
     idx_df=pd.read_csv('config/'+filename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(filename),file=sys.stderr)
