@@ -12,24 +12,25 @@ os.chdir(pgm_dir)
 #引数読み取り
 inputs=sys.argv
 
-# 全引数チェック解析（問題番号、正解不正解の組み合わせになっているか確認）
+# 全引数チェック解析（問題ファイル番号、問題番号、正解不正解の組み合わせになっているか確認）
 answer_list=[]
-if(len(inputs)%2 != 1):
-    #引数の数が合ってない(スクリプト名 + (問題番号,正解不正解)*x　の組み合わせなので奇数になる)とエラー
-    print('エラー：引数の数が正しくありません ({0} [[問題番号,正解(0)不正解(1)]...])'.format(inputs[0]),file=sys.stderr)
+if(len(inputs)%3 != 1):
+    #引数の数が合ってない(スクリプト名 + (問題ファイル番号,問題番号,正解不正解)*x　の組み合わせで無い)とエラー
+    print('エラー：引数の数が正しくありません ({0} [[問題ファイル番号,問題番号,正解(0)不正解(1)]...])'.format(inputs[0]),file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
-for i in range(1,len(inputs),2):
-    question_id=inputs[i]
-    answer_data=inputs[i+1]
+for i in range(1,len(inputs),3):
+    file_id=inputs[i]
+    question_id=inputs[i+1]
+    answer_data=inputs[i+2]
     if(answer_data != '0' and answer_data != '1'):
-        #引数の数が合ってない(スクリプト名 + (問題番号,正解不正解)*x　の組み合わせなので奇数になる)とエラー
+        #回答データが0,1以外だとエラー
         print('エラー：引数の問題番号{0}に対する解答データ{1}が正しくありません(0か1)'.format(question_id,answer_data),file=sys.stderr)
         os.chdir(pwd_dir)
         sys.exit()
 
-    answer_list.append([question_id,answer_data])
+    answer_list.append([file_id,question_id,answer_data])
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -50,7 +51,7 @@ for ans_i in answer_list:
 
     #送信データ作成
     data = {
-        'text': ans_i[0]+' '+ans_i[1]
+        'text': ans_i[0]+' '+ans_i[1]+' '+ans_i[2]
     }
 
     #AWS APIにデータ送信
