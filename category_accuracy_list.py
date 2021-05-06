@@ -6,6 +6,7 @@ import sys
 import random
 import requests
 import time
+import json
 import os
 
 #オプション設定
@@ -47,7 +48,9 @@ except Exception as e:
 df=""
 quizfilename=""
 try:
-    quizfilename=ini['Filename']['QUIZFILE']
+    quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
+    quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
+    quizfilename=quiz_file_names[quiz_file_ind]
     df=pd.read_csv('csv/'+quizfilename)
     #各問題の正解率算出
     df['正解率']=100*df['正解数']/(df['正解数']+df['不正解数'])
