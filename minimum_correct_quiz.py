@@ -6,6 +6,7 @@ import sys
 import random
 import requests
 import time
+import json
 import os
 
 #オプション,数値読み取り
@@ -45,7 +46,9 @@ except Exception as e:
 df=""
 quizfilename=""
 try:
-    quizfilename=ini['Filename']['QUIZFILE']
+    quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
+    quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
+    quizfilename=quiz_file_names[quiz_file_ind]
     df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
