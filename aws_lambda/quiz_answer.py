@@ -15,14 +15,14 @@ def lambda_handler(event, context):
         #slackの入力(問題ID、正解不正解フラグ)からデータを取り出す
         #slackからだとスペースが'+'になる？
         text=event['text']
-        quiz_id,flag=0,0
+        file_id,quiz_id,flag=0,0,0
         if('+' in text):
             text=re.sub(r'\++','+',text)
             text=list(text.split('+'))
-            quiz_id,flag=text[0],text[1]
+            file_id,quiz_id,flag=text[0],text[1],text[2]
         else:
             #'+'無い場合はスペース区切り
-            quiz_id,flag=text.split()
+            file_id,quiz_id,flag=text.split()
             
         
         #現在時刻取得
@@ -32,12 +32,13 @@ def lambda_handler(event, context):
         table.put_item(
             Item = {
                 "time": dt_now, 
+                "file_id": file_id,
                 "quiz_id": quiz_id, 
                 "result": flag
             }
         )
         
-        res="Question["+str(quiz_id)+"]:"+ ("Correct!" if flag != "0" else "Incorrect")
+        res="File["+str(file_id)+"] Question["+str(quiz_id)+"]:"+ ("Correct!" if flag != "0" else "Incorrect")
         return res
             
     except Exception as e:
