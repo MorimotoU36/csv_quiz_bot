@@ -32,7 +32,7 @@ xは設定ファイル(quiz.ini)のWORST_GROUP_NUMで指定
 ## result_inputter.py
 
 DB(API Gateway/Lambda/AWS DynamoDB)から問題の正解不正解データを取得し
-csvに正解数データを更新するスクリプト
+csvに正解数データを更新するスクリプト。全問題ファイルに対し行う。
 引数なし
 
 また、以下バックアップファイルを作成する
