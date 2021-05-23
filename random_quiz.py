@@ -12,15 +12,19 @@ import os
 
 #オプション,数値読み取り
 num=1
+allflag=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
         argparser.add_argument('-n', '--number',type=int,
                                 default=num,
                                 help='出題する問題数')
+        argparser.add_argument('-a', '--all',action='store_true',
+                                help='全ての問題集からランダムに出題する')
         args = argparser.parse_args()
 
         num=int(args.number)
+        allflag=args.all
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
@@ -45,22 +49,33 @@ except Exception as e:
 
 #問題csv読み込み
 df=""
+dfs=[]
 quizfilename=""
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-    quizfilename=quiz_file_names[quiz_file_ind]
-    df=pd.read_csv('csv/'+quizfilename)
+    if(allflag):
+        for i in range(len(quiz_file_names)):
+            quizfilename=quiz_file_names[i]
+            dfs.append(pd.read_csv('csv/'+quizfilename))
+    else:
+        quizfilename=quiz_file_names[quiz_file_ind]
+        df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
-#全問題数
-total=df.shape[0]
 
 for i in range(num):
+    #-a指定の時は問題集をランダムに選択
+    if(allflag):
+        df=random.choice(dfs)
+
+    #全問題数
+    total=df.shape[0]
+
     #ランダムに1個選ぶ
     quiz_id=random.randrange(total)
     #その問題を(リスト形式で)取ってくる
