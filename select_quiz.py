@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from argparse import ArgumentParser
 import pandas as pd
 import configparser
 import sys
@@ -7,30 +8,31 @@ import requests
 import time
 import json
 import os
+import boto3
 
-#引数チェック
-inputs=sys.argv
-if(len(inputs) < 2):
-    #引数の数が少ないとエラー
-    print('エラー：引数の数が正しくありません ({0} 問題番号)'.format(inputs[0]),file=sys.stderr)
-    sys.exit()
+#オプション,数値読み取り
+quiz_id=-1
+isDisplayImage=False
+if __name__ == '__main__':
+    try:
+        argparser = ArgumentParser()
+        argparser.add_argument('quiz_id',type=int,
+                                help='出題する問題番号')
+        argparser.add_argument('-i','--image',action='store_true',
+                                help='登録画像を出力する場合指定')
+        args = argparser.parse_args()
+        isDisplayImage=args.image
+        quiz_id=int(args.quiz_id)
+        quiz_id-=1
+    except Exception as e:
+        print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
+        print(e,file=sys.stderr)
+        sys.exit()
 
 #カレントディレクトリからスクリプトのあるディレクトリへ移動
 pwd_dir=os.getcwd()
 pgm_dir=os.path.realpath(os.path.dirname(__file__))
 os.chdir(pgm_dir)
-
-
-#問題番号読み取り
-quiz_id=0
-try:
-    quiz_id=int(inputs[1])
-    quiz_id-=1
-except Exception as e:
-    print('エラー：引数({0})を数字に変換できません'.format(inputs[1]),file=sys.stderr)
-    print(e,file=sys.stderr)
-    os.chdir(pwd_dir)
-    sys.exit()
 
 #設定ファイル読み込み
 inifile="config/quiz.ini"
@@ -52,6 +54,7 @@ try:
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     quizfilename=quiz_file_names[quiz_file_ind]
     df=pd.read_csv('csv/'+quizfilename)
+    df["画像ファイル名"].fillna("",inplace=True)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
     print(e,file=sys.stderr)
@@ -75,6 +78,7 @@ question=quiz[1]
 answer=quiz[2]
 correct_num=int(quiz[3])
 incorrect_num=int(quiz[4])
+image_url=str(quiz[6])
 
 #問題文作成
 accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
@@ -114,10 +118,32 @@ try:
     }
 
     #Slack APIへ答えをPOSTする
-    response = requests.post(slackapi, data=data)
+    requests.post(slackapi, data=data)
 
     print("答えをPOSTしました:"+quiz_answer)
 
+    if(isDisplayImage):
+        if(image_url == ""):
+            print("警告:問題番号[{0}]の画像ファイルはありません".format(quiz_num))
+        else:
+            #画像ダウンロード
+            s3 = boto3.resource('s3')
+            bucket = s3.Bucket(ini['AWS']['S3_BUCKET_NAME'])
+            bucket.download_file(image_url, image_url)
+
+            #画像POST
+            files = {'file': open(image_url, 'rb')}
+            data = {
+                'token': slacktoken,
+                'channels': slackanschannel,
+                'filename':image_url,
+                'initial_comment': "",
+                'title': image_url
+            }
+            requests.post(url=ini['Slack']['SLACK_FILE_UPLOAD_URL'], params=data, files=files)
+
+            #画像削除
+            os.remove(image_url)
 
 except Exception as e:
     print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
