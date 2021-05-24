@@ -11,19 +11,22 @@ import os
 import boto3
 
 #オプション,数値読み取り
+csv_id=-1
 quiz_id=-1
 isDisplayImage=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
+        argparser.add_argument('-c','--csv',default=-1,type=int,
+                                help='出題する問題csvのID')
         argparser.add_argument('quiz_id',type=int,
                                 help='出題する問題番号')
         argparser.add_argument('-i','--image',action='store_true',
                                 help='登録画像を出力する場合指定')
         args = argparser.parse_args()
+        csv_id=int(args.csv)-1
+        quiz_id=int(args.quiz_id)-1
         isDisplayImage=args.image
-        quiz_id=int(args.quiz_id)
-        quiz_id-=1
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
@@ -50,8 +53,8 @@ except Exception as e:
 df=""
 quizfilename=""
 try:
-    quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
+    quiz_file_ind=csv_id if (0 <= csv_id and csv_id < len(quiz_file_names)) else int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quizfilename=quiz_file_names[quiz_file_ind]
     df=pd.read_csv('csv/'+quizfilename)
     df["画像ファイル名"].fillna("",inplace=True)
