@@ -52,11 +52,13 @@ except Exception as e:
 #問題csv読み込み
 df=""
 quizfilename=""
+csvname=""
 try:
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     quiz_file_ind=csv_id if (0 <= csv_id and csv_id < len(quiz_file_names)) else int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quizfilename=quiz_file_names[quiz_file_ind]
-    df=pd.read_csv('csv/'+quizfilename)
+    csvname=quizfilename['csvname']
+    df=pd.read_csv('csv/'+quizfilename['filename'])
     df["画像ファイル名"].fillna("",inplace=True)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename))
@@ -85,10 +87,10 @@ image_url=str(quiz[6])
 
 #問題文作成
 accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-quiz_sentense="["+str(quiz_num)+"]:"+question+accuracy
+quiz_sentense="["+csvname+"-"+str(quiz_num)+"]:"+question+accuracy
 
 #答えの文作成
-quiz_answer="["+str(quiz_num)+"]答:"+answer
+quiz_answer="["+csvname+"-"+str(quiz_num)+"]答:"+answer
 
 try:
     #設定値読み込み
