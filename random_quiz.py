@@ -54,15 +54,19 @@ except Exception as e:
 df=""
 dfs=[]
 quizfilename=""
+csvfilename=""
+csvfilenames=[]
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     if(allflag or csv_id != -1):
         for i in range(len(quiz_file_names)):
             quizfilename=quiz_file_names[i]["filename"]
+            csvfilenames.append(quiz_file_names[i]["csvname"])
             dfs.append(pd.read_csv('csv/'+quizfilename))
     else:
         quizfilename=quiz_file_names[quiz_file_ind]["filename"]
+        csvfilename=quiz_file_names[quiz_file_ind]["csvname"]
         df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
@@ -82,7 +86,9 @@ for i in range(num):
     if(csv_id!=-1):
         df=dfs[csv_id]
     elif(allflag):
-        df=random.choice(dfs)
+        j=random.randint(0,len(dfs)-1)
+        csvfilename=csvfilenames[j]
+        df=dfs[j]        
 
     #全問題数
     total=df.shape[0]
@@ -100,10 +106,10 @@ for i in range(num):
 
     #問題文作成
     accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-    quiz_sentense="["+str(quiz_num)+"]:"+question+accuracy
+    quiz_sentense="["+csvfilename+":"+str(quiz_num)+"]:"+question+accuracy
 
     #答えの文作成
-    quiz_answer="["+str(quiz_num)+"]答:"+answer
+    quiz_answer="["+csvfilename+":"+str(quiz_num)+"]答:"+answer
 
     try:
         #設定値読み込み
