@@ -11,18 +11,21 @@ import os
 
 
 #オプション,数値読み取り
+csv_id=-1
 num=1
 allflag=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
+        argparser.add_argument('-c','--csv',default=0,type=int,
+                                help='出題する問題csvのID,0ならランダム')
         argparser.add_argument('-n', '--number',type=int,
                                 default=num,
                                 help='出題する問題数')
         argparser.add_argument('-a', '--all',action='store_true',
                                 help='全ての問題集からランダムに出題する')
         args = argparser.parse_args()
-
+        csv_id=int(args.csv)-1
         num=int(args.number)
         allflag=args.all
     except Exception as e:
@@ -54,12 +57,12 @@ quizfilename=""
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-    if(allflag):
+    if(allflag or csv_id != -1):
         for i in range(len(quiz_file_names)):
-            quizfilename=quiz_file_names[i]
+            quizfilename=quiz_file_names[i]["filename"]
             dfs.append(pd.read_csv('csv/'+quizfilename))
     else:
-        quizfilename=quiz_file_names[quiz_file_ind]
+        quizfilename=quiz_file_names[quiz_file_ind]["filename"]
         df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
@@ -67,10 +70,18 @@ except Exception as e:
     os.chdir(pwd_dir)
     sys.exit()
 
+#入力値(csv_id)チェック
+if(csv_id!=-1 and (csv_id <0 or len(dfs)<=csv_id)):
+    print("エラー：問題csv番号({0})は0(ランダム)または{1}~{2}の間で入力してください".format(csv_id+1,1,len(dfs)),file=sys.stderr)
+    print(e,file=sys.stderr)
+    os.chdir(pwd_dir)
+    sys.exit()
 
 for i in range(num):
-    #-a指定の時は問題集をランダムに選択
-    if(allflag):
+    #-a指定の時は問題集をランダムに選択,csv_idがある時はその問題集を選択
+    if(csv_id!=-1):
+        df=dfs[csv_id]
+    elif(allflag):
         df=random.choice(dfs)
 
     #全問題数
