@@ -40,7 +40,7 @@ quiz_file_names=[]
 try:
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     for i in range(len(quiz_file_names)):
-        quizfilename=quiz_file_names[i]
+        quizfilename=quiz_file_names[i]["filename"]
         shutil.copyfile('csv/'+quizfilename,'csv/bkup/'+quizfilename+'.bkup')
 except Exception as e:
     print("エラー：問題csv({0})のバックアップファイル作成時にエラーが発生しました".format(quizfilename),file=sys.stderr)
@@ -63,7 +63,7 @@ except Exception as e:
 df=[]
 try:
     for i in range(len(quiz_file_names)):
-        df.append(pd.read_csv('csv/'+quiz_file_names[i]))
+        df.append(pd.read_csv('csv/'+quiz_file_names[i]["filename"]))
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
@@ -103,11 +103,11 @@ try:
         #df_iを反映する
         df[int(file_id)-1]=df_i
 
-        print("問題ファイル["+quiz_file_names[int(file_id)-1]+"] 問題["+quiz_id+"]:"+("正解" if ans != "0" else "不正解")+"+1")
+        print("問題ファイル["+quiz_file_names[int(file_id)-1]["filename"]+"] 問題["+quiz_id+"]:"+("正解" if ans != "0" else "不正解")+"+1")
     
     #反映した結果をcsvに更新する
     for i in range(len(quiz_file_names)):
-        df[i].to_csv('csv/'+quiz_file_names[i],index=False)
+        df[i].to_csv('csv/'+quiz_file_names[i]["filename"],index=False)
 
     print('{0}個の解答データを登録しました'.format(len(results)))
 except Exception as e:
