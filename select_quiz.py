@@ -147,7 +147,7 @@ try:
         'token': slacktoken,
         'channel': slackanschannel,
         'text': quiz_answer,
-        "attachments": json.dumps(attachments)
+        'attachments': json.dumps(attachments)
     }
 
     #Slack APIへ答えをPOSTする
