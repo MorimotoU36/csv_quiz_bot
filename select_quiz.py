@@ -137,7 +137,7 @@ try:
                     "text": "不正解..",
                     "type": "button",
                     "style":"danger",
-                    "value": str(quiz_file_ind+1)+"1-"+str(quiz_num)+"-0"
+                    "value": str(quiz_file_ind+1)+"-"+str(quiz_num)+"-0"
                 }
             ]
         }
