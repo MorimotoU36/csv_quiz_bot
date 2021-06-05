@@ -53,6 +53,7 @@ except Exception as e:
 df=""
 quizfilename=""
 csvname=""
+quiz_file_ind=-1
 try:
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     quiz_file_ind=csv_id if (0 <= csv_id and csv_id < len(quiz_file_names)) else int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
@@ -116,10 +117,37 @@ try:
     time.sleep(thinkingtime)
 
     #Slack APIへ答えをPOSTするためのデータ作成
+    attachments=[
+        {
+            "text": "この問題に..",
+            "title": "解答ボタン",
+            "callback_id": "callback_id value",
+            "color": "#FFFFFF",
+            "attachment_type": "default",
+            "actions": [
+                {
+                    "name": "clear",
+                    "text": "正解した！",
+                    "type": "button",
+                    "style":"primary",
+                    "value": str(quiz_file_ind+1)+"-"+str(quiz_num)+"-1"
+                },
+                {
+                    "name": "miss",
+                    "text": "不正解..",
+                    "type": "button",
+                    "style":"danger",
+                    "value": str(quiz_file_ind+1)+"-"+str(quiz_num)+"-0"
+                }
+            ]
+        }
+    ]
+    
     data = {
         'token': slacktoken,
         'channel': slackanschannel,
-        'text': quiz_answer
+        'text': quiz_answer,
+        'attachments': json.dumps(attachments)
     }
 
     #Slack APIへ答えをPOSTする
