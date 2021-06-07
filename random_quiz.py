@@ -86,7 +86,6 @@ except Exception as e:
 #入力値(csv_id)チェック
 if(csv_id!=-1 and (csv_id <0 or len(dfs)<=csv_id)):
     print("エラー：問題csv番号({0})は0(ランダム)または{1}~{2}の間で入力してください".format(csv_id+1,1,len(dfs)),file=sys.stderr)
-    print(e,file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
