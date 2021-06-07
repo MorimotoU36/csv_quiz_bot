@@ -72,14 +72,6 @@ for dfi in dfs:
     #正解率、不正解数でソート
     dfi.sort_values(['正解率','不正解数'],inplace=True)
 
-
-# #１問出題する時は、正解率の悪い問題ワーストX問の中から一問を選ぶ
-# selected_id=0
-# if(num==1):
-#     worst_num=min(int(ini['Slack']['WORST_GROUP_NUM']),total)
-#     selected_id=random.randint(0,worst_num-1)
-
-
 for i in range(num):
     #-a指定の時は問題集をランダムに選択
     if(allflag):
