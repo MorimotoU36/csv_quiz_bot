@@ -103,7 +103,6 @@ for i in range(num):
         file_ind=j
     else:
         file_ind=quiz_file_ind
-    print(file_ind)
 
     #全問題数
     total=df.shape[0]
