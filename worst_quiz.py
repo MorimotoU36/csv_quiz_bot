@@ -8,11 +8,13 @@ import requests
 import time
 import json
 import os
+import boto3
 
 #オプション,数値読み取り
 csv_id=-1
 num=1
 allflag=False
+isDisplayImage=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
@@ -23,6 +25,8 @@ if __name__ == '__main__':
                                 help='出題する問題数')
         argparser.add_argument('-a', '--all',action='store_true',
                                 help='全ての問題集からランダムに出題する')
+        argparser.add_argument('-i','--image',action='store_true',
+                                help='登録画像を出力する場合指定')        
         args = argparser.parse_args()
         csv_id=int(args.csv)-1
         num=int(args.number)
@@ -53,16 +57,24 @@ except Exception as e:
 df=""
 dfs=[]
 quizfilename=""
+csvfilename=""
+csvfilenames=[]
+quiz_file_ind=-1
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
     if(allflag or csv_id != -1):
         for i in range(len(quiz_file_names)):
             quizfilename=quiz_file_names[i]["filename"]
-            dfs.append(pd.read_csv('csv/'+quizfilename))
+            csvfilenames.append(quiz_file_names[i]["csvname"])
+            dfi=pd.read_csv('csv/'+quizfilename)
+            dfi["画像ファイル名"].fillna("",inplace=True)
+            dfs.append(dfi)
     else:
         quizfilename=quiz_file_names[quiz_file_ind]["filename"]
+        csvfilename=quiz_file_names[quiz_file_ind]["csvname"]
         df=pd.read_csv('csv/'+quizfilename)
+        df["画像ファイル名"].fillna("",inplace=True)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
@@ -76,19 +88,31 @@ if(csv_id!=-1 and (csv_id <0 or len(dfs)<=csv_id)):
     sys.exit()
 
 #正解率計算（回答数0回の場合は0にする）
-for dfi in dfs:
-    dfi['正解率']=dfi['正解数']/(dfi['正解数']+dfi['不正解数'])
-    dfi['正解率'].fillna(0,inplace=True)
+if(allflag or csv_id != -1):
+    for dfi in dfs:
+        dfi['正解率']=dfi['正解数']/(dfi['正解数']+dfi['不正解数'])
+        dfi['正解率'].fillna(0,inplace=True)
+        #正解率、不正解数でソート
+        dfi.sort_values(['正解率','不正解数'],inplace=True)
+else:
+    df['正解率']=df['正解数']/(df['正解数']+df['不正解数'])
+    df['正解率'].fillna(0,inplace=True)
     #正解率、不正解数でソート
-    dfi.sort_values(['正解率','不正解数'],inplace=True)
+    df.sort_values(['正解率','不正解数'],inplace=True)
 
 for i in range(num):
     #-a指定の時は問題集をランダムに選択,csv_idがある時はその問題集を選択
     file_ind=-1
     if(csv_id!=-1):
         df=dfs[csv_id]
+        file_ind=csv_id
     elif(allflag):
-        df=random.choice(dfs)
+        j=random.randint(0,len(dfs)-1)
+        csvfilename=csvfilenames[j]
+        df=dfs[j]     
+        file_ind=j
+    else:
+        file_ind=quiz_file_ind
 
     #全問題数
     total=df.shape[0]
@@ -101,14 +125,14 @@ for i in range(num):
     answer=quiz[2]
     correct_num=int(quiz[3])
     incorrect_num=int(quiz[4])
+    image_url=str(quiz[6])
 
     #問題文作成
     accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-    quiz_sentense="(worst("+str(i+1)+")問題)["+str(quiz_num)+"]:"+question+accuracy
+    quiz_sentense="["+csvfilename+"-"+str(quiz_num)+"]:"+question+accuracy
 
     #答えの文作成
-    quiz_answer="["+str(quiz_num)+"]答:"+answer
-
+    quiz_answer="["+csvfilename+"-"+str(quiz_num)+"]答:"+answer
     try:
         #設定値読み込み
         slackapi=ini['Slack']['SLACK_API_URL']
@@ -133,10 +157,37 @@ for i in range(num):
         time.sleep(thinkingtime)
 
         #Slack APIへ答えをPOSTするためのデータ作成
+        attachments=[
+            {
+                "text": "この問題に..",
+                "title": "解答ボタン",
+                "callback_id": "callback_id value",
+                "color": "#FFFFFF",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "clear",
+                        "text": "正解した！",
+                        "type": "button",
+                        "style":"primary",
+                        "value": str(file_ind+1)+"-"+str(quiz_num)+"-1"
+                    },
+                    {
+                        "name": "miss",
+                        "text": "不正解..",
+                        "type": "button",
+                        "style":"danger",
+                        "value": str(file_ind+1)+"-"+str(quiz_num)+"-0"
+                    }
+                ]
+            }
+        ]
+
         data = {
             'token': slacktoken,
             'channel': slackanschannel,
-            'text': quiz_answer
+            'text': quiz_answer,
+            'attachments': json.dumps(attachments)
         }
 
         #Slack APIへ答えをPOSTする
@@ -144,6 +195,28 @@ for i in range(num):
 
         print("答えをPOSTしました:"+quiz_answer)
 
+        if(isDisplayImage):
+            if(image_url == ""):
+                print("警告:問題番号[{0}-{1}]の画像ファイルはありません".format(csvfilename,quiz_num))
+            else:
+                #画像ダウンロード
+                s3 = boto3.resource('s3')
+                bucket = s3.Bucket(ini['AWS']['S3_BUCKET_NAME'])
+                bucket.download_file(image_url, image_url)
+
+                #画像POST
+                files = {'file': open(image_url, 'rb')}
+                data = {
+                    'token': slacktoken,
+                    'channels': slackanschannel,
+                    'filename':image_url,
+                    'initial_comment': "",
+                    'title': image_url
+                }
+                requests.post(url=ini['Slack']['SLACK_FILE_UPLOAD_URL'], params=data, files=files)
+
+                #画像削除
+                os.remove(image_url)
 
     except Exception as e:
         print("エラー：問題メッセージ作成時にエラーが発生しました",file=sys.stderr)
