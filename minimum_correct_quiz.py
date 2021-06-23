@@ -11,15 +11,19 @@ import os
 
 #オプション,数値読み取り
 num=1
+allflag=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
         argparser.add_argument('-n', '--number',type=int,
                                 default=num,
                                 help='出題する問題数')
+        argparser.add_argument('-a', '--all',action='store_true',
+                                help='全ての問題集からランダムに出題する')
         args = argparser.parse_args()
 
         num=int(args.number)
+        allflag=args.all
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
@@ -44,41 +48,47 @@ except Exception as e:
 
 #問題csv読み込み
 df=""
+dfs=[]
 quizfilename=""
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-    quizfilename=quiz_file_names[quiz_file_ind]
-    df=pd.read_csv('csv/'+quizfilename)
+    if(allflag):
+        for i in range(len(quiz_file_names)):
+            quizfilename=quiz_file_names[i]["filename"]
+            dfs.append(pd.read_csv('csv/'+quizfilename))
+    else:
+        quizfilename=quiz_file_names[quiz_file_ind]["filename"]
+        df=pd.read_csv('csv/'+quizfilename)
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
-#全問題数
-total=df.shape[0]
-
 #正解率計算（回答数0回の場合は0にする）
-df['正解率']=df['正解数']/(df['正解数']+df['不正解数'])
-df['正解率'].fillna(0,inplace=True)
-#正解数、正解率でソート
-quizlist=df.sort_values(['正解数','正解率'])
-
-#１問出題する時は、正解率の悪い問題ワーストX問の中から一問を選ぶ
-selected_id=0
-if(num==1):
-    #最小正解数の取得
-    min_cor_num=int(df['正解数'].min())
-    #その正解数の問題をランダムに選ぶ
-    df=df.query('正解数=='+str(min_cor_num)) 
-    selected_id=random.randint(0,df.shape[0]-1)
+if(allflag):
+    for dfi in dfs:
+        dfi['正解率']=dfi['正解数']/(dfi['正解数']+dfi['不正解数'])
+        dfi['正解率'].fillna(0,inplace=True)
+        #正解率、正解率でソート
+        dfi.sort_values(['正解率','正解率'],inplace=True)
+else:
+    df['正解率']=df['正解数']/(df['正解数']+df['不正解数'])
+    df['正解率'].fillna(0,inplace=True)
+    #正解率、正解率でソート
+    df.sort_values(['正解率','正解率'],inplace=True)
 
 for i in range(num):
+    #-a指定の時は問題集をランダムに選択
+    if(allflag):
+        df=random.choice(dfs)
+
+    #全問題数
+    total=df.shape[0]
+
     #ソートした問題リストを１問ずつ出題する
-    if(num != 1):
-        selected_id=i
-    quiz=quizlist.iloc[selected_id,:].values.tolist()
+    quiz=df.iloc[i,:].values.tolist()
 
     quiz_num=quiz[0]
     question=quiz[1]
