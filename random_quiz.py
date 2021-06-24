@@ -95,6 +95,7 @@ for i in range(num):
     if(csv_id!=-1):
         df=dfs[csv_id]
         file_ind=csv_id
+        csvfilename=csvfilenames[csv_id]
     elif(allflag):
         j=random.randint(0,len(dfs)-1)
         csvfilename=csvfilenames[j]
