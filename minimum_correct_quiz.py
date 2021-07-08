@@ -60,6 +60,7 @@ dfs=[]
 quizfilename=""
 csvfilename=""
 csvfilenames=[]
+quiz_file_ind=-1
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
@@ -105,11 +106,15 @@ for i in range(num):
     file_ind=-1
     if(csv_id!=-1):
         df=dfs[csv_id]
+        file_ind=csv_id
         csvfilename=csvfilenames[csv_id]
     elif(allflag):
         j=random.randint(0,len(dfs)-1)
         csvfilename=csvfilenames[j]
-        df=dfs[j]        
+        df=dfs[j]      
+        file_ind=j
+    else:
+        file_ind=quiz_file_ind 
 
     #全問題数
     total=df.shape[0]
@@ -155,10 +160,37 @@ for i in range(num):
         time.sleep(thinkingtime)
 
         #Slack APIへ答えをPOSTするためのデータ作成
+        attachments=[
+            {
+                "text": "この問題に..",
+                "title": "解答ボタン",
+                "callback_id": "callback_id value",
+                "color": "#FFFFFF",
+                "attachment_type": "default",
+                "actions": [
+                    {
+                        "name": "clear",
+                        "text": "正解した！",
+                        "type": "button",
+                        "style":"primary",
+                        "value": str(file_ind+1)+"-"+str(quiz_num)+"-1"
+                    },
+                    {
+                        "name": "miss",
+                        "text": "不正解..",
+                        "type": "button",
+                        "style":"danger",
+                        "value": str(file_ind+1)+"-"+str(quiz_num)+"-0"
+                    }
+                ]
+            }
+        ]
+
         data = {
             'token': slacktoken,
             'channel': slackanschannel,
-            'text': quiz_answer
+            'text': quiz_answer,
+            'attachments': json.dumps(attachments)
         }
 
         #Slack APIへ答えをPOSTする
