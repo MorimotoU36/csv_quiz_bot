@@ -31,6 +31,7 @@ if __name__ == '__main__':
         csv_id=int(args.csv)-1
         num=int(args.number)
         allflag=args.all
+        isDisplayImage=args.image
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
