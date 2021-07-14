@@ -130,10 +130,10 @@ for i in range(num):
 
     #問題文作成
     accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-    quiz_sentense="["+csvfilename+"-"+str(quiz_num)+"]:"+question+accuracy
+    quiz_sentense="(最小正解率問題)["+csvfilename+"-"+str(quiz_num)+"]:"+question+accuracy
 
     #答えの文作成
-    quiz_answer="["+csvfilename+"-"+str(quiz_num)+"]答:"+answer
+    quiz_answer="(最小正解率問題)["+csvfilename+"-"+str(quiz_num)+"]答:"+answer
     try:
         #設定値読み込み
         slackapi=ini['Slack']['SLACK_API_URL']
