@@ -12,15 +12,15 @@ import boto3
 
 
 #オプション,数値読み取り
-csv_id=-1
+file_id=-1
 num=1
 allflag=False
 isDisplayImage=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
-        argparser.add_argument('-c','--csv',default=0,type=int,
-                                help='出題する問題csvのID,0ならランダム')
+        argparser.add_argument('-f','--file',default=0,type=int,
+                                help='出題する問題csvファイルのID,0ならランダム')
         argparser.add_argument('-n', '--number',type=int,
                                 default=num,
                                 help='出題する問題数')
@@ -29,7 +29,7 @@ if __name__ == '__main__':
         argparser.add_argument('-i','--image',action='store_true',
                                 help='登録画像を出力する場合指定')        
         args = argparser.parse_args()
-        csv_id=int(args.csv)-1
+        file_id=int(args.file)-1
         num=int(args.number)
         allflag=args.all
         isDisplayImage=args.image
@@ -65,7 +65,7 @@ quiz_file_ind=-1
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-    if(allflag or csv_id != -1):
+    if(allflag or file_id != -1):
         for i in range(len(quiz_file_names)):
             quizfilename=quiz_file_names[i]["filename"]
             csvfilenames.append(quiz_file_names[i]["csvname"])
@@ -83,19 +83,19 @@ except Exception as e:
     os.chdir(pwd_dir)
     sys.exit()
 
-#入力値(csv_id)チェック
-if(csv_id!=-1 and (csv_id <0 or len(dfs)<=csv_id)):
-    print("エラー：問題csv番号({0})は0(ランダム)または{1}~{2}の間で入力してください".format(csv_id+1,1,len(dfs)),file=sys.stderr)
+#入力値(file_id)チェック
+if(file_id!=-1 and (file_id <0 or len(dfs)<=file_id)):
+    print("エラー：問題csv番号({0})は0(ランダム)または{1}~{2}の間で入力してください".format(file_id+1,1,len(dfs)),file=sys.stderr)
     os.chdir(pwd_dir)
     sys.exit()
 
 for i in range(num):
-    #-a指定の時は問題集をランダムに選択,csv_idがある時はその問題集を選択
+    #-a指定の時は問題集をランダムに選択,file_idがある時はその問題集を選択
     file_ind=-1
-    if(csv_id!=-1):
-        df=dfs[csv_id]
-        file_ind=csv_id
-        csvfilename=csvfilenames[csv_id]
+    if(file_id!=-1):
+        df=dfs[file_id]
+        file_ind=file_id
+        csvfilename=csvfilenames[file_id]
     elif(allflag):
         j=random.randint(0,len(dfs)-1)
         csvfilename=csvfilenames[j]
