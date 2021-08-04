@@ -107,6 +107,7 @@ for i in range(num):
     if(file_id!=-1):
         df=dfs[file_id]
         file_ind=file_id
+        csvfilename=csvfilenames[file_id]
     elif(allflag):
         j=random.randint(0,len(dfs)-1)
         csvfilename=csvfilenames[j]
