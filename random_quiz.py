@@ -12,6 +12,7 @@ import boto3
 
 
 #オプション,数値読み取り
+category=""
 file_id=-1
 num=1
 allflag=False
@@ -19,6 +20,8 @@ isDisplayImage=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
+        argparser.add_argument('-c','--category',
+                                help='出題する問題のカテゴリ,指定したファイル内にそのカテゴリがない場合は無視される')
         argparser.add_argument('-f','--file',default=0,type=int,
                                 help='出題する問題csvファイルのID,0ならランダム')
         argparser.add_argument('-n', '--number',type=int,
@@ -29,6 +32,7 @@ if __name__ == '__main__':
         argparser.add_argument('-i','--image',action='store_true',
                                 help='登録画像を出力する場合指定')        
         args = argparser.parse_args()
+        category=args.category
         file_id=int(args.file)-1
         num=int(args.number)
         allflag=args.all
@@ -103,6 +107,10 @@ for i in range(num):
         file_ind=j
     else:
         file_ind=quiz_file_ind
+
+    #指定したカテゴリの問題のみ抽出、ファイルにそのカテゴリがない場合は無視
+    if(category != "" and len(df[df['カテゴリ'].str.contains(category)]) > 0):
+        df = df[df['カテゴリ'].str.contains(category)]
 
     #全問題数
     total=df.shape[0]
