@@ -61,7 +61,7 @@ quizfilename=""
 try:
     quiz_file_ind=int(ini['Filename']['DEFAULT_QUIZ_FILE_NUM']) - 1
     quiz_file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-    quizfilename=quiz_file_names[quiz_file_ind]
+    quizfilename=quiz_file_names[quiz_file_ind]["filename"]
     df=pd.read_csv('csv/'+quizfilename)
 
     #問題文に検索語句を含む問題を抽出
