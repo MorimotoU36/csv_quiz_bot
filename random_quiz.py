@@ -20,7 +20,7 @@ isDisplayImage=False
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
-        argparser.add_argument('-c','--category',
+        argparser.add_argument('-c','--category',default='',
                                 help='出題する問題のカテゴリ,指定したファイル内にそのカテゴリがない場合は無視される')
         argparser.add_argument('-f','--file',default=0,type=int,
                                 help='出題する問題csvファイルのID,0ならランダム')
