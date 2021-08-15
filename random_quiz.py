@@ -17,10 +17,11 @@ file_id=-1
 num=1
 allflag=False
 isDisplayImage=False
+max_rate=100
 if __name__ == '__main__':
     try:
         argparser = ArgumentParser()
-        argparser.add_argument('-c','--category',
+        argparser.add_argument('-c','--category',default='',
                                 help='出題する問題のカテゴリ,指定したファイル内にそのカテゴリがない場合は無視される')
         argparser.add_argument('-f','--file',default=0,type=int,
                                 help='出題する問題csvファイルのID,0ならランダム')
@@ -31,12 +32,15 @@ if __name__ == '__main__':
                                 help='全ての問題集からランダムに出題する')
         argparser.add_argument('-i','--image',action='store_true',
                                 help='登録画像を出力する場合指定')        
+        argparser.add_argument('-r','--rate',default=100,type=int,
+                                help='指定した正解率以下(0~100の整数)の問題のみを出題する')        
         args = argparser.parse_args()
         category=args.category
         file_id=int(args.file)-1
         num=int(args.number)
         allflag=args.all
         isDisplayImage=args.image
+        max_rate=int(args.rate)
     except Exception as e:
         print("エラー：オプション引数の読み取りに失敗しました",file=sys.stderr)
         print(e,file=sys.stderr)
@@ -75,12 +79,27 @@ try:
             csvfilenames.append(quiz_file_names[i]["csvname"])
             dfi=pd.read_csv('csv/'+quizfilename)
             dfi["画像ファイル名"].fillna("",inplace=True)
-            dfs.append(dfi)
+            dfi['正解率']=100*dfi['正解数']/(dfi['正解数']+dfi['不正解数'])
+            dfi['正解率'].fillna(0,inplace=True)
+            dfi.query('正解率 <=' + str(max_rate),inplace=True)
+            if(dfi.shape[0] > 0):
+                dfs.append(dfi)
+        if(len(dfs)<=0):
+            print("エラー：正解率{0}%以下の問題は0件です".format(str(max_rate)),file=sys.stderr)
+            os.chdir(pwd_dir)
+            sys.exit()
     else:
         quizfilename=quiz_file_names[quiz_file_ind]["filename"]
         csvfilename=quiz_file_names[quiz_file_ind]["csvname"]
         df=pd.read_csv('csv/'+quizfilename)
         df["画像ファイル名"].fillna("",inplace=True)
+        df['正解率']=100*df['正解数']/(df['正解数']+df['不正解数'])
+        df['正解率'].fillna(0,inplace=True)
+        df.query('正解率 <=' + str(max_rate),inplace=True)
+        if(df.shape[0] <= 0):
+            print("エラー：問題csv({0})の該当する問題は0件です".format(quizfilename),file=sys.stderr)
+            os.chdir(pwd_dir)
+            sys.exit()
 except Exception as e:
     print("エラー：問題csv({0})の読み込み時にエラーが発生しました".format(quizfilename),file=sys.stderr)
     print(e,file=sys.stderr)
