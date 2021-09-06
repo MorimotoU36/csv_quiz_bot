@@ -23,14 +23,13 @@ def getCsvFileNameList():
         os.chdir(pwd_dir)
         sys.exit()
 
-    #リストと番号取得して返す
+    #リストをJSONにして返す
     try:
         csv_name_list=[]
         file_names=json.loads(ini.get("Filename","QUIZ_FILE_NAME"))
-        for i,f in enumerate(file_names):
-            csv_name_list.append([i+1,f['csvname']])
-
-        return csv_name_list
+        #JSONに変換
+        res={'text': file_names}
+        return res
     except Exception as e:
         print(e,file=sys.stderr)
         os.chdir(pwd_dir)
