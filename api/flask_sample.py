@@ -1,4 +1,4 @@
-from flask import Flask, redirect
+from flask import Flask, redirect, request
 from flask_cors import CORS 
 import get_csv_filename_list
 
@@ -11,6 +11,11 @@ def index():
 @app.route('/getcsvlist')
 def getCsvList():
     return str(get_csv_filename_list.getCsvFileNameList())
+
+@app.route('/getquestion', methods=['GET', 'POST'])
+def getQuestion():
+    print(request.form["file"])
+    return request.form["file"]
 
 app.run(port=8000, debug=True)
  
