@@ -1,6 +1,7 @@
 from flask import Flask, redirect, request
 from flask_cors import CORS 
 import get_csv_filename_list
+import get_question
 
 app = Flask(__name__, static_folder='.', static_url_path='')
 CORS(app)
@@ -14,8 +15,12 @@ def getCsvList():
 
 @app.route('/getquestion', methods=['GET', 'POST'])
 def getQuestion():
-    print(request.form["file"])
-    return request.form["file"]
+    # 送信データを取得、バイト文字列なのでデコードする
+    post_data=request.get_data().decode()
+    file_num,quiz_num=post_data.split('-')
+    print(file_num,quiz_num)
+    print(get_question.getQuestion(int(file_num)-1,int(quiz_num)-1))
+    return get_question.getQuestion(int(file_num)-1,int(quiz_num)-1)
 
 app.run(port=8000, debug=True)
  
