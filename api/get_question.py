@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-from argparse import ArgumentParser
 import configparser
 import pandas as pd
 import sys
