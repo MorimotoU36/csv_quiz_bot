@@ -29,8 +29,14 @@ def correct():
     post_data=request.get_data().decode()
     file_num,quiz_num=post_data.split('-')
     print(file_num,quiz_num)
-    print(get_question.getQuestion(int(file_num)-1,int(quiz_num)-1))
     return answer.correct(int(file_num)-1,int(quiz_num))
 
+@app.route('/incorrect', methods=['GET', 'POST'])
+def incorrect():
+    # 送信データを取得、バイト文字列なのでデコードする
+    post_data=request.get_data().decode()
+    file_num,quiz_num=post_data.split('-')
+    print(file_num,quiz_num)
+    return answer.incorrect(int(file_num)-1,int(quiz_num))
 
 app.run(port=8000, debug=True)
