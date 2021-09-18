@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from flask import Flask, redirect, request
 from flask_cors import CORS 
 import get_csv_filename_list
