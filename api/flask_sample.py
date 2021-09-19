@@ -40,4 +40,4 @@ def incorrect():
     print(file_num,quiz_num)
     return answer.incorrect(int(file_num)-1,int(quiz_num))
 
-app.run(port=8000, debug=True)
+app.run(host='0.0.0.0', port=80, debug=True)
