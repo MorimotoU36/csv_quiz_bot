@@ -8,6 +8,8 @@ dynamodb = boto3.resource('dynamodb')
 
 def lambda_handler(event, context):
     # 設定ファイルからcsv名のリストを取得
+    csv_name_list = ini.get_csv_name_list()
+    # 設定ファイルからcsv名のリストを取得
     csv_file_name_list = ini.get_csv_file_name_list()
 
     #(ファイルID)-(問題番号)の形でリクエスト来るので取り出す
@@ -32,10 +34,10 @@ def lambda_handler(event, context):
 
     #問題文作成
     accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-    quiz_sentense="["+"(ファイル名)"+"-"+str(response['Item']['quiz_num'])+"]:"+response['Item']['quiz_sentense']+accuracy
+    quiz_sentense="["+csv_name_list[file_id]+"-"+str(response['Item']['quiz_num'])+"]:"+response['Item']['quiz_sentense']+accuracy
 
     #答えの文作成
-    quiz_answer="["+"(ファイル名)"+"-"+str(response['Item']['quiz_num'])+"]答:"+response['Item']['answer']
+    quiz_answer="["+csv_name_list[file_id]+"-"+str(response['Item']['quiz_num'])+"]答:"+response['Item']['answer']
 
     #返り値作成(JSON)
     res = {
