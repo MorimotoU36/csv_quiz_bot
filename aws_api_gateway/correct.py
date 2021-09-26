@@ -14,11 +14,16 @@ def lambda_handler(event, context):
     
         #(ファイルID)-(問題番号)の形でリクエスト来るので取り出す
         req=event['text']
-        file_id,quiz_id=map(int,req.split('-'))
-    
+        file_id=req.split('-')[0] if req[0]=='E' else int(req.split('-')[0])
+        quiz_id=int(req.split('-')[1])
+        
+        #テーブル名、csv名もここで取り出す
+        table_name='english_speaking' if file_id=='E' else csv_file_name_list[file_id]
+        csv_name="和文英訳" if file_id=='E' else csv_name_list[file_id]
+
         #テーブル選択
         #設定ファイルからファイルIDをもとにテーブル名を取り出す
-        table    = dynamodb.Table(csv_file_name_list[file_id]) 
+        table    = dynamodb.Table(table_name) 
     
         #指定したテーブルに問題を取得しに行く
         response = table.get_item(
@@ -43,7 +48,7 @@ def lambda_handler(event, context):
         #返り値作成(JSON)
         res = {
             'statusCode': 200,
-            'message': "["+csv_name_list[file_id]+"-"+str(quiz_id)+"] Cleared!!"
+            'message': "["+csv_name+"-"+str(quiz_id)+"] Cleared!!"
         }
     
         return res
