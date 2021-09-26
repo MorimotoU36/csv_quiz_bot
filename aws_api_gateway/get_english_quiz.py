@@ -2,6 +2,7 @@
 import boto3
 import json
 import configparser
+import random
 
 client = boto3.client('dynamodb')
 
@@ -18,6 +19,20 @@ def lambda_handler(event, context):
         #(問題番号)を取り出す
         quiz_id=int(event['text'])
         random_flag=bool(event['random'])
+        
+        if(not random_flag and (quiz_id < 1 or total_num < quiz_id)):
+            #エラー、返り値作成(JSON)
+            res = {
+                'statusCode': 500,
+                'sentense': '',
+                'answer': '',
+                'error_log': 'Internal Server Error,問題番号は1~'+str(total_num)+'の間で入力してください'
+            }
+            return res
+        elif(random_flag):
+            #問題番号をランダムに取得
+            quiz_id = random.randint(1,total_num)
+            
 
         #テーブル選択
         #設定ファイルからファイルIDをもとにテーブル名を取り出す
@@ -37,10 +52,10 @@ def lambda_handler(event, context):
 
         #問題文作成
         accuracy="(正答率:{0:.2f}%)".format(100*correct_num/(correct_num+incorrect_num)) if (correct_num+incorrect_num)>0 else "(未回答)"
-        quiz_sentense="[English-"+str(response['Item']['quiz_num'])+"]:"+response['Item']['quiz_sentense']+accuracy
+        quiz_sentense="[和文英訳-"+str(response['Item']['quiz_num'])+"]:"+response['Item']['quiz_sentense']+accuracy
 
         #答えの文作成
-        quiz_answer="[English-"+str(response['Item']['quiz_num'])+"]答:"+response['Item']['answer']
+        quiz_answer="[和文英訳-"+str(response['Item']['quiz_num'])+"]答:"+response['Item']['answer']
 
         #返り値作成(JSON)
         res = {
