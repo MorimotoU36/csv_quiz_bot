@@ -61,7 +61,8 @@ def lambda_handler(event, context):
         res = {
             'statusCode': 200,
             'sentense': quiz_sentense,
-            'answer': quiz_answer
+            'answer': quiz_answer,
+            'quiz_id': quiz_id
         }
 
         return res
