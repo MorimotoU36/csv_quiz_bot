@@ -16,8 +16,8 @@ def lambda_handler(event, context):
         #全データの個数
         total_num = int(client.describe_table(TableName=table_name)['Table']['ItemCount'])
 
-        #(問題番号)を取り出す
-        quiz_id=int(event['text'])
+        #問題番号,ランダムフラグを取り出す
+        quiz_id=event['text']
         random_flag=bool(event['random'])
         
         if(not random_flag and (quiz_id < 1 or total_num < quiz_id)):
@@ -29,10 +29,11 @@ def lambda_handler(event, context):
                 'error_log': 'Internal Server Error,問題番号は1~'+str(total_num)+'の間で入力してください'
             }
             return res
+        elif(not random_flag):
+            quiz_id = int(quiz_id)
         elif(random_flag):
             #問題番号をランダムに取得
             quiz_id = random.randint(1,total_num)
-            
 
         #テーブル選択
         #設定ファイルからファイルIDをもとにテーブル名を取り出す
