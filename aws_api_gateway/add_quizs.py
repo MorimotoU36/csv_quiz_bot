@@ -11,18 +11,19 @@ dynamodb = boto3.resource('dynamodb')
 
 def lambda_handler(event, context):
     #ファイル番号
-    file_num=int(event['file'])
+    file_num=event['file']
+    if(file_num!="E"):
+        file_num=int(event['file'])
     
     #入力データ
     input_data=event['data'].splitlines()
     
     # 設定ファイルからcsv名のリストを取得
     csv_name_list = ini.get_csv_name_list()
-
-    # 各csvにあるデータの個数のリストを取得
     file_name_list = ini.get_csv_file_name_list()
+
     # 選択したcsvファイル名を取得
-    file_name = file_name_list[file_num]
+    file_name = "english_speaking" if file_num=="E" else file_name_list[file_num]
     # 現在選択したcsvファイルにあるデータの個数を取得
     data_index=int(client.describe_table(TableName=file_name)['Table']['ItemCount'])
     # 入力データを最初のインデックスにセット
