@@ -16,7 +16,7 @@ def lambda_handler(event, context):
         #全データの個数
         total_num = int(client.describe_table(TableName=table_name)['Table']['ItemCount'])
 
-        #(問題番号)を取り出す
+        #問題番号,ランダムフラグを取り出す
         quiz_id=int(event['text'])
         random_flag=bool(event['random'])
         
@@ -32,7 +32,6 @@ def lambda_handler(event, context):
         elif(random_flag):
             #問題番号をランダムに取得
             quiz_id = random.randint(1,total_num)
-            
 
         #テーブル選択
         #設定ファイルからファイルIDをもとにテーブル名を取り出す

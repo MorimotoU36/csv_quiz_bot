@@ -44,7 +44,11 @@ def lambda_handler(event, context):
         res = {
             'statusCode': 200,
             'sentense': quiz_sentense,
-            'answer': quiz_answer
+            'answer': quiz_answer,
+            'question_sentense': str(response['Item']['quiz_sentense']),
+            'question_answer': str(response['Item']['answer']),
+            'question_category': str(response['Item'].get('category','')),
+            'question_img_file_name': str(response['Item'].get('img_file_name',""))
         }
     
         return res

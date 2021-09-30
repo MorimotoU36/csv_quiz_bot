@@ -51,7 +51,7 @@ def lambda_handler(event, context):
             quiz_table.put_item(
                 Item = {
                     "quiz_num": data_index, 
-                    "quiz_sentence": sentense,
+                    "quiz_sentense": sentense,
                     "answer": answer,
                     "clear_count": 0, 
                     "fail_count": 0, 
