@@ -29,28 +29,40 @@ def lambda_handler(event, context):
     #DynamoDBテーブルを選択
     quiz_table = dynamodb.Table(file_name)
 
-    log=[]
+    status_code=""
+    message=""
     try:
-        # テーブルへのPut処理実行
-        quiz_table.put_item(
-            Item = {
-                "quiz_num": int(number), 
-                "quiz_sentense": sentense,
-                "answer": answer,
-                "category": category,
-                "img_file_name": img_file_name
-            }
-        )
-        log.append('Edited! ['+str(data_index)+'],'+sentense+','+answer+',0,0,'+category+','+imgfilename)
+        # テーブルへのUpdate処理実行
+        quiz_table.update_item(
+                Key={'quiz_num': int(number)},
+                UpdateExpression="set #sentense = :quiz_sentense, #answer = :answer, #category = :category, #img_file_name = :img_file_name",
+                ExpressionAttributeNames={
+                    '#sentense': 'quiz_sentense',
+                    '#answer': 'answer',
+                    '#category': 'category',
+                    '#img_file_name': 'img_file_name'
+                },
+                ExpressionAttributeValues={
+                    ':quiz_sentense': sentense,
+                    ':answer': answer,
+                    ':category': category,
+                    ':img_file_name': img_file_name
+                },
+                ReturnValues="UPDATED_NEW"
+            )
+        status_code = "200"
+        message = 'Edited! ['+file+'-'+number+'],'+sentense+','+answer+',0,0,'+category+','+img_file_name
     except ClientError as ce:
-        log.append('Error. Pushing Index['+str(data_index)+'] Data Failed. :'+str(ce))
-        break
+        status_code = "500"
+        message = 'Error. Pushing Index['+file+'-'+number+'] Data Failed. :'+str(ce)
     except TypeError as e:
-        log.append(str(e))
+        status_code = "500"
+        message = 'Error. Pushing Index['+file+'-'+number+'] Data Failed. :'+str(e)
     except Exception as e:
-        log.append(str(e))
+        status_code = "500"
+        message = 'Error. Pushing Index['+file+'-'+number+'] Data Failed. :'+str(e)
 
     return {
-        'statusCode': 200,
-        'log': log
+        'statusCode': status_code,
+        'message': message
     }
