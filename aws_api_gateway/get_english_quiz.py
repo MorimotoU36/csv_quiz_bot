@@ -19,13 +19,14 @@ def lambda_handler(event, context):
         #問題番号,ランダムフラグを取り出す
         quiz_id=int(event['text'])
         random_flag=bool(event['random'])
-        
+
         if(not random_flag and (quiz_id < 1 or total_num < quiz_id)):
             #エラー、返り値作成(JSON)
             res = {
                 'statusCode': 500,
                 'sentense': '',
                 'answer': '',
+                'question_category': '',
                 'error_log': 'Internal Server Error,問題番号は1~'+str(total_num)+'の間で入力してください'
             }
             return res
@@ -61,7 +62,11 @@ def lambda_handler(event, context):
             'statusCode': 200,
             'sentense': quiz_sentense,
             'answer': quiz_answer,
-            'quiz_id': quiz_id
+            'quiz_id': quiz_id,
+            'question_sentense': str(response['Item']['quiz_sentense']),
+            'question_answer': str(response['Item']['answer']),
+            'question_category': str(response['Item'].get('category','')),
+            'question_img_file_name': str(response['Item'].get('img_file_name',""))
         }
 
         return res
@@ -71,6 +76,7 @@ def lambda_handler(event, context):
             'statusCode': 500,
             'sentense': '',
             'answer': '',
+            'question_category': '',
             'error_log': 'Internal Server Error'
         }
     
