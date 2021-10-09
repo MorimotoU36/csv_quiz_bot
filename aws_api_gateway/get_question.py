@@ -83,6 +83,7 @@ def get_english_question(req):
                 'statusCode': 500,
                 'sentense': '',
                 'answer': '',
+                'question_category': '',
                 'error_log': 'Internal Server Error: 問題番号は1~'+str(total_num)+'の間で入力してください'
             }
             
