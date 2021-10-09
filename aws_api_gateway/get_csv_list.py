@@ -10,6 +10,10 @@ dynamodb = boto3.resource('dynamodb')
 
 def lambda_handler(event, context):
     try:
+        # 英語の場合は問題の総数を返す
+        if(event['text'] == 'E'):
+            return get_english_question()
+        
         # 設定ファイルからcsv名のリストを取得
         csv_name_list = ini.get_csv_name_list()
     
@@ -37,3 +41,16 @@ def lambda_handler(event, context):
         }
     
         return res
+
+def get_english_question():
+    try:
+        return {
+                'statusCode': 200,
+                'text': int(client.describe_table(TableName='english_speaking')['Table']['ItemCount'])
+        }
+    except:
+        res = {
+            'statusCode': 500,
+            'text': "",
+            'error_log': 'Internal Server Error.'
+        }
