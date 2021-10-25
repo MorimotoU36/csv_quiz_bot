@@ -9,6 +9,6 @@ services:
     container_name: "quiz_mysql_db"
     environment:
       - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_DATABASE=testdb
+      - MYSQL_DATABASE=quiz_db
     ports:
       - "3306:3306"

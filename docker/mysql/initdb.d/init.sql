@@ -1,18 +1,15 @@
+CREATE DATABASE IF NOT EXISTS quiz_db;
+USE quiz_db;
 DROP DATABASE IF EXISTS testdb;
-CREATE DATABASE testdb;
-USE testdb;
-DROP TABLE IF EXISTS test;
 
-CREATE TABLE test
+CREATE TABLE IF NOT EXISTS aws_quiz
 (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name TEXT NOT NULL
-)DEFAULT CHARACTER
+  quiz_num INT NOT NULL PRIMARY KEY,
+  quiz_sentense VARCHAR(256) NOT NULL,
+  answer VARCHAR(256) NOT NULL,
+  clear_count INT DEFAULT 0,
+  fail_count INT DEFAULT 0,
+  category VARCHAR(256),
+  img_file VARCHAR(128)
+) DEFAULT CHARACTER
   SET=utf8;
-
-  INSERT INTO test
-    (name)
-  VALUES
-    ("田中"),
-    ("鈴木"),
-    ("ああああああ");
