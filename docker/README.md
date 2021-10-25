@@ -23,3 +23,14 @@ $ docker-compose up -d
 ポート番号：3306
 データベース名：testdb
 ```
+
+2.1. テーブルを確認する
+
+コンテナの初期作成時にinit.sqlでテーブルが作られることになっているが
+作られていなかったらコンテナに入って作成する
+
+```
+$ docker exec -it (コンテナ名) /bin/bash
+$ cd /docker-entrypoint-initdb.d
+$ mysql -u root -p quiz_db < init.sql 
+```
