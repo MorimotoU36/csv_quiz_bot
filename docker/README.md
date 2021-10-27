@@ -34,3 +34,43 @@ $ docker exec -it (コンテナ名) /bin/bash
 $ cd /docker-entrypoint-initdb.d
 $ mysql -u root -p quiz_db < init.sql 
 ```
+
+2.2. CSVデータをテーブルにインポートする
+
+initdb.d ディレクトリにcsvを配置する
+
+コンテナに入ってinitdb.dと同期しているディレクトリへいく
+
+```
+$ docker exec -it (コンテナ名) /bin/bash
+$ cd /docker-entrypoint-initdb.d
+```
+
+コマンドラインから直接csv指定してインポート？
+
+```
+$  mysqlimport -u root -p --local quiz_db aws_quiz.csv 
+```
+
+したら何故か全角文字が入らなかった
+というか全角文字が消された状態で入ってしまった
+これをやる前に言語設定をする必要がある？
+
+/etc/profileに以下を追加してコンテナ再起動
+もしかしたら、Dockerfileとかdocker-compose.yamlにこういうの設定できる項目があるかも・・
+
+```
+export LC_ALL=ja_JP.UTF-8
+export LANG=ja_JP.UTF-8
+```
+
+-------
+
+```sql
+-- ローカルのファイルを実行できる様にする設定
+SET GLOBAL local_infile=1;
+
+LOAD DATA LOCAL INFILE "aws_quiz_data.csv"
+INTO TABLE aws_quiz 
+FIELDS TERMINATED BY ',';
+```
