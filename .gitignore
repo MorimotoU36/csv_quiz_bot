@@ -1,7 +1,7 @@
-old_system/button_test.py
-old_system/error.log
-old_system/config/select_quiz_num_ap.dat
-old_system/config/select_quiz_num_aws_quiz.dat
-old_system/mylib/file_reader.py
+button_test.py
+error.log
+select_quiz_num_ap.dat
+select_quiz_num_aws_quiz.dat
+file_reader.py
 docker/mysql/db
 docker/mysql/initdb.d/*.csv
