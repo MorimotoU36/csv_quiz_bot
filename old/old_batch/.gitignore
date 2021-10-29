@@ -1,0 +1,4 @@
+csv/*
+config/quiz.ini
+config/quiz.ini.*
+category/*
