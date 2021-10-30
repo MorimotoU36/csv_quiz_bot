@@ -15,8 +15,13 @@ services:
   web:
     build: "./apache"
     container_name: "quiz_web"
+    environment:
+      TZ: Asia/Tokyo
     ports:
       - 80:80
+      - 5000:5000
     volumes:
       - "./html:/var/www/html"
+      - "./apache/flask:/usr/src/app"
     privileged: true
+    command: flask run --host 0.0.0.0 --port 5000
