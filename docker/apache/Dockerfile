@@ -9,3 +9,9 @@ RUN yum -y install httpd
 RUN systemctl enable httpd
 
 CMD ["/sbin/init"]
+
+# Python3のインストール
+RUN yum install python3 -y
+
+# Flaskインストール
+RUN pip3 install Flask
