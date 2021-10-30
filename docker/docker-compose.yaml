@@ -12,3 +12,11 @@ services:
       - MYSQL_DATABASE=quiz_db
     ports:
       - "3306:3306"
+  web:
+    build: "./apache"
+    container_name: "quiz_web"
+    ports:
+      - 80:80
+    volumes:
+      - "./html:/var/www/html"
+    privileged: true
