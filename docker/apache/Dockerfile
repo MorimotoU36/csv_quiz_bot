@@ -14,13 +14,17 @@ CMD ["/sbin/init"]
 RUN yum install python3 -y
 
 # ディレクトリの指定
-WORKDIR /usr/src/app
+ENV WORKDIR=/usr/src/app
+WORKDIR ${WORKDIR}
 # Flaskの設定
 ENV FLASK_APP=app
 
 ENV LANG en_US.UTF-8
 ENV LANGUAGE en_US:ja
 ENV LC_ALL en_US.UTF-8
+
+# 設定ファイルの位置
+ENV INI=${WORKDIR}/config/application_local.ini
 
 # requirements.txtのコピー
 COPY flask/requirements.txt ./
