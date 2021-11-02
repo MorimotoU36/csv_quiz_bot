@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 import os
 import sys
+import traceback
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
+from dbconfig import get_connection
 from ini import get_table_list
 
 def select_quiz(file_num,quiz_num,image_flag):
@@ -24,6 +26,12 @@ def select_quiz(file_num,quiz_num,image_flag):
         sys.exit()
 
     # MySQL への接続を確立する
+    try:
+        conn = get_connection()
+    except Exception as e:
+        print('Error: DB接続時にエラーが発生しました')
+        print(traceback.format_exc())
+        sys.exit()
 
     # テーブル名と問題番号からSQLを作成して投げる
     # (問題番号が範囲外なら終了)
