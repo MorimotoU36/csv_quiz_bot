@@ -22,7 +22,7 @@ def get_table_list():
         json : テーブル名のリストを示したJSON
     """
     # テーブルのリストが書かれたJSONファイルを開く
-    json_open = open('table_list.json', 'r')
+    json_open = open(os.path.dirname(__file__)+'/table_list.json', 'r')
     # 開いたJSONファイルを読み込む
     json_load = json.load(json_open)
     # テーブルのリストJSONを返す
