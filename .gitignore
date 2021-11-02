@@ -5,3 +5,5 @@ select_quiz_num_aws_quiz.dat
 file_reader.py
 docker/mysql/db
 docker/mysql/initdb.d/*.csv
+__pycache__/
+*.pyc
