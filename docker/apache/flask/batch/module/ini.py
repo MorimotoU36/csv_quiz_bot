@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import json
 import configparser
 
 def get_ini_parser():
@@ -14,3 +15,15 @@ def get_ini_parser():
 
     return config
 
+def get_table_list():
+    """テーブル名のリストを示したJSONを返す
+
+    Returns:
+        json : テーブル名のリストを示したJSON
+    """
+    # テーブルのリストが書かれたJSONファイルを開く
+    json_open = open('table_list.json', 'r')
+    # 開いたJSONファイルを読み込む
+    json_load = json.load(json_open)
+    # テーブルのリストJSONを返す
+    return json_load['table']
