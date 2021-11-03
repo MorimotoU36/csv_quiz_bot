@@ -2,6 +2,8 @@
 import os
 import sys
 import traceback
+import pymysql
+import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
@@ -21,6 +23,7 @@ def select_quiz(file_num,quiz_num,image_flag):
     try:
         table_list = get_table_list()
         table = table_list[file_num]['name']
+        nickname = table_list[file_num]['nickname']
     except IndexError:
         print('Error: ファイル番号が正しくありません')
         sys.exit()
@@ -35,10 +38,32 @@ def select_quiz(file_num,quiz_num,image_flag):
 
     # テーブル名と問題番号からSQLを作成して投げる
     # (問題番号が範囲外なら終了)
+    # SQLを実行する
+    with conn.cursor() as cursor:
+        # 指定したテーブルの件数を調べる
+        sql = "SELECT count(*) FROM {0}".format(table)
+        cursor.execute(sql)
+        results = cursor.fetchall()
+        for r in results:
+            count = r['count(*)']
+
+        # 問題番号が範囲外なら終了
+        if(quiz_num < 1 or count < quiz_num):
+            print('Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count))
+            sys.exit()
+
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+        print(sql)
+        cursor.execute(sql)
+
+        # Select結果を取り出す
+        results = cursor.fetchall()
+        for r in results:
+            print(r)
 
     # MySQLから帰ってきた結果を受け取る
 
     # 結果をJSONに変形して返す
 
 if __name__=="__main__":
-    select_quiz(1,1,False)
+    select_quiz(0,100,False)
