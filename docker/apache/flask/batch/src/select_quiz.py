@@ -53,7 +53,6 @@ def select_quiz(file_num,quiz_num,image_flag):
             sys.exit()
 
         sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
-        print(sql)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
