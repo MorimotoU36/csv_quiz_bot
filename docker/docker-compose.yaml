@@ -1,4 +1,7 @@
 version: "3"
+networks:
+  app-net:
+    driver: bridge
 services:
   mysql:
     build: ./mysql/
@@ -10,6 +13,8 @@ services:
     environment:
       - MYSQL_ROOT_PASSWORD=pass
       - MYSQL_DATABASE=quiz_db
+    networks:
+      - app-net
     ports:
       - "3306:3306"
   web:
@@ -17,6 +22,8 @@ services:
     container_name: "quiz_web"
     environment:
       TZ: Asia/Tokyo
+    networks:
+      - app-net
     ports:
       - 80:80
       - 5000:5000

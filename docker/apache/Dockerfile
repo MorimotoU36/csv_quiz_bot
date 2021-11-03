@@ -24,7 +24,7 @@ ENV LANGUAGE en_US:ja
 ENV LC_ALL en_US.UTF-8
 
 # 設定ファイルの位置
-ENV INI=${WORKDIR}/config/application_local.ini
+ENV INI=${WORKDIR}/config/application_local_container.ini
 
 # requirements.txtのコピー
 COPY flask/requirements.txt ./
