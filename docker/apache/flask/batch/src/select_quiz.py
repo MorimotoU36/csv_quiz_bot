@@ -16,6 +16,9 @@ def select_quiz(file_num,quiz_num,image_flag):
         file_num (int): ファイル番号
         quiz_num (int): 問題番号
         image_flag (bool): イメージ取得フラグ
+
+        Returns:
+            result (JSON): 取得した問題
     """
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得

@@ -11,6 +11,18 @@ from dbconfig import get_connection
 from ini import get_table_list
 
 def random_quiz(file_num=-1,image=True,rate=100.0):
+    """問題を１問、ランダムに取得するAPI
+
+    Args:
+        file_num (int, optional): ファイル番号. Defaults to -1.
+        image (bool, optional): 画像取得フラグ. Defaults to True.
+        rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100.0.
+
+    Returns:
+        result (JSON): ランダムに取得した問題
+    """
+    # TODO image_flagの処理
+    # TODO rateの処理
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号の時はランダムに選ぶ)
