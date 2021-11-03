@@ -56,14 +56,13 @@ def select_quiz(file_num,quiz_num,image_flag):
         print(sql)
         cursor.execute(sql)
 
+        # MySQLから帰ってきた結果を受け取る
         # Select結果を取り出す
         results = cursor.fetchall()
-        for r in results:
-            print(r)
-
-    # MySQLから帰ってきた結果を受け取る
 
     # 結果をJSONに変形して返す
+    return results[0]
 
 if __name__=="__main__":
-    select_quiz(0,100,False)
+    res = select_quiz(0,100,False)
+    print(res)
