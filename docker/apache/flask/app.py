@@ -11,6 +11,17 @@ def hello_world():
 
 @app.route('/select', methods=["POST"])
 def select():
+    """問題取得API
+    Args: JSON
+    {
+        "file_num": ファイル番号,
+        "quiz_num": 問題番号,
+        "image_flag": 画像取得フラグ 
+    }
+
+    Returns:
+        [type]: [description]
+    """
     try:
         # リクエストから値を読み取る
         req = request.json
