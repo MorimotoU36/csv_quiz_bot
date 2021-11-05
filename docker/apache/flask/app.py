@@ -2,6 +2,7 @@
 import traceback
 from batch.src.select_quiz import select_quiz
 from batch.src.random_quiz import random_quiz
+from batch.src.worst_quiz import worst_quiz
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -63,6 +64,37 @@ def random():
 
         # MySQLに問題を取得しにいく
         result = random_quiz(file_num=file_num,image=image_flag,rate=rate)
+
+        # 取得結果を返す
+        return result
+    except Exception as e:
+        return traceback.format_exc()
+        return {
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/worst', methods=["POST"])
+def worst():
+    """最低正解率問題取得API
+    Args: JSON
+    {
+        "file_num": ファイル番号(オプション),
+        "category": カテゴリ(オプション)
+        "image": 画像取得フラグ(オプション),
+    }
+
+    Returns:
+        result(JSON): 取得した問題またはエラーログ
+    """
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        file_num = int(req.get("file_num",-1))
+        category = req.get("category",None)
+        image_flag = bool(req.get("image",True))
+
+        # MySQLに問題を取得しにいく
+        result = worst_quiz(file_num=file_num,category=category,image=image_flag)
 
         # 取得結果を返す
         return result
