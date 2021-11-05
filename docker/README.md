@@ -46,6 +46,39 @@ $ docker exec -it (コンテナ名) /bin/bash
 $ cd /docker-entrypoint-initdb.d
 ```
 
+まずMySQLにログイン
+
+```
+# mysql -u root -p
+```
+
+local_inifileの設定を見る
+
+```
+mysql> select @@local_infile;
++----------------+
+| @@local_infile |
++----------------+
+|              0 |
++----------------+
+1 row in set (0.00 sec)
+```
+
+0ならば1にして出る
+
+```
+mysql> SET GLOBAL local_infile=on;
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select @@local_infile;
++----------------+
+| @@local_infile |
++----------------+
+|              1 |
++----------------+
+1 row in set (0.00 sec)
+```
+
 コマンドラインから直接csv指定してインポートする
 デリミタの指定も忘れずにする（デフォルトだとタブになるらしい）
 
