@@ -3,6 +3,7 @@ import traceback
 from batch.src.select_quiz import select_quiz
 from batch.src.random_quiz import random_quiz
 from batch.src.worst_quiz import worst_quiz
+from batch.src.answer_inputter import answer_input
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -99,7 +100,38 @@ def worst():
         # 取得結果を返す
         return result
     except Exception as e:
-        return traceback.format_exc()
+        return {
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/answer', methods=["POST"])
+def answer():
+    """解答取得API
+    Args: [JSON]
+    [
+        {
+            "file_num": ファイル番号
+            "quiz_num": 問題番号
+            "clear": 正解ならTrue、不正解ならFalse
+        }
+    ]
+
+    Returns:
+        result(JSON): 成功またはエラーログ
+    """
+    try:
+        # リクエストから値を読み取る。
+        req = list(request.json)
+    
+        # MySQLに問題を取得しにいく
+        result = answer_input(req)
+
+        # 取得結果を返す
+        return {
+            "req" : req,
+            "result" : result
+        }
+    except Exception as e:
         return {
             "error" : traceback.format_exc()
         }
