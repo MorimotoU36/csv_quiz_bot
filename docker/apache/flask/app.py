@@ -4,6 +4,7 @@ from batch.src.select_quiz import select_quiz
 from batch.src.random_quiz import random_quiz
 from batch.src.worst_quiz import worst_quiz
 from batch.src.answer_inputter import answer_input
+from batch.src.search_quiz import search_quiz
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -125,6 +126,37 @@ def answer():
     
         # MySQLに問題を取得しにいく
         result = answer_input(req)
+
+        # 取得結果を返す
+        return {
+            "req" : req,
+            "result" : result
+        }
+    except Exception as e:
+        return {
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/search', methods=["POST"])
+def search():
+    """問題検索API
+    Args: JSON
+    {
+        "query": 検索語句
+        "file_num": ファイル番号
+    }
+
+    Returns:
+        result(JSON): 成功またはエラーログ
+    """
+    try:
+        # リクエストから値を読み取る。
+        req = request.json
+        file_num = int(req.get("file_num"))
+        query = req.get("query","")
+    
+        # MySQLに問題を取得しにいく
+        result = search_quiz(query,file_num)
 
         # 取得結果を返す
         return {
