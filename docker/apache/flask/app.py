@@ -75,7 +75,7 @@ def random():
             "error" : traceback.format_exc()
         }
 
-@app.route('/worst', methods=["POST"])
+@app.route('/worst_rate', methods=["POST"])
 def worst():
     """最低正解率問題取得API
     Args: JSON
