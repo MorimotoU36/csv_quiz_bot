@@ -11,6 +11,16 @@ from dbconfig import get_connection
 from ini import get_table_list
 
 def minimum_quiz(file_num=-1,category=None,image=True):
+    """最小正解数の問題を取得する
+
+    Args:
+        file_num (int, optional): ファイル番号. Defaults to -1.
+        category (str, optional): カテゴリ. Defaults to None.
+        image (bool, optional): イメージフラグ. Defaults to True.
+
+    Returns:
+        results [JSON]: 取得した問題
+    """
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号の時はランダムに選ぶ)
