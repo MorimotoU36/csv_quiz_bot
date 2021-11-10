@@ -18,17 +18,27 @@ services:
     ports:
       - "3306:3306"
   web:
-    build: "./apache"
+    build: ./html
     container_name: "quiz_web"
     environment:
       TZ: Asia/Tokyo
     networks:
       - app-net
     ports:
-      - 80:80
+      - 8080:80
+    volumes:
+      - ./html:/var/www/html
+    privileged: true
+  api:
+    build: ./flask
+    container_name: "quiz_api"
+    environment:
+      TZ: Asia/Tokyo
+    networks:
+      - app-net
+    ports:
       - 5000:5000
     volumes:
-      - "./html:/var/www/html"
-      - "./apache/flask:/usr/src/app"
+      - ./flask:/usr/src/app
     privileged: true
     command: flask run --host 0.0.0.0 --port 5000

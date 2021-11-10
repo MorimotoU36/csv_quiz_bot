@@ -27,7 +27,7 @@ ENV LC_ALL en_US.UTF-8
 ENV INI=${WORKDIR}/config/application_local_container.ini
 
 # requirements.txtのコピー
-COPY flask/requirements.txt ./
+COPY requirements.txt ./
 
 # Flaskインストール（requirements.txtをもとに）
 RUN pip3 install -r requirements.txt
