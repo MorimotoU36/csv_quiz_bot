@@ -18,7 +18,7 @@ services:
     ports:
       - "3306:3306"
   web:
-    build: ./html
+    build: ./web
     container_name: "quiz_web"
     environment:
       TZ: Asia/Tokyo
@@ -27,7 +27,7 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./html:/var/www/html
+      - ./web:/var/www/html
     privileged: true
   api:
     build: ./flask

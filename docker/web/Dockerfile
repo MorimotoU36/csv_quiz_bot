@@ -9,3 +9,6 @@ RUN yum -y install httpd
 RUN systemctl enable httpd
 
 CMD ["/sbin/init"]
+
+# サーバーのアドレス設定
+ENV SERVER='http://localhost:8080/'
