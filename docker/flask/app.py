@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import json
 import traceback
 from batch.src.select_quiz import select_quiz
 from batch.src.random_quiz import random_quiz
@@ -6,6 +7,7 @@ from batch.src.worst_quiz import worst_quiz
 from batch.src.answer_inputter import answer_input
 from batch.src.search_quiz import search_quiz
 from batch.src.minimum_quiz import minimum_quiz
+from batch.module.ini import get_table_list
 
 from flask import Flask, request
 app = Flask(__name__)
@@ -194,6 +196,22 @@ def minimum():
 
         # 取得結果を返す
         return result
+    except Exception as e:
+        return {
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/namelist', methods=["POST"])
+def namelist():
+    """問題ファイル名取得API
+    Args: なし
+
+    Returns:
+        [JSON] : { 'table' : テーブル名のリスト }
+    """
+    try:
+        # テーブル名のリストを(JSON形式で)返す
+        return { 'table' : get_table_list() }
     except Exception as e:
         return {
             "error" : traceback.format_exc()
