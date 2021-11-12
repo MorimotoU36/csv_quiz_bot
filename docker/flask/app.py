@@ -213,9 +213,13 @@ def namelist():
     """
     try:
         # テーブル名のリストを(JSON形式で)返す
-        return { 'table' : get_table_list() }
+        return { 
+            'statusCode' : 200,
+            'table' : get_table_list() 
+        }
     except Exception as e:
         return {
+            'statusCode' : 500,
             "error" : traceback.format_exc()
         }
 
