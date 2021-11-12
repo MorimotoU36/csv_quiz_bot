@@ -1,5 +1,6 @@
 //サーバ名を環境変数から読み取る
-const server = process.env.server;
+//const server = process.env.server;
+const server = 'http://localhost:5000/';
 
 //CSV名のリストを取得するAPI
 function getCsvNameListApi(){

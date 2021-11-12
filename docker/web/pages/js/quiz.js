@@ -95,7 +95,7 @@ function get_csv_name_list(){
         }else{
             //内部エラー時
             set_error_message("statusCode："+resp['statusCode']
-                                +" "+resp['error_log']);
+                                +" "+resp['error']);
         }
     })
 }
