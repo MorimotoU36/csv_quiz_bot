@@ -7,3 +7,5 @@ docker/mysql/db
 docker/mysql/initdb.d/*.csv
 __pycache__/
 *.pyc
+node_modules/
+package-lock.json
