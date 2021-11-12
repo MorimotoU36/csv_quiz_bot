@@ -10,7 +10,9 @@ from batch.src.minimum_quiz import minimum_quiz
 from batch.module.ini import get_table_list
 
 from flask import Flask, request
+from flask_cors import CORS
 app = Flask(__name__)
+CORS(app)
 
 @app.route('/')
 def hello_world():
