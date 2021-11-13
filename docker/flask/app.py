@@ -7,6 +7,7 @@ from batch.src.worst_quiz import worst_quiz
 from batch.src.answer_inputter import answer_input
 from batch.src.search_quiz import search_quiz
 from batch.src.minimum_quiz import minimum_quiz
+from batch.src.add_quiz import add_quiz
 from batch.module.ini import get_table_list
 
 from flask import Flask, request
@@ -233,6 +234,39 @@ def namelist():
             'statusCode' : 500,
             "error" : traceback.format_exc()
         }
+
+@app.route('/add', methods=["POST"])
+def add():
+    """問題追加API
+    Args:  JSON
+    {
+        "file_num": ファイル番号,
+        "data": 入力データ
+    }
+
+    Returns:
+        [JSON] : 実行結果
+    """
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        file_num = int(req.get("file_num",-1))
+        data = req.get("data","")
+
+        # INSERT処理実施
+        result = add_quiz(file_num,data)
+
+        # テーブル名のリストを(JSON形式で)返す
+        return { 
+            'statusCode' : 200,
+            'result' : result
+        }
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=4999, debug=True)
