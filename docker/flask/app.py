@@ -120,33 +120,36 @@ def worst():
 
 @app.route('/answer', methods=["POST"])
 def answer():
-    """解答取得API
-    Args: [JSON]
-    [
-        {
-            "file_num": ファイル番号
-            "quiz_num": 問題番号
-            "clear": 正解ならTrue、不正解ならFalse
-        }
-    ]
+    """解答登録API
+    Args: JSON
+    {
+        "file_num": ファイル番号
+        "quiz_num": 問題番号
+        "clear": 正解ならTrue、不正解ならFalse
+    }
 
     Returns:
-        result(JSON): 成功またはエラーログ
+        result: 成功またはエラーログ
     """
     try:
-        # リクエストから値を読み取る。
-        req = list(request.json)
-    
+        # リクエストから値を読み取る
+        req = request.json
+        file_num = int(req.get("file_num"))
+        quiz_num = int(req.get("quiz_num"))
+        clear = bool(req.get("clear"))
+
         # MySQLに問題を取得しにいく
-        result = answer_input(req)
+        result = answer_input(file_num,quiz_num,clear)
 
         # 取得結果を返す
         return {
+            "statusCode" : 200,
             "req" : req,
             "result" : result
         }
     except Exception as e:
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
