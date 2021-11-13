@@ -42,10 +42,14 @@ def select():
         result = select_quiz(file_num,quiz_num,image_flag)
 
         # 取得結果を返す
-        return result
+        return {
+            "statusCode" : 200,
+            "response" : result
+        }
     except Exception as e:
         return traceback.format_exc()
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
