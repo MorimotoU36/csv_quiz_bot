@@ -18,7 +18,7 @@ function getRandomQuestionApi(){
 }
 
 //正解不正解登録API
-function getCorrectRegisterApi(){
+function getAnswerRegisterApi(){
     return server + 'answer'
 }
 
