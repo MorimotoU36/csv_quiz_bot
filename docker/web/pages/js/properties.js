@@ -12,6 +12,11 @@ function getQuestionApi(){
     return server + 'select'
 }
 
+//問題ランダム取得API
+function getRandomQuestionApi(){
+    return server + 'random'
+}
+
 //正解不正解登録API
 function getCorrectRegisterApi(){
     return server + 'answer'

@@ -162,31 +162,29 @@ function random_select_question(){
         file_num = get_file_num();
     }
 
-    //問題番号をランダムに選ぶ
-    question_num = getRandomIntInclusive(1,csv_item_list[file_num])
-
     //JSONデータ作成
     var data = {
-        "text" : String(file_num)+'-'+String(question_num)
+        "file_num": file_num
     }
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getQuestionApi(),data,function(resp){
+    post_data(getRandomQuestionApi(),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
-            sentense = resp.sentense === undefined ? "" : resp.sentense
-            quiz_answer =  resp.answer === undefined ? "" : resp.answer
+            let response = resp.response
+            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : response.answer
 
             question.textContent = sentense
             answer.textContent = ""
 
             //カテゴリエリア
-            let category = resp.question_category
+            let category = response.category
             set_category_box(category)
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
-                                +" : "+resp['error_log']);
+                                +" : "+resp['error']);
         }
     })
 }

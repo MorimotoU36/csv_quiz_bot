@@ -77,10 +77,14 @@ def random():
         result = random_quiz(file_num=file_num,image=image_flag,rate=rate)
 
         # 取得結果を返す
-        return result
+        return {
+            "statusCode" : 200,
+            "response" : result
+        }
     except Exception as e:
         return traceback.format_exc()
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
