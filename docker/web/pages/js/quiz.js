@@ -316,14 +316,14 @@ function add_quiz(){
 
     //JSONデータ作成
     var data = {
-        "file" : String(file_num),
+        "file_num": file_num,
         "data" : input_data
     }
 
     post_data(getAddQuizApi(),data,function(resp){
         //正解登録完了メッセージ
         let log = document.getElementById("add_log")
-        log.innerHTML = resp['log'].join('<br>')
+        log.innerHTML = resp['result'].join('<br>')
     })
 
     //入力データをクリア

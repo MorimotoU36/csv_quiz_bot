@@ -24,7 +24,7 @@ function getAnswerRegisterApi(){
 
 //問題登録API
 function getAddQuizApi(){
-//    return server + ''
+    return server + 'add'
 }
 
 //問題編集API
