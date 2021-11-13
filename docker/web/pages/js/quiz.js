@@ -235,10 +235,12 @@ function incorrect_register(){
 
     //JSONデータ作成
     var data = {
-        "text" : String(file_num)+'-'+String(question_num)
+        "file_num": file_num,
+        "quiz_num": question_num,
+        "clear": false
     }
     //外部APIに指定した問題の正解数を登録しに行く
-    post_data(getIncorrectRegisterApi(),data,function(resp){
+    post_data(getAnswerRegisterApi(),data,function(resp){
         if(resp['statusCode'] == 200){    
             //問題と答えは削除
             let question = document.getElementById("question")
@@ -251,7 +253,7 @@ function incorrect_register(){
 
             //正解登録完了メッセージ
             let result = document.getElementById("result")
-            result.textContent = resp['message']
+            result.textContent = resp['result']
 
             //カテゴリ欄のクリア
             let category_area = document.getElementById("category_area")
