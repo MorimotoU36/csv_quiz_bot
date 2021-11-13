@@ -109,38 +109,43 @@ function get_question(){
     if(Number(file_num) == -1){
         set_error_message("問題ファイルを選択して下さい");
         return false;
-    }else if(check_input_question_num(file_num)){
-        set_error_message("エラー：問題("+file_name
-                            +")の問題番号は1〜"+csv_item_list[file_num]
-                            +"の範囲内で入力して下さい");
-        return false;
-    }else if(document.getElementById("question_number").value == ""){
+    }
+    // else if(check_input_question_num(file_num)){
+    //     set_error_message("エラー：問題("+file_name
+    //                         +")の問題番号は1〜"+csv_item_list[file_num]
+    //                         +"の範囲内で入力して下さい");
+    //     return false;
+    // }
+    else if(document.getElementById("question_number").value == ""){
         set_error_message("エラー：問題番号を入力して下さい");
         return false;
     }
 
     //JSONデータ作成
     var data = {
-        "text" : String(file_num)+'-'+String(question_num)
+        "file_num": file_num,
+        "quiz_num": question_num,
+        "image_flag": true 
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getQuestionApi(),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
-            sentense = resp.sentense === undefined ? "" : resp.sentense
-            quiz_answer =  resp.answer === undefined ? "" : resp.answer
+            let response = resp.response
+            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : response.answer
 
             question.textContent = sentense
             answer.textContent = ""
 
             //カテゴリエリア
-            let category = resp.question_category
+            let category = response.category
             set_category_box(category)
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
-                                +" : "+resp['error_log']);
+                                +" : "+resp['error']);
         }
     })
 }
