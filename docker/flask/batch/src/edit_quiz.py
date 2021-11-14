@@ -56,11 +56,15 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
             update_answer   = "" if answer is None or len(answer.strip())==0 else " answer = '{0}', ".format(answer)
             update_category = "" if category is None or len(category.strip())==0 else " category = '{0}', ".format(category)
             update_img_file = " img_file = '' " if img_file is None else " img_file = '{0}' ".format(img_file)
-            sql = "UPDATE {0} SET {1} {2} {3} {4} WHERE quiz_num = {5} ".format(table,update_question,update_answer,update_category,update_img_file,file_num)
+            sql = "UPDATE {0} SET {1} {2} {3} {4} WHERE quiz_num = {5} ".format(table,update_question,update_answer,update_category,update_img_file,quiz_num)
             print(sql)
             cursor.execute(sql)
 
             result = "Success!! [{0}-{1}]:{2},{3},{4},{5}".format(nickname,str(quiz_num),question,answer,category,img_file)
+
+        #全て成功したらコミット
+        conn.commit()
+        conn.close()
 
     # DB操作失敗時はロールバック
     except Exception as e:
