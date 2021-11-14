@@ -8,6 +8,7 @@ from batch.src.answer_inputter import answer_input
 from batch.src.search_quiz import search_quiz
 from batch.src.minimum_quiz import minimum_quiz
 from batch.src.add_quiz import add_quiz
+from batch.src.edit_quiz import edit_quiz
 from batch.module.ini import get_table_list
 
 from flask import Flask, request
@@ -267,6 +268,45 @@ def add():
             "error" : traceback.format_exc()
         }
 
+@app.route('/edit', methods=["POST"])
+def edit():
+    """問題追加API
+    Args:  JSON
+    {
+        "file_num" (int): ファイル番号
+        "quiz_num" (int): 問題番号
+        "question" (str): 問題文
+        "answer" (str): 答えの文
+        "category" (str): カテゴリ
+        "img_file" (str): 画像ファイル名
+    }
+
+    Returns:
+        [JSON] : 実行結果
+    """
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        file_num = int(req.get("file_num",-1))
+        quiz_num = int(req.get("quiz_num",-1))
+        question = req.get("question","")
+        answer = req.get("answer","")
+        category = req.get("category","")
+        img_file = req.get("img_file","")
+
+        # INSERT処理実施
+        result = edit_quiz(file_num,quiz_num,question,answer,category,img_file)
+
+        # テーブル名のリストを(JSON形式で)返す
+        return { 
+            'statusCode' : 200,
+            'result' : result
+        }
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=4999, debug=True)
