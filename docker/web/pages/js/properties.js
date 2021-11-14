@@ -29,5 +29,5 @@ function getAddQuizApi(){
 
 //問題編集API
 function getEditQuizApi(){
-//    return server + ''
+    return server + 'edit'
 }

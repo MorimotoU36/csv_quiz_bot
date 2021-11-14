@@ -348,19 +348,21 @@ function get_question_for_edit(){
 
     //JSONデータ作成
     var data = {
-        "text" : String(file_num)+'-'+String(question_num)
+        "file_num": file_num,
+        "quiz_num": question_num,
+        "image_flag": true 
     }
 
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getQuestionApi(),data,function(resp){
-        if(resp['statusCode'] == 200){    
+        if(resp['statusCode'] == 200){  
             document.getElementById("question_of_file").innerText = file_name
             document.getElementById("question_num").innerText = question_num
             document.getElementById("question_of_file_num").innerText = get_file_num()
-            document.getElementById("question_sentense").value = resp.question_sentense === undefined ? "" : resp.question_sentense
-            document.getElementById("question_answer").value = resp.question_answer === undefined ? "" : resp.question_answer
-            document.getElementById("question_category").value = resp.question_category === undefined ? "" : resp.question_category
-            document.getElementById("question_img_file_name").value = resp.question_img_file_name === undefined ? "" : resp.question_img_file_name
+            document.getElementById("question_sentense").value = resp.response.quiz_sentense === undefined ? "" : resp.response.quiz_sentense
+            document.getElementById("question_answer").value = resp.response.answer === undefined ? "" : resp.response.answer
+            document.getElementById("question_category").value = resp.response.category === undefined ? "" : resp.response.category
+            document.getElementById("question_img_file_name").value = resp.response.img_file === undefined ? "" : resp.response.img_file
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
@@ -377,13 +379,12 @@ function edit_question(){
 
     //JSONデータ作成
     var data = {
-        "file" : document.getElementById("question_of_file").innerText,
-        "number": document.getElementById("question_num").innerText,
         "file_num": document.getElementById("question_of_file_num").innerText,
-        "sentense": document.getElementById("question_sentense").value,
+        "quiz_num": document.getElementById("question_num").innerText,
+        "question": document.getElementById("question_sentense").value,
         "answer": document.getElementById("question_answer").value,
         "category": document.getElementById("question_category").value,
-        "img_file_name": document.getElementById("question_img_file_name").value
+        "img_file": document.getElementById("question_img_file_name").value
     }
 
     //外部APIに指定した問題の正解数を登録しに行く
@@ -395,7 +396,7 @@ function edit_question(){
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
-                                +" : "+resp['error_log']);
+                                +" : "+resp['error']);
         }
     })
 }
