@@ -300,7 +300,7 @@ def edit():
         # テーブル名のリストを(JSON形式で)返す
         return { 
             'statusCode' : 200,
-            'result' : result
+            'message' : result
         }
     except Exception as e:
         return {
