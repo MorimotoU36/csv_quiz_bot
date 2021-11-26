@@ -49,7 +49,6 @@ def select():
             "response" : result
         }
     except Exception as e:
-        return traceback.format_exc()
         return {
             "statusCode" : 500,
             "error" : traceback.format_exc()
@@ -84,7 +83,6 @@ def random():
             "response" : result
         }
     except Exception as e:
-        return traceback.format_exc()
         return {
             "statusCode" : 500,
             "error" : traceback.format_exc()
