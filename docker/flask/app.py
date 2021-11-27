@@ -83,11 +83,17 @@ def random():
         # MySQLに問題を取得しにいく
         result = random_quiz(file_num=file_num,image=image_flag,rate=rate)
 
-        # 取得結果を返す
-        return {
-            "statusCode" : 200,
-            "response" : result
-        }
+        if(len(result)==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, quiz_num:{1})".format(file_num,quiz_num)
+            }
+        else:
+            # 取得結果を返す
+            return {
+                "statusCode" : 200,
+                "response" : result[0]
+            }
     except Exception as e:
         return {
             "statusCode" : 500,
