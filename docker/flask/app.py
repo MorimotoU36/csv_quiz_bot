@@ -18,7 +18,7 @@ CORS(app)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, Flask!'
+    return 'Hello, Django!'
 
 @app.route('/select', methods=["POST"])
 def select():
