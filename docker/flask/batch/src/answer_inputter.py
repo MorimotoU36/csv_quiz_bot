@@ -33,12 +33,12 @@ def answer_input(file_num,quiz_num,clear):
     table_list = get_table_list()
 
     # MySQL への接続を確立する
-    try:
-        conn = get_connection()
-    except Exception as e:
-        print('Error: DB接続時にエラーが発生しました')
-        print(traceback.format_exc())
-        sys.exit()
+    # try:
+    conn = get_connection()
+    # except Exception as e:
+    #     print('Error: DB接続時にエラーが発生しました')
+    #     print(traceback.format_exc())
+    #     sys.exit()
         
     try:
         # 設定ファイルを呼び出してファイル番号からテーブル名を取得
