@@ -123,8 +123,17 @@ def worst():
         # MySQLに問題を取得しにいく
         result = worst_quiz(file_num=file_num,category=category,image=image_flag)
 
-        # 取得結果を返す
-        return result
+        if(len(result)==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
+            }
+        else:
+            # 取得結果を返す
+            return {
+                "statusCode" : 200,
+                "response" : result[0]
+            }
     except Exception as e:
         return {
             "error" : traceback.format_exc()

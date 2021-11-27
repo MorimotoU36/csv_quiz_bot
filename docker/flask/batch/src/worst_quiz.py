@@ -60,7 +60,7 @@ def worst_quiz(file_num=-1,category=None,image=True):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results[0]
+    return results
 
 if __name__=="__main__":
     res = worst_quiz()
