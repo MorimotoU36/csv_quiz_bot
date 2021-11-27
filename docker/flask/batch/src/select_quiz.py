@@ -63,8 +63,8 @@ def select_quiz(file_num,quiz_num,image_flag):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results[0]
+    return results
 
 if __name__=="__main__":
-    res = select_quiz(0,100,False)
+    res = select_quiz("0","99",False)
     print(res)
