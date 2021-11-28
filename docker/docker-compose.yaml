@@ -4,19 +4,17 @@ networks:
     driver: bridge
 services:
   mysql:
-    build: ./mysql/
+    build: ./mysql
     volumes:
-      - ./mysql/initdb.d:/docker-entrypoint-initdb.d #初期処理のフォルダ。初回起動のみでおｋ
+      - ../mysql/initdb.d:/docker-entrypoint-initdb.d #初期処理のフォルダ。初回起動のみでおｋ
       - ./mysql/db:/var/lib/mysql #ここにデータ永続化するためのファイルが入る。
+      - ../mysql/my.cnf:/etc/mysql/conf.d/my.cnf # MySQL設定ファイル
     image: mysqlapp
     container_name: "quiz_mysql_db"
-    environment:
-      - MYSQL_ROOT_PASSWORD=pass
-      - MYSQL_DATABASE=quiz_db
     networks:
       - app-net
     ports:
-      - "3306:3306"
+      - 3306:3306
   web:
     build: ./web
     container_name: "quiz_web"
@@ -27,18 +25,15 @@ services:
     ports:
       - 8080:80
     volumes:
-      - ./web:/usr/src/app
+      - ../web:/usr/src/app
     privileged: true
   api:
     build: ./flask
     container_name: "quiz_api"
-    environment:
-      TZ: Asia/Tokyo
     networks:
       - app-net
     ports:
       - 5000:5000
     volumes:
-      - ./flask:/usr/src/app
+      - ../flask:/usr/src/app
     privileged: true
-    command: flask run --host 0.0.0.0 --port 5000

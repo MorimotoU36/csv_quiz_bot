@@ -21,11 +21,3 @@ ENV SERVER http://localhost:8080/
 
 # アプリケーションディレクトリを作成する
 WORKDIR /usr/src/app
-
-# nodejs npm パッケージをインストールします
-RUN yum install -y epel-release
-RUN yum install -y nodejs npm
-
-# Install app dependencies (package.json and package-lock.json)
-COPY package*.json ./
-RUN npm install
