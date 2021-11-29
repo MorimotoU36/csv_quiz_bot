@@ -217,10 +217,16 @@ def search():
         result = search_quiz(query,file_num)
 
         # 取得結果を返す
-        return {
-            "req" : req,
-            "result" : result
-        }
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        else:
+            return {
+                "req" : req,
+                "result" : result
+            }
     except Exception as e:
         return {
             "error" : traceback.format_exc()
