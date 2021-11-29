@@ -312,7 +312,7 @@ def add():
         # INSERT処理実施
         result = add_quiz(file_num,data)
 
-        # テーブル名のリストを(JSON形式で)返す
+        # (JSON形式で)返す
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
@@ -359,11 +359,18 @@ def edit():
         # INSERT処理実施
         result = edit_quiz(file_num,quiz_num,question,answer,category,img_file)
 
-        # テーブル名のリストを(JSON形式で)返す
-        return { 
-            'statusCode' : 200,
-            'message' : result
-        }
+        # (JSON形式で)返す
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        else:
+            return {
+                "statusCode" : 200,
+                "req" : req,
+                "result" : result['result']
+            }
     except Exception as e:
         return {
             'statusCode' : 500,
