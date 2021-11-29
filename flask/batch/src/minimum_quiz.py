@@ -34,18 +34,19 @@ def minimum_quiz(file_num=-1,category=None,image=True):
     # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
         # 指定したテーブルの正解数が最も低い問題を調べる
         sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ORDER BY clear_count LIMIT 1".format(table)
-        print(sql)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
@@ -53,7 +54,10 @@ def minimum_quiz(file_num=-1,category=None,image=True):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results
+    return {
+        "statusCode": 200,
+        "result": results
+    }
 
 if __name__=="__main__":
     res = minimum_quiz(file_num=0)
