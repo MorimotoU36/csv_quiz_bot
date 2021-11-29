@@ -33,12 +33,14 @@ def random_quiz(file_num=-1,image=True,rate=100.0):
     nickname = table_list[file_num]['nickname']
         
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
