@@ -33,12 +33,14 @@ def answer_input(file_num,quiz_num,clear):
     table_list = get_table_list()
 
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
         
     try:
         # 設定ファイルを呼び出してファイル番号からテーブル名を取得
@@ -74,12 +76,17 @@ def answer_input(file_num,quiz_num,clear):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        print("Error. DB操作時にエラーが発生しました")
-        print(traceback.format_exc())
+        message = 'Error: DB接続時にエラーが発生しました '
         try:
             conn.rollback()
         except:
-            print("rollback failed")
+            message += '( ロールバックにも失敗しました )'
+        finally:
+            return {
+                "statusCode": 500,
+                "message": message,
+                "traceback": traceback.format_exc()
+            }
 
     # 結果を返す
     return result

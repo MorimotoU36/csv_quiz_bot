@@ -178,11 +178,17 @@ def answer():
         result = answer_input(file_num,quiz_num,clear)
 
         # 取得結果を返す
-        return {
-            "statusCode" : 200,
-            "req" : req,
-            "result" : result
-        }
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        else:
+            return {
+                "statusCode" : 200,
+                "req" : req,
+                "result" : result
+            }
     except Exception as e:
         return {
             "statusCode" : 500,
