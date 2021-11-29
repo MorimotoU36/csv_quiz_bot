@@ -43,7 +43,12 @@ def select():
         # MySQLに問題を取得しにいく
         result = select_quiz(file_num,quiz_num,image_flag)
 
-        if(len(result)==0):
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
                 "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, quiz_num:{1})".format(file_num,quiz_num)
@@ -52,7 +57,7 @@ def select():
             # 取得結果を返す
             return {
                 "statusCode" : 200,
-                "response" : result[0]
+                "response" : result['result'][0]
             }
     except Exception as e:
         return {

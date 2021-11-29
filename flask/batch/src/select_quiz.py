@@ -23,21 +23,25 @@ def select_quiz(file_num,quiz_num,image_flag):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
-    # try:
-    table_list = get_table_list()
-    table = table_list[file_num]['name']
-    nickname = table_list[file_num]['nickname']
-    # except IndexError:
-    #     print('Error: ファイル番号が正しくありません')
-    #     sys.exit()
+    try:
+        table_list = get_table_list()
+        table = table_list[file_num]['name']
+        nickname = table_list[file_num]['nickname']
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": 'Error: ファイル番号が正しくありません'
+        }
 
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
 
     # テーブル名と問題番号からSQLを作成して投げる
     # (問題番号が範囲外なら終了)
@@ -52,8 +56,10 @@ def select_quiz(file_num,quiz_num,image_flag):
 
         # 問題番号が範囲外なら終了
         if(quiz_num < 1 or count < quiz_num):
-            print('Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count))
-            sys.exit()
+            return {
+                "statusCode": 500,
+                "message": 'Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count)
+            }
 
         sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
         cursor.execute(sql)
@@ -63,7 +69,10 @@ def select_quiz(file_num,quiz_num,image_flag):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results
+    return {
+        "statusCode": 200,
+        "result": results
+    }
 
 if __name__=="__main__":
     res = select_quiz("0","99",False)
