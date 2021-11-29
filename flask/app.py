@@ -133,7 +133,12 @@ def worst():
         # MySQLに問題を取得しにいく
         result = worst_quiz(file_num=file_num,category=category,image=image_flag)
 
-        if(len(result)==0):
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        elif(len(result)==0):
             return {
                 "statusCode" : 404,
                 "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)

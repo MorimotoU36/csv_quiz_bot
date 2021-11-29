@@ -35,12 +35,14 @@ def worst_quiz(file_num=-1,category=None,image=True):
     # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
