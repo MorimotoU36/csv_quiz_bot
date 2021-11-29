@@ -102,7 +102,7 @@ def random():
             # 取得結果を返す
             return {
                 "statusCode" : 200,
-                "response" : result[0]
+                "response" : result['result'][0]
             }
     except Exception as e:
         return {
@@ -147,7 +147,7 @@ def worst():
             # 取得結果を返す
             return {
                 "statusCode" : 200,
-                "response" : result[0]
+                "response" : result['result'][0]
             }
     except Exception as e:
         return {
@@ -187,7 +187,7 @@ def answer():
             return {
                 "statusCode" : 200,
                 "req" : req,
-                "result" : result
+                "result" : result['result']
             }
     except Exception as e:
         return {
@@ -225,7 +225,7 @@ def search():
         else:
             return {
                 "req" : req,
-                "result" : result
+                "result" : result['result']
             }
     except Exception as e:
         return {
@@ -253,10 +253,19 @@ def minimum():
         image_flag = bool(req.get("image",True))
 
         # MySQLに問題を取得しにいく
-        result = worst_quiz(file_num=file_num,category=category,image=image_flag)
+        result = minimum_quiz(file_num=file_num,category=category,image=image_flag)
 
         # 取得結果を返す
-        return result
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        else:
+            return {
+                "req" : req,
+                "result" : result['result']
+            }
     except Exception as e:
         return {
             "error" : traceback.format_exc()

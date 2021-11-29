@@ -54,7 +54,10 @@ def search_quiz(query,file_num):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results
+    return {
+        "statusCode": 200,
+        "result": results
+    }
 
 if __name__=="__main__":
     res = search_quiz('VPC',0)

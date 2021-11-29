@@ -63,7 +63,10 @@ def random_quiz(file_num=-1,image=True,rate=100.0):
         results = cursor.fetchall()
 
     # 結果をJSONに変形して返す
-    return results
+    return {
+        "statusCode": 200,
+        "result": results
+    }
 
 if __name__=="__main__":
     res = random_quiz(file_num=-1)

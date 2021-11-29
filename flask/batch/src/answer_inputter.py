@@ -89,7 +89,10 @@ def answer_input(file_num,quiz_num,clear):
             }
 
     # 結果を返す
-    return result
+    return {
+        "statusCode": 200,
+        "result": result
+    }
 
 if __name__=="__main__":
     res = answer_input(0,1,"true")
