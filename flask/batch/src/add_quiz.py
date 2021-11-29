@@ -25,21 +25,25 @@ def add_quiz(file_num,input_data):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
-    # try:
-    table_list = get_table_list()
-    table = table_list[file_num]['name']
-    nickname = table_list[file_num]['nickname']
-    # except IndexError:
-    #     print('Error: ファイル番号が正しくありません')
-    #     sys.exit()
+    try:
+        table_list = get_table_list()
+        table = table_list[file_num]['name']
+        nickname = table_list[file_num]['nickname']
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": 'Error: ファイル番号が正しくありません'
+        }
 
     # MySQL への接続を確立する
-    # try:
-    conn = get_connection()
-    # except Exception as e:
-    #     print('Error: DB接続時にエラーが発生しました')
-    #     print(traceback.format_exc())
-    #     sys.exit()
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
 
     try:
         # データ全件数を確認
@@ -85,16 +89,23 @@ def add_quiz(file_num,input_data):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        print("Error. DB操作時にエラーが発生しました")
-        print(traceback.format_exc())
-        result = traceback.format_exc()
+        message = 'Error: DB接続時にエラーが発生しました '
         try:
             conn.rollback()
         except:
-            print("rollback failed")
+            message += '( ロールバックにも失敗しました )'
+        finally:
+            return {
+                "statusCode": 500,
+                "message": message,
+                "traceback": traceback.format_exc()
+            }
 
     # 結果(文字列)を返す
-    return result
+    return {
+        "statusCode": 200,
+        "result": result
+    }
 
 if __name__=="__main__":
     res = add_quiz(2,"data1,data2,,\ndata5,data6,data7,data8")

@@ -313,10 +313,17 @@ def add():
         result = add_quiz(file_num,data)
 
         # テーブル名のリストを(JSON形式で)返す
-        return { 
-            'statusCode' : 200,
-            'result' : result
-        }
+        if(result['statusCode'] == 500):
+            return {
+                "statusCode" : 500,
+                "error" : result["message"]
+            }
+        else:
+            return {
+                "statusCode" : 200,
+                "req" : req,
+                "result" : result['result']
+            }
     except Exception as e:
         return {
             'statusCode' : 500,
