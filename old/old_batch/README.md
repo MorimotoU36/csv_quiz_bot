@@ -1,8 +1,6 @@
-# csv_quiz_bot
+# quiz_bot
 
-csvをクイズのデータベースとし、問題をslackに投稿する
-slackからの応答はAWS API Gateway/Lambda/DynamoDBを利用し行う
-完全に個人用
+MySQLのクイズのデータベースからクイズを出題する
 
 ## select_quiz.py
 

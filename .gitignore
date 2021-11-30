@@ -1,0 +1,12 @@
+button_test.py
+error.log
+select_quiz_num_ap.dat
+select_quiz_num_aws_quiz.dat
+file_reader.py
+docker/mysql/db
+initdb.d/*.csv
+__pycache__/
+*.pyc
+node_modules/
+package-lock.json
+application.ini
