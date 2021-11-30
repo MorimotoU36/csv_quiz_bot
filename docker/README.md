@@ -87,3 +87,4 @@ $  mysqlimport -u root --password=pass --local --fields-terminated-by="," quiz_d
 ```
 
 これを各csv毎でやる
+
