@@ -88,3 +88,9 @@ $  mysqlimport -u root --password=pass --local --fields-terminated-by="," quiz_d
 
 これを各csv毎でやる
 
+3. Webページを確認
+
+docker-composeでコンテナを起動したらローカルでサイトが起動されるので確認する
+
+http://localhost:8080/pages/quiz.html
+
