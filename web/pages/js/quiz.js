@@ -90,7 +90,6 @@ function get_csv_name_list(){
                 target.innerText = resp['table'][i]['nickname'];
                 target.setAttribute('value',i);
                 file_list.appendChild(target);
-//                csv_item_list.push(resp['item'][i])
             }
         }else{
             //内部エラー時
@@ -110,12 +109,6 @@ function get_question(){
         set_error_message("問題ファイルを選択して下さい");
         return false;
     }
-    // else if(check_input_question_num(file_num)){
-    //     set_error_message("エラー：問題("+file_name
-    //                         +")の問題番号は1〜"+csv_item_list[file_num]
-    //                         +"の範囲内で入力して下さい");
-    //     return false;
-    // }
     else if(document.getElementById("question_number").value == ""){
         set_error_message("エラー：問題番号を入力して下さい");
         return false;
