@@ -6,7 +6,7 @@ let file_name = "";
 //ファイル番号
 let file_num = -1;
 //問題番号
-let question_num = "0";
+let question_num = -1;
 //問題文
 let sentense = ""
 //答え
@@ -28,6 +28,11 @@ function get_file_num(){
 //問題番号の変更を反映する
 function update_question_num(event){
     question_num = Number(document.getElementById("question_number").value)
+}
+
+//入力されている問題番号を取得する
+function get_question_num(){
+    return Number(document.getElementById("question_number").value)
 }
 
 //エラーメッセージの設定・表示
@@ -109,6 +114,10 @@ function get_question(){
         set_error_message("問題ファイルを選択して下さい");
         return false;
     }
+    else if(isNaN(get_question_num())){
+        set_error_message("エラー：問題番号には数値を入力して下さい");
+        return false;
+    }
     else if(document.getElementById("question_number").value == ""){
         set_error_message("エラー：問題番号を入力して下さい");
         return false;
@@ -117,7 +126,7 @@ function get_question(){
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "quiz_num": question_num,
+        "quiz_num": get_question_num(),
         "image_flag": true 
     }
     //外部APIへPOST通信、問題を取得しにいく
@@ -128,6 +137,7 @@ function get_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
+            question_num = get_question_num()
 
             question.textContent = sentense
             answer.textContent = ""
@@ -167,6 +177,7 @@ function random_select_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
+            question_num = Number(response.quiz_num)
 
             question.textContent = sentense
             answer.textContent = ""
@@ -213,6 +224,8 @@ function correct_register(){
             let category_area = document.getElementById("category_area")
             //子要素(以前のカテゴリ)削除
             category_area.innerHTML = ""
+            //問題番号のクリア
+            question_num = -1
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
@@ -252,6 +265,8 @@ function incorrect_register(){
             let category_area = document.getElementById("category_area")
             //子要素(以前のカテゴリ)削除
             category_area.innerHTML = ""
+            //問題番号のクリア
+            question_num = -1
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
