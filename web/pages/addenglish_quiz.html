@@ -7,25 +7,28 @@
         <script src="./js/english_quiz.js"></script>
     </head>
 <body>
-    <h1>English Quiz -問題追加-</h1>
+    <div id="wrapper">
+        <h1>English Quiz -問題追加-</h1>
 
-    <div id="message_area">
-        <p id="error" class="error message" style="color:red"></p>
-        <p id="result" class="message" style="color:black"></p>
-    </div>
-
-    <div>
-        <p>追加する問題（形式：和文,英訳文,カテゴリ,画像ファイル名）</p>
-        <textarea id="input_data" cols="100" rows="10" placeholder="（入力形式：和文,英訳文,カテゴリ,画像ファイル名）を何行でも"></textarea>
-    </div>
-
-    <input type="button" value="送信" onClick="add_quiz()">
-
-    <hr>
-    <div>
-        <p>--実行ログ--</p>
-        <div id="add_log" class="message" style="color: black">
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
         </div>
+
+        <div>
+            <p>追加する問題（形式：和文,英訳文,カテゴリ,画像ファイル名）</p>
+            <textarea id="input_data" cols="100" rows="10" placeholder="（入力形式：和文,英訳文,カテゴリ,画像ファイル名）を何行でも"></textarea>
+        </div>
+
+        <input type="button" value="送信" onClick="add_quiz()">
+
+        <hr>
+        <div>
+            <p>--実行ログ--</p>
+            <div id="add_log" class="message" style="color: black">
+            </div>
+        </div>
+        <div class="push"></div>
     </div>
 
     <footer>
