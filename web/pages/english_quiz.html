@@ -15,36 +15,39 @@
         </script>
     </head>
 <body>
-    <h1>English Quiz</h1>
+    <div id="wrapper">
+        <h1>English Quiz</h1>
 
-    <div id="message_area">
-        <p id="error" class="error message" style="color:red"></p>
-        <p id="result" class="message" style="color:black"></p>
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
+        </div>
+
+        <table style="border:none">
+            <tr>
+                <td>問題番号</td>
+                <td>:</td>
+                <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
+            </tr>
+        </table>
+        <input type="button" value="出題" onClick="get_english_question()">
+        <input type="button" value="ランダム出題" onClick="random_select_question()">
+        <input type="button" value="答え" onClick="display_answer()">
+
+        <hr>
+        <span>問題：</span>
+        <span id="question"></span>
+        <div id="category_area">
+
+        </div>
+        <hr>
+        <span>答え：</span>
+        <span id="answer" class="english"></span>
+        <hr>
+        <input type="button" value="正解した！" onClick="correct_register()" >
+        <input type="button" value="間違えた・・" onClick="incorrect_register()">
+        <div class="push"></div>
     </div>
-
-    <table style="border:none">
-        <tr>
-            <td>問題番号</td>
-            <td>:</td>
-            <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
-        </tr>
-    </table>
-    <input type="button" value="出題" onClick="get_english_question()">
-    <input type="button" value="ランダム出題" onClick="random_select_question()">
-    <input type="button" value="答え" onClick="display_answer()">
-
-    <hr>
-    <span>問題：</span>
-    <span id="question"></span>
-    <div id="category_area">
-
-    </div>
-    <hr>
-    <span>答え：</span>
-    <span id="answer" class="english"></span>
-    <hr>
-    <input type="button" value="正解した！" onClick="correct_register()" >
-    <input type="button" value="間違えた・・" onClick="incorrect_register()">
 
     <footer>
         <hr>

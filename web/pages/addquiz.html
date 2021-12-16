@@ -12,37 +12,40 @@
         </script>
     </head>
 <body>
-    <h1>CSV Quiz Bot -問題追加-</h1>
+    <div id="wrapper">
+        <h1>CSV Quiz Bot -問題追加-</h1>
 
-    <div id="message_area">
-        <p id="error" class="error message" style="color:red"></p>
-        <p id="result" class="message" style="color:black"></p>
-    </div>
-
-    <table style="border:none">
-        <tr>
-            <td>ファイル</td>
-            <td>:</td>
-            <td>
-                <select id="file_list" onChange="update_file_num(event)">
-                    <option selected value="-1">指定なし</option>
-                </select>
-            </td>
-        </tr>
-    </table>
-
-    <div>
-        <p>追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）</p>
-        <textarea id="input_data" cols="100" rows="10" placeholder="（入力形式：テスト問題,正解,カテゴリ,画像ファイル名）を何行でも"></textarea>
-    </div>
-
-    <input type="button" value="送信" onClick="add_quiz()">
-
-    <hr>
-    <div>
-        <p>--実行ログ--</p>
-        <div id="add_log" class="message" style="color: black">
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
         </div>
+
+        <table style="border:none">
+            <tr>
+                <td>ファイル</td>
+                <td>:</td>
+                <td>
+                    <select id="file_list" onChange="update_file_num(event)">
+                        <option selected value="-1">指定なし</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+
+        <div>
+            <p>追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）</p>
+            <textarea id="input_data" cols="100" rows="10" placeholder="（入力形式：テスト問題,正解,カテゴリ,画像ファイル名）を何行でも"></textarea>
+        </div>
+
+        <input type="button" value="送信" onClick="add_quiz()">
+
+        <hr>
+        <div>
+            <p>--実行ログ--</p>
+            <div id="add_log" class="message" style="color: black">
+            </div>
+        </div>
+        <div class="push"></div>
     </div>
 
     <footer>
