@@ -12,45 +12,49 @@
         </script>
     </head>
 <body>
-    <h1>CSV Quiz Bot</h1>
+    <div id="wrapper">
+        <h1>CSV Quiz Bot</h1>
 
-    <div id="message_area">
-        <p id="error" class="error message" style="color:red"></p>
-        <p id="result" class="message" style="color:black"></p>
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
+        </div>
+
+        <table style="border:none">
+            <tr>
+                <td>ファイル</td>
+                <td>:</td>
+                <td>
+                    <select id="file_list" onChange="update_file_num(event)">
+                        <option selected value="-1">指定なし</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <td>問題番号</td>
+                <td>:</td>
+                <td><input type="text" id="question_number"></td>
+            </tr>
+        </table>
+        <input type="button" value="出題" onClick="get_question()">
+        <input type="button" value="ランダム出題" onClick="random_select_question()">
+        <input type="button" value="答え" onClick="display_answer()">
+
+        <hr>
+        <span>問題：</span>
+        <span id="question"></span>
+        <div id="category_area">
+
+        </div>
+        <hr>
+        <span>答え：</span>
+        <span id="answer"></span>
+        <hr>
+        <input type="button" value="正解した！" onClick="correct_register()" >
+        <input type="button" value="間違えた・・" onClick="incorrect_register()">
+
+        <div class="push"></div>
     </div>
-
-    <table style="border:none">
-        <tr>
-            <td>ファイル</td>
-            <td>:</td>
-            <td>
-                <select id="file_list" onChange="update_file_num(event)">
-                    <option selected value="-1">指定なし</option>
-                </select>
-            </td>
-        </tr>
-        <tr>
-            <td>問題番号</td>
-            <td>:</td>
-            <td><input type="text" id="question_number"></td>
-        </tr>
-    </table>
-    <input type="button" value="出題" onClick="get_question()">
-    <input type="button" value="ランダム出題" onClick="random_select_question()">
-    <input type="button" value="答え" onClick="display_answer()">
-
-    <hr>
-    <span>問題：</span>
-    <span id="question"></span>
-    <div id="category_area">
-
-    </div>
-    <hr>
-    <span>答え：</span>
-    <span id="answer"></span>
-    <hr>
-    <input type="button" value="正解した！" onClick="correct_register()" >
-    <input type="button" value="間違えた・・" onClick="incorrect_register()">
 
     <footer>
         <hr>

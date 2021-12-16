@@ -19,12 +19,9 @@ span.category-elements {
     font-family: 'Noto Sans Mono', monospace;
 }
 
-footer{
-    position: absolute;/*←絶対位置*/
-    bottom: 25px; /*下に固定*/
-    width: 100%;
+footer,.push {
+    height: 25px;
 }
-
 .left{
     position: absolute;/*←絶対位置*/
     left: 0px;
@@ -33,4 +30,11 @@ footer{
 .right{
     position: absolute;/*←絶対位置*/
     right: 10px;
+}
+
+#wrapper {
+    min-height: 100%;
+    /* フッタの高さと等しいネガティブマージン */
+    /* また最後の子要素の潜在的なマージンとしても機能 */
+    margin-bottom: -25px;
 }
