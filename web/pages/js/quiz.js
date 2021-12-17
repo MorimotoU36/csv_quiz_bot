@@ -453,7 +453,7 @@ function search_question(){
             let result = resp.result
 
             let result_table = ""
-            result_table += "<table>"
+            result_table += "<table id='search_result_table'>"
             result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){

@@ -38,3 +38,7 @@ footer,.push {
     /* また最後の子要素の潜在的なマージンとしても機能 */
     margin-bottom: -25px;
 }
+
+table#search_result_table, table#search_result_table td, table#search_result_table th {
+    border: 1px #808080 solid;
+}
