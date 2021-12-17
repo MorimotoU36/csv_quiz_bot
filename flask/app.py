@@ -224,11 +224,13 @@ def search():
             }
         else:
             return {
+                "statusCode" : 200,
                 "req" : req,
                 "result" : result['result']
             }
     except Exception as e:
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
