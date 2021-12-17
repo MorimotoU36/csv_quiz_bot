@@ -33,7 +33,7 @@
             <tr>
                 <td>検索語句</td>
                 <td>:</td>
-                <td><input type="text" id="question_number"></td>
+                <td><input type="text" id="query"></td>
             </tr>
             <tr>
                 <td>検索対象</td>
@@ -44,13 +44,10 @@
                 </td>
             </tr>
         </table>
-        <!-- <input type="button" value="出題" onClick="get_question()">
-        <input type="button" value="ランダム出題" onClick="random_select_question()">
-        <input type="button" value="答え" onClick="display_answer()"> -->
-        <input type="button" value="検索" >
+        <input type="button" value="検索" onClick="search_question()">
 
         <hr>
-
+        <div id="search_result"></div>
 
         <div class="push"></div>
     </div>

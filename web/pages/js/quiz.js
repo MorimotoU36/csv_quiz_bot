@@ -429,3 +429,46 @@ function set_category_box(category){
         category_area.appendChild(newCategoryElement);
     }
 }
+
+//問題検索
+function search_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num,
+        "query": document.getElementById("query").value
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getSearchQuizApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let result = resp.result
+
+            let result_table = ""
+            result_table += "<table>"
+            result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th></tr></thead>"
+
+            for(let i=0;i<result.length;i++){
+                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ result[i].quiz_sentense +"</td><td>"+ result[i].answer +"</td></tr>"
+            }
+
+            result_table += "</table>"
+
+            let search_result = document.getElementById("search_result")
+            search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}

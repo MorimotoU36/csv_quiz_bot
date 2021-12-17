@@ -31,3 +31,8 @@ function getAddQuizApi(){
 function getEditQuizApi(){
     return server + 'edit'
 }
+
+//問題検索API
+function getSearchQuizApi(){
+    return server + 'search'
+}
