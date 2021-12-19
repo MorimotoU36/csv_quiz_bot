@@ -441,10 +441,13 @@ function search_question(){
         return false;
     }
 
+    //入力された検索語句
+    let query = document.getElementById("query").value
+
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "query": document.getElementById("query").value
+        "query": query
     }
 
     //外部APIへPOST通信、問題を取得しにいく
@@ -457,7 +460,9 @@ function search_question(){
             result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
-                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ result[i].quiz_sentense +"</td><td>"+ result[i].answer +"</td></tr>"
+                let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ sentense +"</td><td>"+ answer +"</td></tr>"
             }
 
             result_table += "</table>"
