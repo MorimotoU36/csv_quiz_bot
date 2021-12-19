@@ -447,7 +447,11 @@ function search_question(){
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "query": query
+        "query": query,
+        "condition" : {
+            "question": document.getElementById('check_question').checked,
+            "answer": document.getElementById('check_answer').checked
+        }
     }
 
     //外部APIへPOST通信、問題を取得しにいく
