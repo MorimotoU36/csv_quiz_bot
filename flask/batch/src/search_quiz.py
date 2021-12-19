@@ -53,11 +53,16 @@ def search_quiz(query,file_num,cond):
         if(cond_question or cond_answer):
             sql_statement += " WHERE "
             if(cond_question):
+                # 問題にチェックあったときは語句が含まれている問題文を検索
                 sql_statement += " quiz_sentense LIKE '%{0}%' ".format(query)
             if(cond_answer):
+                # 答えにチェックあったときは語句が含まれている解答文を検索
                 if(cond_question):
                     sql_statement += " AND "
                 sql_statement += " answer LIKE '%{0}%' ".format(query)
+        else:
+            # いずれもチェックないときは問題又は解答に語句が含まれている問題を検索
+            sql_statement += " WHERE quiz_sentense LIKE '%{0}%' OR answer LIKE '%{0}%'".format(query)
         cursor.execute(sql_statement)
 
         # MySQLから帰ってきた結果を受け取る
