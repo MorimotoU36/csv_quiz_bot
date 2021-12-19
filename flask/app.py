@@ -10,6 +10,7 @@ from batch.src.minimum_quiz import minimum_quiz
 from batch.src.add_quiz import add_quiz
 from batch.src.edit_quiz import edit_quiz
 from batch.module.ini import get_table_list
+from batch.src.get_category import get_category
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -378,6 +379,27 @@ def edit():
                 "req" : req,
                 "result" : result['result']
             }
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/get_category', methods=["POST"])
+def category_list():
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        file_num = int(req.get("file_num",-1))
+
+        # カテゴリ取得
+        results = get_category(file_num)
+
+        return {
+            "statusCode" : 200,
+            "result" : results['result']
+        }
+
     except Exception as e:
         return {
             'statusCode' : 500,
