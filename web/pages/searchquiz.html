@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>APIテスト</title>
+        <title>問題検索</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="./css/quiz.css">
         <script src="./js/properties.js"></script>
@@ -31,27 +31,23 @@
                 </td>
             </tr>
             <tr>
-                <td>問題番号</td>
+                <td>検索語句</td>
                 <td>:</td>
-                <td><input type="text" id="question_number"></td>
+                <td><input type="text" id="query"></td>
+            </tr>
+            <tr>
+                <td>検索対象</td>
+                <td>:</td>
+                <td>
+                    <input type="checkbox" id="check_question">問題
+                    <input type="checkbox" id="check_answer">答え
+                </td>
             </tr>
         </table>
-        <input type="button" value="出題" onClick="get_question()">
-        <input type="button" value="ランダム出題" onClick="random_select_question()">
-        <input type="button" value="答え" onClick="display_answer()">
+        <input type="button" value="検索" onClick="search_question()">
 
         <hr>
-        <span>問題：</span>
-        <span id="question"></span>
-        <div id="category_area">
-
-        </div>
-        <hr>
-        <span>答え：</span>
-        <span id="answer"></span>
-        <hr>
-        <input type="button" value="正解した！" onClick="correct_register()" >
-        <input type="button" value="間違えた・・" onClick="incorrect_register()">
+        <div id="search_result"></div>
 
         <div class="push"></div>
     </div>
@@ -59,10 +55,10 @@
     <footer>
         <hr>
         <span class="left">
-            問題出題
+            <a href='./quiz.html'>問題出題</a>
             <a href='./addquiz.html'>問題追加</a>
             <a href='./editquiz.html'>問題編集</a>
-            <a href='./searchquiz.html'>問題検索</a>
+            問題検索
             <a href='./english_quiz.html'>英文出題</a>
             <a href='./addenglish_quiz.html'>英文追加</a>
             <a href='./english_editquiz.html'>英文編集</a>

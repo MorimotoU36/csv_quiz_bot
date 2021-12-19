@@ -429,3 +429,55 @@ function set_category_box(category){
         category_area.appendChild(newCategoryElement);
     }
 }
+
+//問題検索
+function search_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //入力された検索語句
+    let query = document.getElementById("query").value
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num,
+        "query": query,
+        "condition" : {
+            "question": document.getElementById('check_question').checked,
+            "answer": document.getElementById('check_answer').checked
+        }
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getSearchQuizApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let result = resp.result
+
+            let result_table = ""
+            result_table += "<table id='search_result_table'>"
+            result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th></tr></thead>"
+
+            for(let i=0;i<result.length;i++){
+                let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ sentense +"</td><td>"+ answer +"</td></tr>"
+            }
+
+            result_table += "</table>"
+
+            let search_result = document.getElementById("search_result")
+            search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}

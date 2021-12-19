@@ -9,12 +9,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def search_quiz(query,file_num):
+def search_quiz(query,file_num,cond):
     """検索語句から問題を取得する関数
 
     Args:
         query (str): 検索語句
         file_num (int): ファイル番号
+        cond(JSON): 検索条件のオプション
 
         Returns:
             result [JSON]: 取得した問題のリスト
@@ -26,6 +27,8 @@ def search_quiz(query,file_num):
         table_list = get_table_list()
         table = table_list[file_num]['name']
         nickname = table_list[file_num]['nickname']
+        cond_question = cond.get('question',False)
+        cond_answer = cond.get('answer',False)
     except IndexError:
         return {
             "statusCode": 500,
@@ -46,8 +49,21 @@ def search_quiz(query,file_num):
     with conn.cursor() as cursor:
         # 検索語句が問題文または解答文に含まれる
         # SQLを実行する
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_sentense LIKE '%{1}%' OR answer LIKE '%{1}%' ".format(table,query)
-        cursor.execute(sql)
+        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table,query)
+        if(cond_question or cond_answer):
+            sql_statement += " WHERE "
+            if(cond_question):
+                # 問題にチェックあったときは語句が含まれている問題文を検索
+                sql_statement += " quiz_sentense LIKE '%{0}%' ".format(query)
+            if(cond_answer):
+                # 答えにチェックあったときは語句が含まれている解答文を検索
+                if(cond_question):
+                    sql_statement += " AND "
+                sql_statement += " answer LIKE '%{0}%' ".format(query)
+        else:
+            # いずれもチェックないときは問題又は解答に語句が含まれている問題を検索
+            sql_statement += " WHERE quiz_sentense LIKE '%{0}%' OR answer LIKE '%{0}%'".format(query)
+        cursor.execute(sql_statement)
 
         # MySQLから帰ってきた結果を受け取る
         # Select結果を取り出す
