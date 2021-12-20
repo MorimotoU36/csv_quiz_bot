@@ -12,11 +12,14 @@ let sentense = ""
 //答え
 let quiz_answer = ""
 
-//ファイル名、ファイル番号の変更を反映する
+//ファイル名、ファイル番号の変更を反映する。カテゴリリストも変更する
 function update_file_num(event){
     fl = document.getElementById("file_list")
     file_num = Number(fl.options[fl.selectedIndex].value)
     file_name = fl.options[fl.selectedIndex].innerText
+
+    //カテゴリリスト反映
+    get_category_list(file_num)
 }
 
 //現在選択されているファイルの番号を取得
@@ -473,6 +476,57 @@ function search_question(){
 
             let search_result = document.getElementById("search_result")
             search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
+//カテゴリリスト取得
+function get_category_list(file_num){
+
+    //指定なしの場合
+    if(Number(file_num) == -1){
+        //ドロップダウンリストに「指定なし」のみ設定する
+        let category_list = document.getElementById("category_list");
+        category_list.innerHTML = "";
+
+        let noselected = document.createElement('option');
+        noselected.innerText = "指定なし";
+        noselected.setAttribute('value',-1);
+        category_list.appendChild(noselected);
+
+        return true;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num
+    }
+
+    //外部APIへPOST通信、カテゴリを取得しにいく
+    post_data(getCategoryListApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let results = resp.result
+
+            // ドロップダウンリストにカテゴリのリストを定義する
+            let category_list = document.getElementById("category_list");
+            category_list.innerHTML = "";
+
+            let noselected = document.createElement('option');
+            noselected.innerText = "指定なし";
+            noselected.setAttribute('value',-1);
+            category_list.appendChild(noselected);
+
+            for(let i=0;i<results.length;i++){
+                var target = document.createElement('option');
+                target.innerText = results[i];
+                target.setAttribute('value',results[i]);
+                category_list.appendChild(target);
+            }
 
         }else{
             //内部エラー時
