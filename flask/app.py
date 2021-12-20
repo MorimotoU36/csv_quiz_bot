@@ -207,6 +207,7 @@ def search():
             "question": trueなら問題文を対象に検索
             "answer": trueなら答えを対象に検索
         }
+        "category": カテゴリ
     }
 
     Returns:
@@ -218,9 +219,10 @@ def search():
         file_num = int(req.get("file_num"))
         query = req.get("query","")
         condition = req.get("condition","{}")
+        category = req.get("category","")
     
         # MySQLに問題を取得しにいく
-        result = search_quiz(query,file_num,condition)
+        result = search_quiz(query,file_num,condition,category)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
