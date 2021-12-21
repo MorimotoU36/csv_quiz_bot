@@ -469,7 +469,7 @@ function search_question(){
 
             let result_table = ""
             result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th><th>カテゴリ</th></tr></thead>"
+            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
                 let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
@@ -480,9 +480,9 @@ function search_question(){
                     //カテゴリ要素を作成
                     category += "<span class='category-elements'>"
                     category += categories[i]
-                    category += "</span>"
+                    category += "</span><br>"
                 }
-                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ sentense +"</td><td>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
