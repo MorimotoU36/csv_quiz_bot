@@ -447,6 +447,10 @@ function search_question(){
     //入力された検索語句
     let query = document.getElementById("query").value
 
+    //選択されたカテゴリ取得
+    cl = document.getElementById("category_list")
+    selected_category = cl.options[cl.selectedIndex].value
+
     //JSONデータ作成
     var data = {
         "file_num": file_num,
@@ -454,7 +458,8 @@ function search_question(){
         "condition" : {
             "question": document.getElementById('check_question').checked,
             "answer": document.getElementById('check_answer').checked
-        }
+        },
+        "category": selected_category == -1 ? "" : selected_category
     }
 
     //外部APIへPOST通信、問題を取得しにいく
