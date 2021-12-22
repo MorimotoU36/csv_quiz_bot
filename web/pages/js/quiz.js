@@ -12,11 +12,14 @@ let sentense = ""
 //答え
 let quiz_answer = ""
 
-//ファイル名、ファイル番号の変更を反映する
+//ファイル名、ファイル番号の変更を反映する。カテゴリリストも変更する
 function update_file_num(event){
     fl = document.getElementById("file_list")
     file_num = Number(fl.options[fl.selectedIndex].value)
     file_name = fl.options[fl.selectedIndex].innerText
+
+    //カテゴリリスト反映
+    get_category_list(file_num)
 }
 
 //現在選択されているファイルの番号を取得
@@ -444,6 +447,10 @@ function search_question(){
     //入力された検索語句
     let query = document.getElementById("query").value
 
+    //選択されたカテゴリ取得
+    cl = document.getElementById("category_list")
+    selected_category = cl.options[cl.selectedIndex].value
+
     //JSONデータ作成
     var data = {
         "file_num": file_num,
@@ -451,7 +458,8 @@ function search_question(){
         "condition" : {
             "question": document.getElementById('check_question').checked,
             "answer": document.getElementById('check_answer').checked
-        }
+        },
+        "category": selected_category == -1 ? "" : selected_category
     }
 
     //外部APIへPOST通信、問題を取得しにいく
@@ -461,18 +469,77 @@ function search_question(){
 
             let result_table = ""
             result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th>番号</th><th>問題</th><th>答え</th></tr></thead>"
+            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
                 let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
-                result_table += "<tr><td>"+ result[i].quiz_num +"</td><td>"+ sentense +"</td><td>"+ answer +"</td></tr>"
+                let categories = result[i].category.split(':');
+                let category = "";
+                for(let i=0;i<categories.length;i++){
+                    //カテゴリ要素を作成
+                    category += "<span class='category-elements'>"
+                    category += categories[i]
+                    category += "</span><br>"
+                }
+                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
 
             let search_result = document.getElementById("search_result")
             search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
+//カテゴリリスト取得
+function get_category_list(file_num){
+
+    //指定なしの場合
+    if(Number(file_num) == -1){
+        //ドロップダウンリストに「指定なし」のみ設定する
+        let category_list = document.getElementById("category_list");
+        category_list.innerHTML = "";
+
+        let noselected = document.createElement('option');
+        noselected.innerText = "指定なし";
+        noselected.setAttribute('value',-1);
+        category_list.appendChild(noselected);
+
+        return true;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num
+    }
+
+    //外部APIへPOST通信、カテゴリを取得しにいく
+    post_data(getCategoryListApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let results = resp.result
+
+            // ドロップダウンリストにカテゴリのリストを定義する
+            let category_list = document.getElementById("category_list");
+            category_list.innerHTML = "";
+
+            let noselected = document.createElement('option');
+            noselected.innerText = "指定なし";
+            noselected.setAttribute('value',-1);
+            category_list.appendChild(noselected);
+
+            for(let i=0;i<results.length;i++){
+                var target = document.createElement('option');
+                target.innerText = results[i];
+                target.setAttribute('value',results[i]);
+                category_list.appendChild(target);
+            }
 
         }else{
             //内部エラー時

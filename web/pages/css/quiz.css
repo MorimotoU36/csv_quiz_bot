@@ -47,3 +47,20 @@ table#search_result_table, table#search_result_table td, table#search_result_tab
     color: orangered;
     font-weight: 900;
 }
+
+table#search_result_table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+.table_sentense {
+    width: 40%;
+}
+
+.table_answer {
+    width: 40%;
+}
+
+.table_id {
+    width: 5%;
+}

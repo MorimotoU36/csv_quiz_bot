@@ -36,3 +36,8 @@ function getEditQuizApi(){
 function getSearchQuizApi(){
     return server + 'search'
 }
+
+//カテゴリリスト取得API
+function getCategoryListApi(){
+    return server + 'get_category'
+}
