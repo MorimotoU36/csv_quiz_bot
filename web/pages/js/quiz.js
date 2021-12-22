@@ -548,3 +548,69 @@ function get_category_list(file_num){
         }
     })
 }
+
+//問題検索・カテゴリ設定
+function search_and_category(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //入力された検索語句
+    let query = document.getElementById("query").value
+
+    //選択されたカテゴリ取得
+    cl = document.getElementById("category_list")
+    selected_category = cl.options[cl.selectedIndex].value
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num,
+        "query": query,
+        "condition" : {
+            "question": document.getElementById('check_question').checked,
+            "answer": document.getElementById('check_answer').checked
+        },
+        "category": selected_category == -1 ? "" : selected_category
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getSearchQuizApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let result = resp.result
+
+            let result_table = ""
+            result_table += "<table id='search_result_table'>"
+            result_table += "<thead><tr><th>チェック</th><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
+
+            for(let i=0;i<result.length;i++){
+                let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
+                let categories = result[i].category.split(':');
+                let category = "";
+                for(let i=0;i<categories.length;i++){
+                    //カテゴリ要素を作成
+                    category += "<span class='category-elements'>"
+                    category += categories[i]
+                    category += "</span><br>"
+                }
+                result_table += "<tr><td><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+            }
+
+            result_table += "</table>"
+
+            let search_result = document.getElementById("search_result")
+            search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
