@@ -133,33 +133,39 @@ def edit_category_of_question(data):
             table = table_list[file_num]['name']
             nickname = table_list[file_num]['nickname']
 
-            # まずは問題を取得
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
-            cursor.execute(sql)
+            with conn.cursor() as cursor:
+                # まずは問題を取得
+                sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+                cursor.execute(sql)
 
-            # MySQLから帰ってきた結果を受け取る
-            # Select結果を取り出す
-            results = cursor.fetchall()
+                # MySQLから帰ってきた結果を受け取る
+                # Select結果を取り出す
+                results = cursor.fetchall()
 
-            # カテゴリを取得
-            category = results[0]['category']
+                # カテゴリを取得
+                category = results[0]['category']
 
-            # カテゴリを修正する
-            if(query_category in category):
-                # クエリで出したカテゴリがすでにある場合はそれを削除する
-                category = category.replace(query_category,"")
-                category = category.replace("::",":")
-                if(category[0]==":"):
-                    category = category[1:]
-                if(category[-1]==":"):
-                    category = category[:-1]
-            else:
-                # クエリで出したカテゴリが含まれてない場合は追加する
-                category = category + ":" + query_category
-            
-            # アップデート
-            sql = "UPDATE {0} SET category = '{1}' WHERE quiz_num = {2} ".format(table,category,quiz_num)
-            cursor.execute(sql)
+                # カテゴリを修正する
+                if(category is not None and query_category in category):
+                    # クエリで出したカテゴリがすでにある場合はそれを削除する
+                    category = category.replace(query_category,"")
+                    category = category.replace("::",":")
+                    if(category == ":"):
+                        category = ""
+                    elif(len(category)>1 and category[0]==":"):
+                        category = category[1:]
+                    elif(len(category)>1 and category[-1]==":"):
+                        category = category[:-1]
+                else:
+                    # クエリで出したカテゴリが含まれてない場合は追加する
+                    if(category is None or category == ''):
+                        category = query_category
+                    else:
+                        category = category + ":" + query_category
+                
+                # アップデート
+                sql = "UPDATE {0} SET category = '{1}' WHERE quiz_num = {2} ".format(table,category,quiz_num)
+                cursor.execute(sql)
         
         #全て成功したらコミット
         conn.commit()
@@ -182,5 +188,23 @@ def edit_category_of_question(data):
 
 
 if __name__=="__main__":
-    res = edit_quiz(2,99,"ques1","ans2","cat3","img4")
+#    res = edit_quiz(2,99,"ques1","ans2","cat3","img4")
+    data = [
+        {
+            "file_num" : 2,
+            "quiz_num" : 93,
+            "category" : "テスト"
+        },
+        {
+            "file_num" : 2,
+            "quiz_num" : 94,
+            "category" : "テスト"
+        },
+        {
+            "file_num" : 2,
+            "quiz_num" : 95,
+            "category" : "テスト"
+        },
+    ]
+    res = edit_category_of_question(data)
     print(res)
