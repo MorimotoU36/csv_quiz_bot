@@ -171,6 +171,11 @@ def edit_category_of_question(data):
         conn.commit()
         conn.close()
 
+        return {
+            "statusCode": 200,
+            "message": "All OK."
+        }
+
     # DB操作失敗時はロールバック
     except Exception as e:
         message = 'Error: DB接続時にエラーが発生しました '
@@ -204,7 +209,7 @@ if __name__=="__main__":
             "file_num" : 2,
             "quiz_num" : 95,
             "category" : "テスト"
-        },
+        }
     ]
     res = edit_category_of_question(data)
     print(res)
