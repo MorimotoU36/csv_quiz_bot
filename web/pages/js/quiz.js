@@ -623,7 +623,7 @@ function search_and_category(){
     searched_file_num = file_num
 }
 
-//
+// 問題のカテゴリを一括設定する
 function update_category_to_checked_question(){
     //メッセージをクリア
     clear_all_message();
@@ -633,6 +633,10 @@ function update_category_to_checked_question(){
     //空欄なら終了
     if(update_category == ""){
         set_error_message("カテゴリを入力して下さい");
+        return false;
+    }else if(!document.getElementById("search_result").hasChildNodes()){
+        //テーブルにデータがないならエラー
+        set_error_message("検索結果にデータがありません");
         return false;
     }
 
