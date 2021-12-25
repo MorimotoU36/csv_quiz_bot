@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>APIテスト</title>
+        <title>カテゴリ設定</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="./css/quiz.css">
         <script src="./js/properties.js"></script>
@@ -13,7 +13,7 @@
     </head>
 <body>
     <div id="wrapper">
-        <h1>CSV Quiz Bot -問題追加-</h1>
+        <h1>CSV Quiz Bot</h1>
 
         <div id="message_area">
             <p id="error" class="error message" style="color:red"></p>
@@ -30,21 +30,37 @@
                     </select>
                 </td>
             </tr>
+            <tr>
+                <td>検索語句</td>
+                <td>:</td>
+                <td><input type="text" id="query"></td>
+            </tr>
+            <tr>
+                <td>検索対象</td>
+                <td>:</td>
+                <td>
+                    <input type="checkbox" id="check_question">問題
+                    <input type="checkbox" id="check_answer">答え
+                </td>
+            </tr>
+            <tr>
+                <td>カテゴリ</td>
+                <td>:</td>
+                <td>
+                    <select id="category_list" >
+                        <option selected value="-1">指定なし</option>
+                    </select>
+                </td>
+            </tr>
         </table>
-
-        <div>
-            <p>追加する問題（形式：テスト問題,正解,カテゴリ,画像ファイル名）</p>
-            <textarea id="input_data" cols="100" rows="10" placeholder="（入力形式：テスト問題,正解,カテゴリ,画像ファイル名）を何行でも"></textarea>
-        </div>
-
-        <input type="button" value="送信" onClick="add_quiz()">
+        <input type="button" value="検索" onClick="search_and_category()">
 
         <hr>
-        <div>
-            <p>--実行ログ--</p>
-            <div id="add_log" class="message" style="color: black">
-            </div>
-        </div>
+        <div id="search_result"></div>
+
+        <hr>
+        <p>チェックを入れた問題にカテゴリ<input type="text" id="update_category">を<input type="button" value="付与(削除))する" onClick="update_category_to_checked_question()"></p>
+        <p id="update_category_result" class="message"></p>
         <div class="push"></div>
     </div>
 
@@ -52,10 +68,10 @@
         <hr>
         <span class="left">
             <a href='./quiz.html'>問題出題</a>
-            問題追加
+            <a href='./addquiz.html'>問題追加</a>
             <a href='./editquiz.html'>問題編集</a>
             <a href='./searchquiz.html'>問題検索</a>
-            <a href='./category_config.html'>カテゴリ設定</a>
+            カテゴリ設定
             <a href='./english_quiz.html'>英文出題</a>
             <a href='./addenglish_quiz.html'>英文追加</a>
             <a href='./english_editquiz.html'>英文編集</a>

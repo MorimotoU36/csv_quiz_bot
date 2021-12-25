@@ -93,6 +93,123 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
         "result": result
     }
 
+def edit_category_of_question(data):
+    """問題にカテゴリを追加・削除する関数
+
+    Args:
+        data ([JSON]): JSONの配列
+        要素は
+        {
+            "file_num" : ファイル番号(int)
+            "quiz_num" : 問題番号(int)
+            "category" : 追加・削除するカテゴリ
+        }
+    """
+
+    # テーブルリスト取得
+    table_list = get_table_list()
+
+    # MySQL への接続を確立する
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB接続時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
+
+    try:
+        # data内のクエリを１個１個見ていく
+        for data_i in data:
+            # ファイル番号を取得
+            file_num = data_i['file_num']
+            # 問題番号を取得
+            quiz_num = data_i['quiz_num']
+            # 追加・削除するカテゴリを取得
+            query_category = data_i['category']
+
+            # テーブル名取得
+            table = table_list[file_num]['name']
+            nickname = table_list[file_num]['nickname']
+
+            with conn.cursor() as cursor:
+                # まずは問題を取得
+                sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+                cursor.execute(sql)
+
+                # MySQLから帰ってきた結果を受け取る
+                # Select結果を取り出す
+                results = cursor.fetchall()
+
+                # カテゴリを取得
+                category = results[0]['category']
+
+                # カテゴリを修正する
+                if(category is not None and query_category in category):
+                    # クエリで出したカテゴリがすでにある場合はそれを削除する
+                    category = category.replace(query_category,"")
+                    category = category.replace("::",":")
+                    if(category == ":"):
+                        category = ""
+                    elif(len(category)>1 and category[0]==":"):
+                        category = category[1:]
+                    elif(len(category)>1 and category[-1]==":"):
+                        category = category[:-1]
+                else:
+                    # クエリで出したカテゴリが含まれてない場合は追加する
+                    if(category is None or category == ''):
+                        category = query_category
+                    else:
+                        category = category + ":" + query_category
+                
+                # アップデート
+                sql = "UPDATE {0} SET category = '{1}' WHERE quiz_num = {2} ".format(table,category,quiz_num)
+                cursor.execute(sql)
+        
+        #全て成功したらコミット
+        conn.commit()
+        conn.close()
+
+        return {
+            "statusCode": 200,
+            "message": "All OK."
+        }
+
+    # DB操作失敗時はロールバック
+    except Exception as e:
+        message = 'Error: DB接続時にエラーが発生しました '
+        try:
+            conn.rollback()
+        except:
+            message += '( ロールバックにも失敗しました )'
+        finally:
+            return {
+                "statusCode": 500,
+                "message": message,
+                "traceback": traceback.format_exc()
+            }
+
+
+
 if __name__=="__main__":
-    res = edit_quiz(2,99,"ques1","ans2","cat3","img4")
+#    res = edit_quiz(2,99,"ques1","ans2","cat3","img4")
+    data = [
+        {
+            "file_num" : 2,
+            "quiz_num" : 93,
+            "category" : "テスト"
+        },
+        {
+            "file_num" : 2,
+            "quiz_num" : 94,
+            "category" : "テスト"
+        },
+        {
+            "file_num" : 2,
+            "quiz_num" : 95,
+            "category" : "テスト"
+        }
+    ]
+    res = edit_category_of_question(data)
     print(res)
