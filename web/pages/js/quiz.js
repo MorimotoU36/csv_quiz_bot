@@ -12,6 +12,9 @@ let sentense = ""
 //答え
 let quiz_answer = ""
 
+//問題検索をしたファイルの番号
+let searched_file_num = -1;
+
 //ファイル名、ファイル番号の変更を反映する。カテゴリリストも変更する
 function update_file_num(event){
     fl = document.getElementById("file_list")
@@ -496,6 +499,9 @@ function search_question(){
                                 +" : "+resp['error']);
         }
     })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
 }
 
 //カテゴリリスト取得
@@ -612,5 +618,64 @@ function search_and_category(){
                                 +" : "+resp['error']);
         }
     })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
 }
 
+//
+function update_category_to_checked_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //入力された検索語句
+    let update_category = document.getElementById("update_category").value
+    //空欄なら終了
+    if(update_category == ""){
+        set_error_message("カテゴリを入力して下さい");
+        return false;
+    }
+
+    //updateクエリを作成
+    update_query = []
+
+    //テーブルから入力データ取得
+    let srt = document.getElementById("search_result_table")
+    let srt_tbody = srt.lastChild
+    let srt_tr = srt_tbody.childNodes
+    for(let i=0;i<srt_tr.length;i++){
+        let srt_td = srt_tr[i].childNodes
+        //チェック確認
+        if(!srt_td[0].firstChild.checked){
+            continue
+        }
+        
+        uqi={
+            "file_num": searched_file_num,
+            "quiz_num": srt_td[1].innerText,
+            "category": update_category
+        }
+        update_query.push(uqi)
+    }
+
+    data = {
+        "data": update_query
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getEditCategoryOfQuestionApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+
+            let update_category_result = document.getElementById("update_category_result")
+            update_category_result.innerHTML = resp['result']
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+}

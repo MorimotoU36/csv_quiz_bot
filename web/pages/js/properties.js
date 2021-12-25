@@ -41,3 +41,8 @@ function getSearchQuizApi(){
 function getCategoryListApi(){
     return server + 'get_category'
 }
+
+//問題のカテゴリ更新API
+function getEditCategoryOfQuestionApi(){
+    return server + 'edit_category_of_question'
+}
