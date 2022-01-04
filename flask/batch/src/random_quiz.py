@@ -44,18 +44,8 @@ def random_quiz(file_num=-1,image=True,rate=100.0):
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
-        # 指定したテーブルの件数を調べる
-        sql = "SELECT count(*) FROM {0}".format(table)
-        cursor.execute(sql)
-        results = cursor.fetchall()
-        count = results[0]['count(*)']
-
-        # 問題番号をランダムで選ぶ
-        quiz_num = random.randint(1,count)
-
-        # SQL作成して問題を取得する
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
-        print(sql)
+        # SQL作成して問題を取得する。結果のうちランダムに1つ取得する
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ORDER BY RAND() LIMIT 1".format(table)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
