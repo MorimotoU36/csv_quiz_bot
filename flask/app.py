@@ -86,9 +86,10 @@ def random():
         file_num = int(req.get("file_num",-1))
         image_flag = bool(req.get("image",True))
         rate = float(req.get("rate",100))
+        category = req.get("category",'')
 
         # MySQLに問題を取得しにいく
-        result = random_quiz(file_num=file_num,image=image_flag,rate=rate)
+        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category)
 
         if(result['statusCode'] == 500):
             return {

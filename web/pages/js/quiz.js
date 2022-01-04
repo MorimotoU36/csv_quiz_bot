@@ -171,9 +171,14 @@ function random_select_question(){
         file_num = get_file_num();
     }
 
+    //選択されたカテゴリ取得
+    cl = document.getElementById("category_list")
+    selected_category = cl.options[cl.selectedIndex].value
+
     //JSONデータ作成
     var data = {
-        "file_num": file_num
+        "file_num": file_num,
+        "category": selected_category == -1 ? "" : selected_category
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getRandomQuestionApi(),data,function(resp){
