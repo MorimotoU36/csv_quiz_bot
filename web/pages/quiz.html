@@ -35,6 +35,15 @@
                 <td>:</td>
                 <td><input type="text" id="question_number"></td>
             </tr>
+            <tr>
+                <td>カテゴリ</td>
+                <td>:</td>
+                <td>
+                    <select id="category_list" >
+                        <option selected value="-1">指定なし</option>
+                    </select>
+                </td>
+            </tr>
         </table>
         <input type="button" value="出題" onClick="get_question()">
         <input type="button" value="ランダム出題" onClick="random_select_question()">
