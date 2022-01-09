@@ -12,6 +12,7 @@ from batch.src.edit_quiz import edit_quiz
 from batch.module.ini import get_table_list
 from batch.src.get_category import get_category
 from batch.src.edit_quiz import edit_category_of_question
+from batch.src.update_category_master import update_category_master
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -419,6 +420,23 @@ def edit_category():
 
         # カテゴリ取得
         results = edit_category_of_question(data)
+
+        return {
+            "statusCode" : results['statusCode'],
+            "result" : results['message']
+        }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/update_category_master', methods=["GET"])
+def ucm():
+    try:
+        # カテゴリマスタ更新関数を実行
+        results = update_category_master()
 
         return {
             "statusCode" : results['statusCode'],
