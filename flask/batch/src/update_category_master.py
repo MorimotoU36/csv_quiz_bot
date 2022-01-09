@@ -43,6 +43,9 @@ def update_category_master():
 
     # # SQLを作成して投げる
     try:
+        # 追加するカテゴリ数
+        insert_categories = 0
+
         with conn.cursor() as cursor:
             # テーブル毎にカテゴリのリストを取得してマスタに更新
             for i in range(len(table)):
@@ -63,11 +66,16 @@ def update_category_master():
 
                 # マスタに入れるカテゴリリストを作る
                 categories = list(categories - already_exists_category)
+                insert_categories += len(categories)
 
                 # カテゴリマスタにデータを入れる
                 for ci in categories:
                     sql_statement = "INSERT INTO category VALUES('{0}','{1}') ".format(table[i],ci)
                     cursor.execute(sql_statement)
+        
+        #全て成功したらコミット
+        conn.commit()
+        conn.close()
     # DB操作失敗時はロールバック
     except Exception as e:
         message = 'Error: DB接続時にエラーが発生しました '
@@ -85,7 +93,7 @@ def update_category_master():
     # 結果をJSONに変形して返す
     return {
         "statusCode": 200,
-        "message": message,
+        "message": "カテゴリマスタの更新が完了しました（新規カテゴリ数：{0}）".format(insert_categories),
     }
 
 if __name__=="__main__":
