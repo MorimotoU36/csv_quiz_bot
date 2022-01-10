@@ -462,7 +462,7 @@ def garbc():
 
         return {
             "statusCode" : results['statusCode'],
-            "result" : results['message']
+            "result" : results['result']
         }
 
     except Exception as e:

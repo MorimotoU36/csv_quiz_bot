@@ -52,6 +52,11 @@ def get_accuracy_rate_by_category(file_ind):
             # MySQLから帰ってきた結果を受け取る
             # Select結果を取り出す
             results = cursor.fetchall()
+            # TODO Decimal -> strに直す効率良い方法、もしくは数値のままでもエラー出ずに返せる方法（DecimalのままだとAPIで取得時にエラーになる）
+            for i in range(len(results)):
+                ri = results[i]
+                ri['accuracy_rate'] = str(ri['accuracy_rate'])
+                results[i] = ri
 
         # 結果をJSONに変形して返す
         return {
