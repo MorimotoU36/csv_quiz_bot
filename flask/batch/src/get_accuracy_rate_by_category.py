@@ -42,21 +42,29 @@ def get_accuracy_rate_by_category(file_ind):
         }
 
     # # SQLを作成して投げる
-    with conn.cursor() as cursor:
-        # 検索語句がカテゴリに含まれる
-        # SQLを実行する
-        sql_statement = "SELECT c_category,accuracy_rate FROM {0} ".format(table+'_category_view')
-        cursor.execute(sql_statement)
+    try:
+        with conn.cursor() as cursor:
+            # 検索語句がカテゴリに含まれる
+            # SQLを実行する
+            sql_statement = "SELECT c_category,accuracy_rate FROM {0} ".format(table+'_category_view')
+            cursor.execute(sql_statement)
 
-        # MySQLから帰ってきた結果を受け取る
-        # Select結果を取り出す
-        results = cursor.fetchall()
+            # MySQLから帰ってきた結果を受け取る
+            # Select結果を取り出す
+            results = cursor.fetchall()
 
-    # 結果をJSONに変形して返す
-    return {
-        "statusCode": 200,
-        "result": results
-    }
+        # 結果をJSONに変形して返す
+        return {
+            "statusCode": 200,
+            "result": results
+        }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB操作時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
+
 
 if __name__=="__main__":
     res = get_accuracy_rate_by_category(0)
