@@ -103,3 +103,19 @@ SELECT
   category,
   clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM english_speaking;
+
+DROP VIEW IF EXISTS aws_quiz_category_view;
+CREATE VIEW aws_quiz_category_view AS 
+SELECT 
+  c.category as c_category,
+  SUM(clear_count) as sum_of_clear_count,
+  SUM(fail_count) as sum_of_fail_count,
+  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+FROM category as c 
+CROSS JOIN aws_quiz as a 
+WHERE c.file_name = 'aws_quiz' 
+AND a.category LIKE concat('%',c.category,'%')
+GROUP BY c_category
+ORDER BY c_category;
+
+
