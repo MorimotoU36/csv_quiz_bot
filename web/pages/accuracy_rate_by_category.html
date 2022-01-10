@@ -1,0 +1,59 @@
+<html>
+    <head>
+        <title>カテゴリ別正解率表示</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="./css/quiz.css">
+        <script src="./js/properties.js"></script>
+        <script src="./js/quiz.js"></script>
+        <script>
+            window.onload = function(){
+                get_csv_name_list();
+            };
+        </script>
+    </head>
+<body>
+    <div id="wrapper">
+        <h1>CSV Quiz Bot</h1>
+
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
+        </div>
+
+        <table style="border:none">
+            <tr>
+                <td>ファイル</td>
+                <td>:</td>
+                <td>
+                    <select id="file_list" onChange="update_file_num(event)">
+                        <option selected value="-1">指定なし</option>
+                    </select>
+                </td>
+            </tr>
+        </table>
+        <input type="button" value="正解率表示" onClick="display_accuracy_rate_by_category()">
+
+        <hr>
+        <div id="search_result"></div>
+
+    </div>
+
+    <footer>
+        <hr>
+        <span class="left">
+            <a href='./quiz.html'>問題出題</a>
+            <a href='./addquiz.html'>問題追加</a>
+            <a href='./editquiz.html'>問題編集</a>
+            <a href='./searchquiz.html'>問題検索</a>
+            カテゴリ別正解率表示
+            <a href='./english_quiz.html'>英文出題</a>
+            <a href='./addenglish_quiz.html'>英文追加</a>
+            <a href='./english_editquiz.html'>英文編集</a>
+        </span>
+        <span class="right">
+        ©️ Tatsuroh Wakasugi
+        </span>
+    </footer>
+</body>
+</html>
+
