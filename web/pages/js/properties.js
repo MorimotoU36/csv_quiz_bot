@@ -46,3 +46,8 @@ function getCategoryListApi(){
 function getEditCategoryOfQuestionApi(){
     return server + 'edit_category_of_question'
 }
+
+//カテゴリ別正解率取得API
+function getAccuracyRateByCategoryApi(){
+    return server + 'get_accuracy_rate_by_category'
+}

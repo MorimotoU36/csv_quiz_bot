@@ -688,3 +688,51 @@ function update_category_to_checked_question(){
     //検索したファイルの番号を記録
     searched_file_num = file_num
 }
+
+
+// カテゴリ別正解率表示
+function display_accuracy_rate_by_category(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num
+    }
+
+    //外部APIへPOST通信、カテゴリと正解率を取得しにいく
+    post_data(getAccuracyRateByCategoryApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let result = resp.result
+
+            let result_table = ""
+            result_table += "<table id='search_result_table'>"
+            result_table += "<thead><tr><th>カテゴリ</th><th>正解率</th></tr></thead>"
+
+            for(let i=0;i<result.length;i++){
+                let category = result[i].c_category
+                let rate = result[i].accuracy_rate
+                result_table += "<tr><td>"+ category +"</td><td>"+ rate +"</td></tr>"
+            }
+
+            result_table += "</table>"
+
+            let search_result = document.getElementById("search_result")
+            search_result.innerHTML = result_table
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+}
