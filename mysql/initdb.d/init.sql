@@ -49,6 +49,13 @@ CREATE TABLE IF NOT EXISTS english_speaking
 ) DEFAULT CHARACTER
   SET=utf8;
 
+CREATE TABLE IF NOT EXISTS category
+(
+  file_name VARCHAR(256) NOT NULL,
+  category VARCHAR(256) NOT NULL
+) DEFAULT CHARACTER
+  SET=utf8;
+
 DROP VIEW IF EXISTS aws_quiz_view;
 CREATE VIEW aws_quiz_view AS 
 SELECT 
