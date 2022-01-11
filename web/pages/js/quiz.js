@@ -22,7 +22,9 @@ function update_file_num(event){
     file_name = fl.options[fl.selectedIndex].innerText
 
     //カテゴリリスト反映
-    get_category_list(file_num)
+    if(document.getElementById("category_list") != null){
+        get_category_list(file_num)
+    }
 }
 
 //現在選択されているファイルの番号を取得
@@ -711,20 +713,37 @@ function display_accuracy_rate_by_category(){
         if(resp['statusCode'] == 200){    
             let result = resp.result
 
-            let result_table = ""
-            result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th>カテゴリ</th><th>正解率</th></tr></thead>"
-
+            let visualized_data = [['Name', 'Accuracy_Rate', { role: 'style' } ]]
             for(let i=0;i<result.length;i++){
-                let category = result[i].c_category
-                let rate = result[i].accuracy_rate
-                result_table += "<tr><td>"+ category +"</td><td>"+ rate +"</td></tr>"
+                visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA'])
             }
+            console.log(visualized_data)
+            visualized_data = google.visualization.arrayToDataTable(visualized_data)
+            var view = new google.visualization.DataView(visualized_data);
 
-            result_table += "</table>"
+            var options = {
+                height: 2000,
+                bar: {groupWidth: "95%"},
+                legend: { position: "none" },
+            };
 
-            let search_result = document.getElementById("search_result")
-            search_result.innerHTML = result_table
+            // view.setColumns([0, 1,
+            //                 { calc: "stringify",
+            //                     sourceColumn: 1,
+            //                     type: "string",
+            //                     role: "annotation" },
+            //                 2]);
+        
+            // var options = {
+            //     title: "Density of Precious Metals, in g/cm^3",
+            //     width: 600,
+            //     height: 400,
+            //     bar: {groupWidth: "95%"},
+            //     legend: { position: "none" },
+            // };
+            
+            var chart = new google.visualization.BarChart(document.getElementById("search_result"));
+            chart.draw(view, options);
 
         }else{
             //内部エラー時

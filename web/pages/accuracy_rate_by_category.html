@@ -3,9 +3,13 @@
         <title>カテゴリ別正解率表示</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="./css/quiz.css">
+        <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="./js/properties.js"></script>
         <script src="./js/quiz.js"></script>
         <script>
+            // Load the Visualization API and the corechart package.
+            google.charts.load('current', {'packages':['corechart']});
+            
             window.onload = function(){
                 get_csv_name_list();
             };
