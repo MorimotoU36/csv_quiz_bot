@@ -46,7 +46,7 @@ def get_accuracy_rate_by_category(file_ind):
         with conn.cursor() as cursor:
             # 検索語句がカテゴリに含まれる
             # SQLを実行する
-            sql_statement = "SELECT c_category,accuracy_rate FROM {0} ".format(table+'_category_view')
+            sql_statement = "SELECT c_category,accuracy_rate FROM {0} ORDER BY accuracy_rate ".format(table+'_category_view')
             cursor.execute(sql_statement)
 
             # MySQLから帰ってきた結果を受け取る
