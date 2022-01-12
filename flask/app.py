@@ -13,6 +13,7 @@ from batch.module.ini import get_table_list
 from batch.src.get_category import get_category
 from batch.src.edit_quiz import edit_category_of_question
 from batch.src.update_category_master import update_category_master
+from batch.src.get_accuracy_rate_by_category import get_accuracy_rate_by_category
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -441,6 +442,27 @@ def ucm():
         return {
             "statusCode" : results['statusCode'],
             "result" : results['message']
+        }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/get_accuracy_rate_by_category', methods=["POST"])
+def garbc():
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        file_num = int(req.get("file_num",-1))
+
+        # カテゴリマスタ更新関数を実行
+        results = get_accuracy_rate_by_category(file_num)
+
+        return {
+            "statusCode" : results['statusCode'],
+            "result" : results['result']
         }
 
     except Exception as e:

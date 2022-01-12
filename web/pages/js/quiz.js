@@ -22,7 +22,9 @@ function update_file_num(event){
     file_name = fl.options[fl.selectedIndex].innerText
 
     //カテゴリリスト反映
-    get_category_list(file_num)
+    if(document.getElementById("category_list") != null){
+        get_category_list(file_num)
+    }
 }
 
 //現在選択されているファイルの番号を取得
@@ -677,6 +679,66 @@ function update_category_to_checked_question(){
 
             let update_category_result = document.getElementById("update_category_result")
             update_category_result.innerHTML = resp['result']
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+}
+
+
+// カテゴリ別正解率表示
+function display_accuracy_rate_by_category(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num
+    }
+
+    //外部APIへPOST通信、カテゴリと正解率を取得しにいく
+    post_data(getAccuracyRateByCategoryApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let result = resp.result
+
+            let visualized_data = [['Name', 'Accuracy_Rate', { role: 'style' } ]]
+            for(let i=0;i<result.length;i++){
+                visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA'])
+            }
+            // グラフ領域の縦の長さ（＝40 * データの個数）
+            let graph_height = 40 * visualized_data.length
+            visualized_data = google.visualization.arrayToDataTable(visualized_data)
+            var view = new google.visualization.DataView(visualized_data);
+
+            var options = {
+                height: graph_height,
+                legend: { position: "none" },
+                chartArea: {
+                    left: '15%',
+                    top: 10,
+                    width: '80%',
+                    height: graph_height-50
+                },
+                hAxis: {
+                    minValue: 0,
+                    maxValue: 1
+                }
+            };
+
+            var chart = new google.visualization.BarChart(document.getElementById("search_result"));
+            chart.draw(view, options);
 
         }else{
             //内部エラー時
