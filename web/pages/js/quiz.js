@@ -231,7 +231,6 @@ function worst_rate_question(){
     if(selected_category != -1){
         data.category = selected_category
     }
-    console.log(data)
 
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getWorstRateQuizApi(),data,function(resp){
