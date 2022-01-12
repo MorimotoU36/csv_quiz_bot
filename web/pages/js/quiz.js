@@ -718,13 +718,17 @@ function display_accuracy_rate_by_category(){
                 visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA'])
             }
             console.log(visualized_data)
+//            let graph_height = 104
             visualized_data = google.visualization.arrayToDataTable(visualized_data)
             var view = new google.visualization.DataView(visualized_data);
 
             var options = {
-                height: 2000,
-                bar: {groupWidth: "95%"},
+//                height: graph_height,
                 legend: { position: "none" },
+                hAxis: {
+                    minValue: 0,
+                    maxValue: 1
+                }
             };
 
             // view.setColumns([0, 1,
@@ -741,7 +745,7 @@ function display_accuracy_rate_by_category(){
             //     bar: {groupWidth: "95%"},
             //     legend: { position: "none" },
             // };
-            
+
             var chart = new google.visualization.BarChart(document.getElementById("search_result"));
             chart.draw(view, options);
 
