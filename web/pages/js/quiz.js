@@ -206,6 +206,56 @@ function random_select_question(){
     })
 }
 
+//正解率最低の問題を出題する
+function worst_rate_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //ファイル番号を取得、「指定なし」の時はランダムに選ぶ
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }else{
+        file_num = get_file_num();
+    }
+
+    //選択されたカテゴリ取得
+    cl = document.getElementById("category_list")
+    selected_category = cl.options[cl.selectedIndex].value
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num
+    }
+    if(selected_category != -1){
+        data.category = selected_category
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getWorstRateQuizApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            let question = document.getElementById("question")
+            let answer = document.getElementById("answer")
+            let response = resp.response
+            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : response.answer
+            question_num = Number(response.quiz_num)
+
+            question.textContent = sentense
+            answer.textContent = ""
+
+            //カテゴリエリア
+            let category = response.category
+            set_category_box(category)
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
 //問題に正解したときに正解データ登録
 function correct_register(){
     //メッセージをクリア

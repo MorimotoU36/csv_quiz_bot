@@ -31,7 +31,6 @@ def worst_quiz(file_num=-1,category=None,image=True):
     view = table_list[file_num]['name']+'_view'
     nickname = table_list[file_num]['nickname']
 
-    # TODO カテゴリを使った操作
     # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
@@ -47,7 +46,15 @@ def worst_quiz(file_num=-1,category=None,image=True):
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
         # 指定したテーブルの正解率が最も低い問題を調べる
-        sql = "SELECT quiz_num FROM {0} ORDER BY accuracy_rate LIMIT 1".format(view)
+        # カテゴリが指定されている場合は条件文を追加する
+        where_statement = "WHERE"
+        if(category is not None):
+            where_statement += " category LIKE '%"+category+"%' "
+        
+        if(where_statement == "WHERE"):
+            where_statement = ""
+
+        sql = "SELECT quiz_num FROM {0} ".format(view) + where_statement + " ORDER BY accuracy_rate LIMIT 1"
         cursor.execute(sql)
         results = cursor.fetchall()
         quiz_id = results[0]['quiz_num']
@@ -68,5 +75,5 @@ def worst_quiz(file_num=-1,category=None,image=True):
     }
     
 if __name__=="__main__":
-    res = worst_quiz()
+    res = worst_quiz(file_num=0)
     print(res)
