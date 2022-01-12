@@ -717,34 +717,25 @@ function display_accuracy_rate_by_category(){
             for(let i=0;i<result.length;i++){
                 visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA'])
             }
-            console.log(visualized_data)
-//            let graph_height = 104
+            // グラフ領域の縦の長さ（＝40 * データの個数）
+            let graph_height = 40 * visualized_data.length
             visualized_data = google.visualization.arrayToDataTable(visualized_data)
             var view = new google.visualization.DataView(visualized_data);
 
             var options = {
-//                height: graph_height,
+                height: graph_height,
                 legend: { position: "none" },
+                chartArea: {
+                    left: '15%',
+                    top: 10,
+                    width: '80%',
+                    height: graph_height-50
+                },
                 hAxis: {
                     minValue: 0,
                     maxValue: 1
                 }
             };
-
-            // view.setColumns([0, 1,
-            //                 { calc: "stringify",
-            //                     sourceColumn: 1,
-            //                     type: "string",
-            //                     role: "annotation" },
-            //                 2]);
-        
-            // var options = {
-            //     title: "Density of Precious Metals, in g/cm^3",
-            //     width: 600,
-            //     height: 400,
-            //     bar: {groupWidth: "95%"},
-            //     legend: { position: "none" },
-            // };
 
             var chart = new google.visualization.BarChart(document.getElementById("search_result"));
             chart.draw(view, options);
