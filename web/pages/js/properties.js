@@ -51,3 +51,8 @@ function getEditCategoryOfQuestionApi(){
 function getAccuracyRateByCategoryApi(){
     return server + 'get_accuracy_rate_by_category'
 }
+
+//最低正解率問題取得API
+function getWorstRateQuizApi(){
+    return server + 'worst_rate'
+}
