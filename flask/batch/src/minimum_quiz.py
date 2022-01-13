@@ -30,7 +30,6 @@ def minimum_quiz(file_num=-1,category=None,image=True):
     table = table_list[file_num]['name']
     nickname = table_list[file_num]['nickname']
 
-    # TODO カテゴリを使った操作
     # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
@@ -46,7 +45,15 @@ def minimum_quiz(file_num=-1,category=None,image=True):
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
         # 指定したテーブルの正解数が最も低い問題を調べる
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ORDER BY clear_count LIMIT 1".format(table)
+        # カテゴリが指定されている場合は条件文を追加する
+        where_statement = "WHERE"
+        if(category is not None):
+            where_statement += " category LIKE '%"+category+"%' "
+        
+        if(where_statement == "WHERE"):
+            where_statement = ""
+
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
