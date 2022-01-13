@@ -56,3 +56,8 @@ function getAccuracyRateByCategoryApi(){
 function getWorstRateQuizApi(){
     return server + 'worst_rate'
 }
+
+//最小正解数問題取得API
+function getMinimumClearQuizApi(){
+    return server + 'minimum'
+}
