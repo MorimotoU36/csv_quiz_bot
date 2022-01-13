@@ -43,28 +43,35 @@ def minimum_quiz(file_num=-1,category=None,image=True):
         }
     
     # テーブル名からSQLを作成して投げる
-    with conn.cursor() as cursor:
-        # 指定したテーブルの正解数が最も低い問題を調べる
-        # カテゴリが指定されている場合は条件文を追加する
-        where_statement = "WHERE"
-        if(category is not None):
-            where_statement += " category LIKE '%"+category+"%' "
-        
-        if(where_statement == "WHERE"):
-            where_statement = ""
+    try:
+        with conn.cursor() as cursor:
+            # 指定したテーブルの正解数が最も低い問題を調べる
+            # カテゴリが指定されている場合は条件文を追加する
+            where_statement = "WHERE"
+            if(category is not None):
+                where_statement += " category LIKE '%"+category+"%' "
+            
+            if(where_statement == "WHERE"):
+                where_statement = ""
 
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
-        cursor.execute(sql)
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
+            cursor.execute(sql)
 
-        # MySQLから帰ってきた結果を受け取る
-        # Select結果を取り出す
-        results = cursor.fetchall()
+            # MySQLから帰ってきた結果を受け取る
+            # Select結果を取り出す
+            results = cursor.fetchall()
 
-    # 結果をJSONに変形して返す
-    return {
-        "statusCode": 200,
-        "result": results
-    }
+        # 結果をJSONに変形して返す
+        return {
+            "statusCode": 200,
+            "result": results
+        }
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": 'Error: DB操作時にエラーが発生しました',
+            "traceback": traceback.format_exc()
+        }
 
 if __name__=="__main__":
     res = minimum_quiz(file_num=0)
