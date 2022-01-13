@@ -156,6 +156,7 @@ def worst():
             }
     except Exception as e:
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
@@ -277,11 +278,12 @@ def minimum():
             }
         else:
             return {
-                "req" : req,
-                "result" : result['result']
+                "statusCode" : 200,
+                "response" : result['result'][0]
             }
     except Exception as e:
         return {
+            "statusCode" : 500,
             "error" : traceback.format_exc()
         }
 
