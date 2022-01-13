@@ -278,9 +278,8 @@ def minimum():
             }
         else:
             return {
-                "req" : req,
-                "result" : result['result'],
-                "statusCode" : 200
+                "statusCode" : 200,
+                "response" : result['result'][0]
             }
     except Exception as e:
         return {
