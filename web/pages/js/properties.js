@@ -61,3 +61,8 @@ function getWorstRateQuizApi(){
 function getMinimumClearQuizApi(){
     return server + 'minimum'
 }
+
+//カテゴリマスタ更新API
+function getUpdateCategoryMasterApi(){
+    return server + 'update_category_master'
+}

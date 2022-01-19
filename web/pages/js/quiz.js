@@ -49,6 +49,12 @@ function set_error_message(msg){
     err.innerText = msg
 }
 
+//正常時メッセージの設定・表示
+function set_message(msg){
+    res = document.getElementById("result")
+    res.innerText = msg
+}
+
 //エラーメッセージのクリア
 function clear_error_message(){
     err = document.getElementsByClassName("error")
@@ -849,4 +855,33 @@ function display_accuracy_rate_by_category(){
 
     //検索したファイルの番号を記録
     searched_file_num = file_num
+}
+
+// カテゴリマスタ更新ボタン
+function update_category_master(){
+    //メッセージをクリア
+    clear_all_message();
+
+    //XMLHttpRequest用意
+    var xhr = new XMLHttpRequest();
+    xhr.open('GET', getUpdateCategoryMasterApi());
+    xhr.setRequestHeader('content-type', 'application/json;charset=UTF-8');
+
+    //送信
+    xhr.send();
+
+    //受信して結果を表示
+    xhr.onreadystatechange = function() {
+        if(xhr.readyState === 4 && xhr.status === 200) {
+            const resp = JSON.parse(xhr.responseText);
+
+            if(resp['statusCode'] == 200){    
+                set_message(resp['result']);
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        }
+    }
 }
