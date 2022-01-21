@@ -336,8 +336,7 @@ function correct_register(){
             answer.textContent = ""
 
             //正解登録完了メッセージ
-            let result = document.getElementById("result")
-            result.textContent = resp['result']
+            set_message(resp['result']);
 
             //カテゴリ欄のクリア
             let category_area = document.getElementById("category_area")
@@ -377,8 +376,7 @@ function incorrect_register(){
             answer.textContent = ""
 
             //正解登録完了メッセージ
-            let result = document.getElementById("result")
-            result.textContent = resp['result']
+            set_message(resp['result']);
 
             //カテゴリ欄のクリア
             let category_area = document.getElementById("category_area")
@@ -518,8 +516,7 @@ function edit_question(){
     post_data(getEditQuizApi(),data,function(resp){
         if(resp['statusCode'] == 200){    
             //編集完了メッセージ
-            let result = document.getElementById("result")
-            result.textContent = resp['message']
+            set_message(resp['result']);
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
