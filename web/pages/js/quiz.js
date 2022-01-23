@@ -186,7 +186,8 @@ function random_select_question(){
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "category": selected_category == -1 ? "" : selected_category
+        "category": selected_category == -1 ? "" : selected_category,
+        "checked": document.getElementById("only_checked").checked
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getRandomQuestionApi(),data,function(resp){
@@ -232,7 +233,8 @@ function worst_rate_question(){
 
     //JSONデータ作成
     var data = {
-        "file_num": file_num
+        "file_num": file_num,
+        "checked": document.getElementById("only_checked").checked
     }
     if(selected_category != -1){
         data.category = selected_category
@@ -282,7 +284,8 @@ function minimum_clear_question(){
 
     //JSONデータ作成
     var data = {
-        "file_num": file_num
+        "file_num": file_num,
+        "checked": document.getElementById("only_checked").checked
     }
     if(selected_category != -1){
         data.category = selected_category
