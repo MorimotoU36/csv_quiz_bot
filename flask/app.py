@@ -126,6 +126,7 @@ def worst():
         "file_num": ファイル番号(オプション),
         "category": カテゴリ(オプション)
         "image": 画像取得フラグ(オプション),
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -137,9 +138,10 @@ def worst():
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
         image_flag = bool(req.get("image",True))
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = worst_quiz(file_num=file_num,category=category,image=image_flag)
+        result = worst_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
