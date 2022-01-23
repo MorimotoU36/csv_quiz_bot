@@ -47,12 +47,14 @@ def random_quiz(file_num=-1,image=True,rate=100.0,category="",checked=False):
     # WHERE文作成
     where_statement = 'WHERE'
     if(len(category)>0):
-        where_statement += (" category LIKE '%" + category + "%' ")
+        where_statement += (" category LIKE '%" + category + "%' AND")
     if(checked):
-        where_statement += (" checked != 0 ")
+        where_statement += (" checked != 0 AND")
     
     if(where_statement == 'WHERE'):
         where_statement = ''
+    else:
+        where_statement = where_statement[:-3]
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
