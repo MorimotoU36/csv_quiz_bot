@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def random_quiz(file_num=-1,image=True,rate=100.0,category="",only_checked=False):
+def random_quiz(file_num=-1,image=True,rate=100.0,category="",checked=False):
     """問題を１問、ランダムに取得するAPI
 
     Args:
@@ -18,7 +18,7 @@ def random_quiz(file_num=-1,image=True,rate=100.0,category="",only_checked=False
         image (bool, optional): 画像取得フラグ. Defaults to True.
         rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100.0.
         category (str, optional): 取得する問題のカテゴリ Defaults to ''
-        only_checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
+        checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
     Returns:
         result (JSON): ランダムに取得した問題
@@ -48,7 +48,7 @@ def random_quiz(file_num=-1,image=True,rate=100.0,category="",only_checked=False
     where_statement = 'WHERE'
     if(len(category)>0):
         where_statement += (" category LIKE '%" + category + "%' ")
-    if(only_checked):
+    if(checked):
         where_statement += (" checked != 0 ")
     
     if(where_statement == 'WHERE'):

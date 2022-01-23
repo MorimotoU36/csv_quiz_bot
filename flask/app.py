@@ -91,7 +91,7 @@ def random():
         image_flag = bool(req.get("image",True))
         rate = float(req.get("rate",100))
         category = req.get("category",'')
-        checked = req.get("checked",False)
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
         result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category,checked=checked)
