@@ -101,10 +101,10 @@ def random():
                 "statusCode" : 500,
                 "error" : result["message"]
             }
-        elif(len(result)==0):
+        elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, quiz_num:{1})".format(file_num,quiz_num)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, rate:{1}, category:{2}, checked:{3})".format(file_num,rate,category,checked)
             }
         else:
             # 取得結果を返す
@@ -146,7 +146,7 @@ def worst():
                 "statusCode" : 500,
                 "error" : result["message"]
             }
-        elif(len(result)==0):
+        elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
                 "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
@@ -237,6 +237,11 @@ def search():
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
+            }
+        elif(len(result['result'])==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2})".format(file_num,query,category)
             }
         else:
             return {
