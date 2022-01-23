@@ -265,6 +265,7 @@ def minimum():
         "file_num": ファイル番号(オプション),
         "category": カテゴリ(オプション)
         "image": 画像取得フラグ(オプション),
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -276,15 +277,21 @@ def minimum():
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
         image_flag = bool(req.get("image",True))
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = minimum_quiz(file_num=file_num,category=category,image=image_flag)
+        result = minimum_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
+            }
+        elif(len(result['result'])==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
             }
         else:
             return {

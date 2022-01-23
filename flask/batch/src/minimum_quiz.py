@@ -10,13 +10,14 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def minimum_quiz(file_num=-1,category=None,image=True):
+def minimum_quiz(file_num=-1,category=None,image=True,checked=False):
     """最小正解数の問題を取得する
 
     Args:
         file_num (int, optional): ファイル番号. Defaults to -1.
         category (str, optional): カテゴリ. Defaults to None.
         image (bool, optional): イメージフラグ. Defaults to True.
+        checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
     Returns:
         results [JSON]: 取得した問題
@@ -49,12 +50,16 @@ def minimum_quiz(file_num=-1,category=None,image=True):
             # カテゴリが指定されている場合は条件文を追加する
             where_statement = "WHERE"
             if(category is not None):
-                where_statement += " category LIKE '%"+category+"%' "
+                where_statement += " category LIKE '%"+category+"%' AND"
+            if(checked):
+                where_statement += (" checked != 0 AND")
             
             if(where_statement == "WHERE"):
                 where_statement = ""
+            else:
+                where_statement = where_statement[:-3]
 
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
             cursor.execute(sql)
 
             # MySQLから帰ってきた結果を受け取る
