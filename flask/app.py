@@ -151,7 +151,7 @@ def worst():
         elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, category:{1}, checked:{2})".format(file_num,category,checked)
             }
         else:
             # 取得結果を返す
@@ -291,7 +291,7 @@ def minimum():
         elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, category:{1}, checked:{2})".format(file_num,category,checked)
             }
         else:
             return {
