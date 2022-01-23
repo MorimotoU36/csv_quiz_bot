@@ -77,6 +77,8 @@ def random():
         "file_num": ファイル番号(オプション),
         "image": 画像取得フラグ(オプション),
         "rate": 正解率(オプション)
+        "category": カテゴリ(オプション)
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -89,9 +91,10 @@ def random():
         image_flag = bool(req.get("image",True))
         rate = float(req.get("rate",100))
         category = req.get("category",'')
+        checked = req.get("checked",False)
 
         # MySQLに問題を取得しにいく
-        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category)
+        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
