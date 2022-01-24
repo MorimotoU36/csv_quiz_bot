@@ -62,9 +62,9 @@ table#search_result_table {
 }
 
 .table_id {
-    width: 5%;
+    width: 30px;
 }
 
 .table_checked {
-    width: 5%;
+    width: 30px;
 }

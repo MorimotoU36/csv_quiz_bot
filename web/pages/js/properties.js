@@ -66,3 +66,8 @@ function getMinimumClearQuizApi(){
 function getUpdateCategoryMasterApi(){
     return server + 'update_category_master'
 }
+
+//問題のカテゴリ更新API
+function getEditCheckedOfQuestionApi(){
+    return server + 'edit_checked_of_question'
+}
