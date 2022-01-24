@@ -51,7 +51,7 @@ def search_quiz(query,file_num,cond,category,checked=False):
     with conn.cursor() as cursor:
         # 検索語句が問題文または解答文に含まれる
         # SQLを実行する
-        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} ".format(table,query)
+        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} ".format(table,query)
         sql_statement += " WHERE "
         where_statement=[]
         if(not cond_question and not cond_answer):

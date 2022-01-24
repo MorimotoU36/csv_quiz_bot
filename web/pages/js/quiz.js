@@ -586,12 +586,13 @@ function search_question(){
 
             let result_table = ""
             result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
+            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_checked'>チェック</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
                 let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let categories = result[i].category.split(':');
+                let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
@@ -599,7 +600,7 @@ function search_question(){
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked'>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
