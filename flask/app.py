@@ -218,6 +218,7 @@ def search():
             "answer": trueなら答えを対象に検索
         }
         "category": カテゴリ
+        "checked": チェック問題フラグ（オプション）
     }
 
     Returns:
@@ -230,9 +231,10 @@ def search():
         query = req.get("query","")
         condition = req.get("condition","{}")
         category = req.get("category","")
+        checked = bool(req.get("checked",False))
     
         # MySQLに問題を取得しにいく
-        result = search_quiz(query,file_num,condition,category)
+        result = search_quiz(query,file_num,condition,category,checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
