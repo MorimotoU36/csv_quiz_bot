@@ -14,6 +14,7 @@ from batch.src.get_category import get_category
 from batch.src.edit_quiz import edit_category_of_question
 from batch.src.update_category_master import update_category_master
 from batch.src.get_accuracy_rate_by_category import get_accuracy_rate_by_category
+from batch.src.edit_quiz import edit_checked_of_question
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -77,6 +78,8 @@ def random():
         "file_num": ファイル番号(オプション),
         "image": 画像取得フラグ(オプション),
         "rate": 正解率(オプション)
+        "category": カテゴリ(オプション)
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -89,19 +92,20 @@ def random():
         image_flag = bool(req.get("image",True))
         rate = float(req.get("rate",100))
         category = req.get("category",'')
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category)
+        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
             }
-        elif(len(result)==0):
+        elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, quiz_num:{1})".format(file_num,quiz_num)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, rate:{1}, category:{2}, checked:{3})".format(file_num,rate,category,checked)
             }
         else:
             # 取得結果を返す
@@ -123,6 +127,7 @@ def worst():
         "file_num": ファイル番号(オプション),
         "category": カテゴリ(オプション)
         "image": 画像取得フラグ(オプション),
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -134,19 +139,20 @@ def worst():
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
         image_flag = bool(req.get("image",True))
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = worst_quiz(file_num=file_num,category=category,image=image_flag)
+        result = worst_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
             }
-        elif(len(result)==0):
+        elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0})".format(file_num)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, category:{1}, checked:{2})".format(file_num,category,checked)
             }
         else:
             # 取得結果を返す
@@ -213,6 +219,7 @@ def search():
             "answer": trueなら答えを対象に検索
         }
         "category": カテゴリ
+        "checked": チェック問題フラグ（オプション）
     }
 
     Returns:
@@ -225,15 +232,21 @@ def search():
         query = req.get("query","")
         condition = req.get("condition","{}")
         category = req.get("category","")
+        checked = bool(req.get("checked",False))
     
         # MySQLに問題を取得しにいく
-        result = search_quiz(query,file_num,condition,category)
+        result = search_quiz(query,file_num,condition,category,checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
+            }
+        elif(len(result['result'])==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2}, checked:{3})".format(file_num,query,category,checked)
             }
         else:
             return {
@@ -255,6 +268,7 @@ def minimum():
         "file_num": ファイル番号(オプション),
         "category": カテゴリ(オプション)
         "image": 画像取得フラグ(オプション),
+        "checked": チェック問題フラグ(オプション)
     }
 
     Returns:
@@ -266,15 +280,21 @@ def minimum():
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
         image_flag = bool(req.get("image",True))
+        checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = minimum_quiz(file_num=file_num,category=category,image=image_flag)
+        result = minimum_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
+            }
+        elif(len(result['result'])==0):
+            return {
+                "statusCode" : 404,
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, category:{1}, checked:{2})".format(file_num,category,checked)
             }
         else:
             return {
@@ -472,6 +492,28 @@ def garbc():
             'statusCode' : 500,
             "error" : traceback.format_exc()
         }
+
+@app.route('/edit_checked_of_question', methods=["POST"])
+def edit_checked():
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        data = list(req.get("data",[]))
+
+        # カテゴリ取得
+        results = edit_checked_of_question(data)
+
+        return {
+            "statusCode" : results['statusCode'],
+            "result" : results['message']
+        }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)

@@ -186,7 +186,8 @@ function random_select_question(){
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "category": selected_category == -1 ? "" : selected_category
+        "category": selected_category == -1 ? "" : selected_category,
+        "checked": document.getElementById("only_checked").checked
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getRandomQuestionApi(),data,function(resp){
@@ -232,7 +233,8 @@ function worst_rate_question(){
 
     //JSONデータ作成
     var data = {
-        "file_num": file_num
+        "file_num": file_num,
+        "checked": document.getElementById("only_checked").checked
     }
     if(selected_category != -1){
         data.category = selected_category
@@ -282,7 +284,8 @@ function minimum_clear_question(){
 
     //JSONデータ作成
     var data = {
-        "file_num": file_num
+        "file_num": file_num,
+        "checked": document.getElementById("only_checked").checked
     }
     if(selected_category != -1){
         data.category = selected_category
@@ -572,7 +575,8 @@ function search_question(){
             "question": document.getElementById('check_question').checked,
             "answer": document.getElementById('check_answer').checked
         },
-        "category": selected_category == -1 ? "" : selected_category
+        "category": selected_category == -1 ? "" : selected_category,
+        "checked": document.getElementById("only_checked").checked
     }
 
     //外部APIへPOST通信、問題を取得しにいく
@@ -582,12 +586,13 @@ function search_question(){
 
             let result_table = ""
             result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
+            result_table += "<thead><tr><th class='table_id'>番号</th><th class='table_checked'></th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
                 let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let categories = result[i].category.split(':');
+                let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
@@ -595,7 +600,7 @@ function search_question(){
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked'>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
@@ -691,7 +696,8 @@ function search_and_category(){
             "question": document.getElementById('check_question').checked,
             "answer": document.getElementById('check_answer').checked
         },
-        "category": selected_category == -1 ? "" : selected_category
+        "category": selected_category == -1 ? "" : selected_category,
+        "checked": document.getElementById("only_checked").checked
     }
 
     //外部APIへPOST通信、問題を取得しにいく
@@ -701,12 +707,13 @@ function search_and_category(){
 
             let result_table = ""
             result_table += "<table id='search_result_table'>"
-            result_table += "<thead><tr><th>チェック</th><th class='table_id'>番号</th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
+            result_table += "<thead><tr><th class='table_checked'>チェック</th><th class='table_id'>番号</th><th class='table_checked'></th><th class='table_sentense'>問題</th><th class='table_answer'>答え</th><th>カテゴリ</th></tr></thead>"
 
             for(let i=0;i<result.length;i++){
                 let sentense = result[i].quiz_sentense.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let answer = result[i].answer.replace(new RegExp(query,"g"),"<span class='query_word'>"+query+"</span>")
                 let categories = result[i].category.split(':');
+                let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
@@ -714,7 +721,7 @@ function search_and_category(){
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_checked'><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked'>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
@@ -881,4 +888,59 @@ function update_category_master(){
             }
         }
     }
+}
+
+// 選択した問題をチェック済みにする（または外す）
+function checked_to_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    if(!document.getElementById("search_result").hasChildNodes()){
+        //テーブルにデータがないならエラー
+        set_error_message("検索結果にデータがありません");
+        return false;
+    }
+
+    //updateクエリを作成
+    update_query = []
+
+    //テーブルから入力データ取得
+    let srt = document.getElementById("search_result_table")
+    let srt_tbody = srt.lastChild
+    let srt_tr = srt_tbody.childNodes
+    for(let i=0;i<srt_tr.length;i++){
+        let srt_td = srt_tr[i].childNodes
+        //チェック確認
+        if(!srt_td[0].firstChild.checked){
+            continue
+        }
+        
+        uqi={
+            "file_num": searched_file_num,
+            "quiz_num": srt_td[1].innerText
+        }
+        update_query.push(uqi)
+    }
+
+    data = {
+        "data": update_query
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getEditCheckedOfQuestionApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+
+            let update_category_result = document.getElementById("update_category_result")
+            update_category_result.innerHTML = resp['result']
+
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+
 }

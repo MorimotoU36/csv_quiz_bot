@@ -10,7 +10,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def random_quiz(file_num=-1,image=True,rate=100.0,category=""):
+def random_quiz(file_num=-1,image=True,rate=100.0,category="",checked=False):
     """問題を１問、ランダムに取得するAPI
 
     Args:
@@ -18,6 +18,7 @@ def random_quiz(file_num=-1,image=True,rate=100.0,category=""):
         image (bool, optional): 画像取得フラグ. Defaults to True.
         rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100.0.
         category (str, optional): 取得する問題のカテゴリ Defaults to ''
+        checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
     Returns:
         result (JSON): ランダムに取得した問題
@@ -44,17 +45,21 @@ def random_quiz(file_num=-1,image=True,rate=100.0,category=""):
         }
     
     # WHERE文作成
-    where_statement = 'WHERE'
+    where_statement = []
     if(len(category)>0):
-        where_statement += (" category LIKE '%" + category + "%' ")
+        where_statement.append(" category LIKE '%" + category + "%' ")
+    if(checked):
+        where_statement.append(" checked != 0 ")
     
-    if(where_statement == 'WHERE'):
+    if(len(where_statement) > 0):
+        where_statement = ' WHERE ' + ' AND '.join(where_statement)
+    else:
         where_statement = ''
     
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
         # SQL作成して問題を取得する。結果のうちランダムに1つ取得する
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} {1} ORDER BY RAND() LIMIT 1".format(table,where_statement)
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} {1} ORDER BY RAND() LIMIT 1".format(table,where_statement)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
