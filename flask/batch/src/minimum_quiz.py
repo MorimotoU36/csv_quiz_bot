@@ -48,16 +48,16 @@ def minimum_quiz(file_num=-1,category=None,image=True,checked=False):
         with conn.cursor() as cursor:
             # 指定したテーブルの正解数が最も低い問題を調べる
             # カテゴリが指定されている場合は条件文を追加する
-            where_statement = "WHERE"
+            where_statement = []
             if(category is not None):
-                where_statement += " category LIKE '%"+category+"%' AND"
+                where_statement.append(" category LIKE '%"+category+"%' ")
             if(checked):
-                where_statement += (" checked != 0 AND")
+                where_statement.append(" checked != 0 ")
             
-            if(where_statement == "WHERE"):
-                where_statement = ""
+            if(len(where_statement) > 0):
+                where_statement = ' WHERE ' + ' AND '.join(where_statement)
             else:
-                where_statement = where_statement[:-3]
+                where_statement = ''
 
             sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
             cursor.execute(sql)

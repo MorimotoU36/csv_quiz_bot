@@ -49,16 +49,16 @@ def worst_quiz(file_num=-1,category=None,image=True,checked=False):
         with conn.cursor() as cursor:
             # 指定したテーブルの正解率が最も低い問題を調べる
             # カテゴリが指定されている場合は条件文を追加する
-            where_statement = "WHERE"
+            where_statement = []
             if(category is not None):
-                where_statement += " category LIKE '%"+category+"%' AND"
+                where_statement.append(" category LIKE '%"+category+"%' ")
             if(checked):
-                where_statement += (" checked != 0 AND")
+                where_statement.append(" checked != 0 ")
             
-            if(where_statement == "WHERE"):
-                where_statement = ""
+            if(len(where_statement) > 0):
+                where_statement = ' WHERE ' + ' AND '.join(where_statement)
             else:
-                where_statement = where_statement[:-3]
+                where_statement = ''
 
             sql = "SELECT quiz_num FROM {0} ".format(view) + where_statement + " ORDER BY accuracy_rate LIMIT 1"
             print(sql)
