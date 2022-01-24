@@ -14,6 +14,7 @@ from batch.src.get_category import get_category
 from batch.src.edit_quiz import edit_category_of_question
 from batch.src.update_category_master import update_category_master
 from batch.src.get_accuracy_rate_by_category import get_accuracy_rate_by_category
+from batch.src.edit_quiz import edit_checked_of_question
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -491,6 +492,28 @@ def garbc():
             'statusCode' : 500,
             "error" : traceback.format_exc()
         }
+
+@app.route('/edit_checked_of_question', methods=["POST"])
+def edit_checked():
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        data = list(req.get("data",[]))
+
+        # カテゴリ取得
+        results = edit_checked_of_question(data)
+
+        return {
+            "statusCode" : results['statusCode'],
+            "result" : results['message']
+        }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
