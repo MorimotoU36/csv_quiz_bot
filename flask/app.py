@@ -245,7 +245,7 @@ def search():
         elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2})".format(file_num,query,category)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2}, checked:{3})".format(file_num,query,category,checked)
             }
         else:
             return {

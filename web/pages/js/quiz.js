@@ -575,7 +575,8 @@ function search_question(){
             "question": document.getElementById('check_question').checked,
             "answer": document.getElementById('check_answer').checked
         },
-        "category": selected_category == -1 ? "" : selected_category
+        "category": selected_category == -1 ? "" : selected_category,
+        "checked": document.getElementById("only_checked").checked
     }
 
     //外部APIへPOST通信、問題を取得しにいく
