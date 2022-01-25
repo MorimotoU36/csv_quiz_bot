@@ -449,9 +449,15 @@ function add_quiz(){
     }
 
     post_data(getAddQuizApi(),data,function(resp){
-        //正解登録完了メッセージ
-        let log = document.getElementById("add_log")
-        log.innerHTML = resp['result'].join('<br>')
+        if(resp['statusCode'] == 200){  
+            //正解登録完了メッセージ
+            let log = document.getElementById("add_log")
+            log.innerHTML = resp['result'].join('<br>')
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
     })
 
     //入力データをクリア
