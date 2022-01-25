@@ -76,7 +76,7 @@ def add_quiz(file_num,input_data):
             # SQLを実行する
             with conn.cursor() as cursor:
                 # データを挿入する
-                sql = "INSERT INTO {0} VALUES({1},'{2}','{3}',0,0,'{4}','{5}')".format(table,count,question,answer,category,img_file)
+                sql = "INSERT INTO {0} VALUES({1},'{2}','{3}',0,0,'{4}','{5}',0)".format(table,count,question,answer,category,img_file)
                 print(sql)
                 cursor.execute(sql)
 
@@ -89,7 +89,7 @@ def add_quiz(file_num,input_data):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = 'Error: DB操作時にエラーが発生しました '
         try:
             conn.rollback()
         except:
