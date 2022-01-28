@@ -950,3 +950,41 @@ function checked_to_searched_question(){
     searched_file_num = file_num
 
 }
+
+
+// 選択した問題をチェック済みにする（または外す）
+function checked_to_selected_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    if(file_num < 0 || question_num < 0){
+        //問題が選択されてないならエラー
+        set_error_message("エラー：問題ファイルまたは問題が選択されておりません");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "data": [  
+            {
+                "file_num": file_num,
+                "quiz_num": question_num
+            }
+        ]
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getEditCheckedOfQuestionApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            set_message(resp['result']);
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+
+}
