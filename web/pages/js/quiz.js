@@ -897,7 +897,7 @@ function update_category_master(){
 }
 
 // 選択した問題をチェック済みにする（または外す）
-function checked_to_question(){
+function checked_to_searched_question(){
     //メッセージをクリア
     clear_all_message();
 
