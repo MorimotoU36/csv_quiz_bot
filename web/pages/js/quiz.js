@@ -153,6 +153,11 @@ function get_question(){
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = get_question_num()
 
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -198,6 +203,11 @@ function random_select_question(){
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
+
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
 
             question.textContent = sentense
             answer.textContent = ""
@@ -250,6 +260,11 @@ function worst_rate_question(){
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
 
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -300,6 +315,11 @@ function minimum_clear_question(){
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
+
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
 
             question.textContent = sentense
             answer.textContent = ""

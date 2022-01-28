@@ -61,7 +61,7 @@ def select_quiz(file_num,quiz_num,image_flag):
                 "message": 'Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count)
             }
 
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
