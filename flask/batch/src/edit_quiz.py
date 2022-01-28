@@ -219,6 +219,7 @@ def edit_checked_of_question(data):
 
     try:
         # data内のクエリを１個１個見ていく
+        checked_i=[]
         for data_i in data:
             # ファイル番号を取得
             file_num = data_i['file_num']
@@ -252,13 +253,16 @@ def edit_checked_of_question(data):
                     sql = "UPDATE {0} SET checked = {1} WHERE quiz_num = {2} ".format(table,0,quiz_num)
                     cursor.execute(sql)
 
+                checked_i.append(str(quiz_num))
+
         #全て成功したらコミット
         conn.commit()
         conn.close()
 
+        checked_i = ','.join(checked_i)
         return {
             "statusCode": 200,
-            "message": "All OK."
+            "message": "checked to ["+checked_i+"] OK."
         }
 
     # DB操作失敗時はロールバック
