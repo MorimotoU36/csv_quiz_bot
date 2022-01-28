@@ -153,6 +153,11 @@ function get_question(){
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = get_question_num()
 
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -198,6 +203,11 @@ function random_select_question(){
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
+
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
 
             question.textContent = sentense
             answer.textContent = ""
@@ -250,6 +260,11 @@ function worst_rate_question(){
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
 
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -300,6 +315,11 @@ function minimum_clear_question(){
             sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : response.answer
             question_num = Number(response.quiz_num)
+
+            //チェックありならチェックマークも表示
+            if(response.checked == 1){
+                sentense = "✅" + sentense
+            }
 
             question.textContent = sentense
             answer.textContent = ""
@@ -897,7 +917,7 @@ function update_category_master(){
 }
 
 // 選択した問題をチェック済みにする（または外す）
-function checked_to_question(){
+function checked_to_searched_question(){
     //メッセージをクリア
     clear_all_message();
 
@@ -939,6 +959,44 @@ function checked_to_question(){
             let update_category_result = document.getElementById("update_category_result")
             update_category_result.innerHTML = resp['result']
 
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+
+    //検索したファイルの番号を記録
+    searched_file_num = file_num
+
+}
+
+
+// 選択した問題をチェック済みにする（または外す）
+function checked_to_selected_question(){
+    //メッセージをクリア
+    clear_all_message();
+
+    if(file_num < 0 || question_num < 0){
+        //問題が選択されてないならエラー
+        set_error_message("エラー：問題ファイルまたは問題が選択されておりません");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "data": [  
+            {
+                "file_num": file_num,
+                "quiz_num": question_num
+            }
+        ]
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getEditCheckedOfQuestionApi(),data,function(resp){
+        if(resp['statusCode'] == 200){    
+            set_message(resp['result']);
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
