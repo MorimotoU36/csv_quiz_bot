@@ -149,8 +149,8 @@ function get_question(){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
-            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
-            quiz_answer =  response.answer === undefined ? "" : response.answer
+            sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             question_num = get_question_num()
 
             //チェックありならチェックマークも表示
@@ -200,8 +200,8 @@ function random_select_question(){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
-            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
-            quiz_answer =  response.answer === undefined ? "" : response.answer
+            sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -256,8 +256,8 @@ function worst_rate_question(){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
-            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
-            quiz_answer =  response.answer === undefined ? "" : response.answer
+            sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -312,8 +312,8 @@ function minimum_clear_question(){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
-            sentense = response.quiz_sentense === undefined ? "" : response.quiz_sentense
-            quiz_answer =  response.answer === undefined ? "" : response.answer
+            sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
+            quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
