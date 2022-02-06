@@ -69,8 +69,9 @@ SELECT
   clear_count,
   fail_count,
   category,
+  img_file,
   checked,
-  clear_count / (clear_count + fail_count) AS accuracy_rate
+  100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM aws_quiz;
 
 DROP VIEW IF EXISTS applied_view;
@@ -82,8 +83,9 @@ SELECT
   clear_count,
   fail_count,
   category,
+  img_file,
   checked,
-  clear_count / (clear_count + fail_count) AS accuracy_rate
+  100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM applied;
 
 DROP VIEW IF EXISTS lpic_view;
@@ -95,8 +97,9 @@ SELECT
   clear_count,
   fail_count,
   category,
+  img_file,
   checked,
-  clear_count / (clear_count + fail_count) AS accuracy_rate
+  100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM lpic;
 
 DROP VIEW IF EXISTS english_speaking_view;
@@ -108,8 +111,9 @@ SELECT
   clear_count,
   fail_count,
   category,
+  img_file,
   checked,
-  clear_count / (clear_count + fail_count) AS accuracy_rate
+  100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM english_speaking;
 
 DROP VIEW IF EXISTS aws_quiz_category_view;
