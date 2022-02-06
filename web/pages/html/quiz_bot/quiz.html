@@ -9,6 +9,11 @@
             window.onload = function(){
                 get_csv_name_list();
             };
+
+            // 正解率指定バーの値反映
+            function rate_change_value(){
+                document.getElementById('max_rate_value').innerHTML = document.getElementById('max_rate').value;
+            }
         </script>
     </head>
 <body>
@@ -43,6 +48,11 @@
                         <option selected value="-1">指定なし</option>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td>正解率(%)以下指定</td>
+                <td>:</td>
+                <td><input type="range" id="max_rate" min="0" max="100" value="100" step="1" oninput="rate_change_value()"><span id="max_rate_value">100</span></td>
             </tr>
             <tr>
                 <td>チェック済から出題</td>

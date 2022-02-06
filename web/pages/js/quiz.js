@@ -192,7 +192,8 @@ function random_select_question(){
     var data = {
         "file_num": file_num,
         "category": selected_category == -1 ? "" : selected_category,
-        "checked": document.getElementById("only_checked").checked
+        "checked": document.getElementById("only_checked").checked,
+        "rate": document.getElementById('max_rate').value
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getRandomQuestionApi(),data,function(resp){
