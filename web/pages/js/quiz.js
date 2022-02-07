@@ -603,6 +603,7 @@ function search_question(){
             "answer": document.getElementById('check_answer').checked
         },
         "category": selected_category == -1 ? "" : selected_category,
+        "rate": document.getElementById('max_rate').value,
         "checked": document.getElementById("only_checked").checked
     }
 
@@ -724,6 +725,7 @@ function search_and_category(){
             "answer": document.getElementById('check_answer').checked
         },
         "category": selected_category == -1 ? "" : selected_category,
+        "rate": document.getElementById('max_rate').value,
         "checked": document.getElementById("only_checked").checked
     }
 
