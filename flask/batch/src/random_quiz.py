@@ -10,13 +10,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def random_quiz(file_num=-1,image=True,rate=1.0,category="",checked=False):
+def random_quiz(file_num=-1,image=True,rate=100,category="",checked=False):
     """問題を１問、ランダムに取得するAPI
 
     Args:
         file_num (int, optional): ファイル番号. Defaults to -1.
         image (bool, optional): 画像取得フラグ. Defaults to True.
-        rate (float, optional): 取得する問題の正解率の最大値. Defaults to 1.0., 0.0 ~ 1.0
+        rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100., 0 ~ 100
         category (str, optional): 取得する問題のカテゴリ Defaults to ''
         checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
