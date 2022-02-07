@@ -220,6 +220,7 @@ def search():
         }
         "category": カテゴリ
         "checked": チェック問題フラグ（オプション）
+        "rate": 正解率以下指定（オプション）
     }
 
     Returns:
@@ -233,9 +234,10 @@ def search():
         condition = req.get("condition","{}")
         category = req.get("category","")
         checked = bool(req.get("checked",False))
+        rate = float(req.get("rate",100))
     
         # MySQLに問題を取得しにいく
-        result = search_quiz(query,file_num,condition,category,checked)
+        result = search_quiz(query,file_num,cond=condition,category=category,rate=rate,checked=checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):
@@ -246,7 +248,7 @@ def search():
         elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2}, checked:{3})".format(file_num,query,category,checked)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, query:{1}, category:{2}, checked:{3}, rate={4})".format(file_num,query,category,checked,rate)
             }
         else:
             return {
