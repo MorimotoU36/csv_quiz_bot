@@ -67,6 +67,7 @@
         <input type="button" value="最低正解率問出題" onClick="worst_rate_question()">
         <input type="button" value="最小正解数問出題" onClick="minimum_clear_question()">
         <input type="button" value="答え" onClick="display_answer()">
+        <input type="button" value="画像表示" onClick="display_image()">
 
         <hr>
         <span>問題：</span>
@@ -77,6 +78,8 @@
         <hr>
         <span>答え：</span>
         <span id="answer"></span>
+        <hr>
+        <div id="question_image"></div>
         <hr>
         <input type="button" value="正解した！" onClick="correct_register()" >
         <input type="button" value="間違えた・・" onClick="incorrect_register()">

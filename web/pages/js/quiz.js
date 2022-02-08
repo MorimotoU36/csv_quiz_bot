@@ -11,6 +11,8 @@ let question_num = -1;
 let sentense = ""
 //答え
 let quiz_answer = ""
+//画像ファイル名
+let image_file = ""
 
 //問題検索をしたファイルの番号
 let searched_file_num = -1;
@@ -151,6 +153,7 @@ function get_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = get_question_num()
 
             //チェックありならチェックマークも表示
@@ -203,6 +206,7 @@ function random_select_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -259,6 +263,7 @@ function worst_rate_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -315,6 +320,7 @@ function minimum_clear_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -353,11 +359,14 @@ function correct_register(){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
+            let img = document.getElementById("question_image")
             sentense = ""
             quiz_answer = ""
+            image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
+            img.innerHTML = ""
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -393,11 +402,14 @@ function incorrect_register(){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
+            let img = document.getElementById("question_image")
             sentense = ""
             quiz_answer = ""
+            image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
+            img.innerHTML = ""
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -1010,4 +1022,19 @@ function checked_to_selected_question(){
     //検索したファイルの番号を記録
     searched_file_num = file_num
 
+}
+
+//画像を表示
+function display_image(){
+    //メッセージをクリア
+    clear_all_message();
+
+    if(image_file == ""){
+        set_error_message("画像ファイル名がありません")
+    }else{
+        let img = document.getElementById("question_image")
+
+        // TODO S3に画像ファイルを取得しにいく
+        console.log(img_file)
+    }
 }
