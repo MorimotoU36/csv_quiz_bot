@@ -12,3 +12,5 @@ package-lock.json
 application.ini
 application_ut.ini
 application_local_container.ini
+flask/config/application_local_container.ini
+flask/config/application_ut.ini
