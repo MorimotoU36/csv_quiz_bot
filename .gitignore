@@ -10,3 +10,5 @@ __pycache__/
 node_modules/
 package-lock.json
 application.ini
+application_ut.ini
+application_local_container.ini
