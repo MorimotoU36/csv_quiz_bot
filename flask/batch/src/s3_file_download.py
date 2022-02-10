@@ -21,26 +21,40 @@ def file_download(img_file_name):
     """
 
     # 設定ファイルを呼び出してS3バケット名を取得
-    ini = get_ini_parser()
-    bucket = s3.Bucket(ini['AWS']['S3_BUCKET_NAME'])
+    try:
+        ini = get_ini_parser()
+        bucket = s3.Bucket(ini['AWS']['S3_BUCKET_NAME'])
+    except Exception as e:
+        print("Error! ini")
+        print(traceback.format_exc())
+        return {
+            "result": False,
+            "error" : traceback.format_exc()
+        }
 
     # ローカルの取得ファイル置き場を確認し、あるならそれを返す(True)
-    img_file_path="../../img/" + img_file_name
+    img_file_path = ini['AWS']['IMG_FILE_DIR'] + img_file_name
     if(os.path.exists(img_file_path)):
-        return True
-
+        return {
+            "result": True
+        }
     # ないならS3にファイルを取得しに行く
     try:
         # 取得したファイルをローカルのファイル置き場に置く
         bucket.download_file(img_file_name, img_file_path)
 
         # Trueを返す
-        return True
+        return {
+            "result": True
+        }
     except Exception as e:
         # S3にない場合はFalseを返す
         print("Error! S3")
         print(traceback.format_exc())
-        return False
+        return {
+            "result": False,
+            "error" : traceback.format_exc()
+        }
 
 
 if __name__=="__main__":
