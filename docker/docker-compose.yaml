@@ -36,4 +36,5 @@ services:
       - 5000:5000
     volumes:
       - ../flask:/usr/src/app
+      - $HOME/.aws/:/root/.aws/
     privileged: true
