@@ -1033,8 +1033,12 @@ function display_image(){
         set_error_message("画像ファイル名がありません")
     }else{
         let img = document.getElementById("question_image")
+        img.setAttribute('src', '../../static/no_image_square.jpg ');
 
         // TODO S3に画像ファイルを取得しにいく
-        console.log(img_file)
+        console.log(image_file)
+
+        // TODO 画像ファイルを画面に表示する
+        img.setAttribute('src', '../../static/no_image_square.jpg ');
     }
 }
