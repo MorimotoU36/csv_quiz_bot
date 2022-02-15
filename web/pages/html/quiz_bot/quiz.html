@@ -5,6 +5,7 @@
         <link rel="stylesheet" href="../../css/quiz.css">
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
         <script>
             window.onload = function(){
                 get_csv_name_list();
@@ -67,7 +68,7 @@
         <input type="button" value="最低正解率問出題" onClick="worst_rate_question()">
         <input type="button" value="最小正解数問出題" onClick="minimum_clear_question()">
         <input type="button" value="答え" onClick="display_answer()">
-        <input type="button" value="画像表示" onClick="display_image()">
+        <input type="button" value="画像表示" onClick="display_image(getImgDirfromS3())">
 
         <hr>
         <span>問題：</span>

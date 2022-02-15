@@ -63,6 +63,10 @@ function clear_error_message(){
     for(i=0;i<err.length;i++){
         err[i].innerText = ""
     }
+
+    // 表示画像もリセット
+    let img = document.getElementById("question_image")
+    img.style.visibility = "hidden";
 }
 
 //表示されているメッセージのクリア
@@ -74,7 +78,6 @@ function clear_all_message(){
 
     // 表示画像もリセット
     let img = document.getElementById("question_image")
-    img.setAttribute('src', '""');
     img.style.visibility = "hidden";
 }
 
@@ -1030,7 +1033,7 @@ function checked_to_selected_question(){
 }
 
 //画像を表示
-function display_image(){
+function display_image(s3_img_dir){
     //メッセージをクリア
     clear_all_message();
 
@@ -1044,7 +1047,7 @@ function display_image(){
         console.log(image_file)
 
         // 画像ファイルを画面に表示する
-        img.setAttribute('src', '../../static/test_img.jpg ');
+        img.setAttribute('src', s3_img_dir + 'test_img.jpg ');
         img.style.visibility = "visible";
     }
 }
