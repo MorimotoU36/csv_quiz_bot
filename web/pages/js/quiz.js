@@ -71,6 +71,11 @@ function clear_all_message(){
     for(i=0;i<msg.length;i++){
         msg[i].innerText = ""
     }
+
+    // 表示画像もリセット
+    let img = document.getElementById("question_image")
+    img.setAttribute('src', '""');
+    img.style.visibility = "hidden";
 }
 
 //エラーチェック①,入力した問題番号がcsvにある問題番号の範囲内か調べる
@@ -1032,13 +1037,14 @@ function display_image(){
     if(image_file == ""){
         set_error_message("画像ファイル名がありません")
     }else{
+        // 画像要素取得
         let img = document.getElementById("question_image")
-        img.setAttribute('src', '../../static/no_image_square.jpg ');
 
         // TODO S3に画像ファイルを取得しにいく
         console.log(image_file)
 
-        // TODO 画像ファイルを画面に表示する
-        img.setAttribute('src', '../../static/no_image_square.jpg ');
+        // 画像ファイルを画面に表示する
+        img.setAttribute('src', '../../static/test_img.jpg ');
+        img.style.visibility = "visible";
     }
 }
