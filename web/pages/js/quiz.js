@@ -66,7 +66,9 @@ function clear_error_message(){
 
     // 表示画像もリセット
     let img = document.getElementById("question_image")
-    img.style.visibility = "hidden";
+    if(img !== undefined && img !== null){
+        img.style.visibility = "hidden";
+    }
 }
 
 //表示されているメッセージのクリア
@@ -78,7 +80,9 @@ function clear_all_message(){
 
     // 表示画像もリセット
     let img = document.getElementById("question_image")
-    img.style.visibility = "hidden";
+    if(img !== undefined && img !== null){
+        img.style.visibility = "hidden";
+    }
 }
 
 //エラーチェック①,入力した問題番号がcsvにある問題番号の範囲内か調べる
@@ -1043,11 +1047,18 @@ function display_image(s3_img_dir){
         // 画像要素取得
         let img = document.getElementById("question_image")
 
-        // TODO S3に画像ファイルを取得しにいく
-        console.log(image_file)
+        //外部APIへPOST通信、ファイルを取得しにいく
+        post_data(getDownloadFilefromS3Api(),{},function(resp){
+            if(resp['statusCode'] == 200){    
+                // 画像ファイルを画面に表示する
+                img.setAttribute('src', s3_img_dir + image_file);
+                img.style.visibility = "visible";
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
 
-        // 画像ファイルを画面に表示する
-        img.setAttribute('src', s3_img_dir + 'test_img.jpg ');
-        img.style.visibility = "visible";
     }
 }
