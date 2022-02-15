@@ -518,9 +518,8 @@ def edit_checked():
             "error" : traceback.format_exc()
         }
 
-
 @app.route('/s3_file_download', methods=["POST"])
-def s3_file_download():
+def img_download():
     """S3からファイルをダウンロードする関数
     Args:  JSON
     {
@@ -548,7 +547,6 @@ def s3_file_download():
                 "statusCode" : 400,
                 "error" : result['error']
             }
-
 
     except Exception as e:
         return {
