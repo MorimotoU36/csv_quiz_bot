@@ -7,7 +7,7 @@ function getServerName(){
 
 // S3からダウンロードしたファイルを置くディレクトリを返す
 function getImgDirfromS3(){
-    return '/pages/static/';
+    return '/pages/img/';
 }
 
 // 静的ファイルを置くディレクトリを返す
