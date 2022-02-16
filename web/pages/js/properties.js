@@ -71,3 +71,8 @@ function getUpdateCategoryMasterApi(){
 function getEditCheckedOfQuestionApi(){
     return server + 'edit_checked_of_question'
 }
+
+//S3からファイルをダウンロードするAPI
+function getDownloadFilefromS3Api(){
+    return server + 's3_file_download'
+}

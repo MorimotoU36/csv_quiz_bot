@@ -75,5 +75,5 @@ def select_quiz(file_num,quiz_num,image_flag):
     }
 
 if __name__=="__main__":
-    res = select_quiz("0","99",False)
+    res = select_quiz(0,99,False)
     print(res)

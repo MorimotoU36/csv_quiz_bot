@@ -15,6 +15,7 @@ from batch.src.edit_quiz import edit_category_of_question
 from batch.src.update_category_master import update_category_master
 from batch.src.get_accuracy_rate_by_category import get_accuracy_rate_by_category
 from batch.src.edit_quiz import edit_checked_of_question
+from batch.src.s3_file_download import file_download
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -510,6 +511,42 @@ def edit_checked():
             "statusCode" : results['statusCode'],
             "result" : results['message']
         }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
+@app.route('/s3_file_download', methods=["POST"])
+def img_download():
+    """S3からファイルをダウンロードする関数
+    Args:  JSON
+    {
+        "filename" (str): ファイル名
+    }
+
+    Returns:
+        [type]: [description]
+    """    
+    try:
+        # リクエストから値を読み取る。ない場合はデフォルト値
+        req = request.json
+        filename = str(req.get("filename",""))
+
+        # ファイル取得
+        result = file_download(filename)
+        if(result['result']):
+            # ファイルを取得できた場合
+            return {
+                "statusCode" : 200
+            }
+        else:
+            # ファイルが取得できなかった場合
+            return {
+                "statusCode" : 400,
+                "error" : result['error']
+            }
 
     except Exception as e:
         return {

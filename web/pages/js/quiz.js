@@ -1,6 +1,3 @@
-//各csvのデータの個数
-var csv_item_list = [];
-
 //ファイル名
 let file_name = "";
 //ファイル番号
@@ -11,6 +8,8 @@ let question_num = -1;
 let sentense = ""
 //答え
 let quiz_answer = ""
+//画像ファイル名
+let image_file = ""
 
 //問題検索をしたファイルの番号
 let searched_file_num = -1;
@@ -61,6 +60,12 @@ function clear_error_message(){
     for(i=0;i<err.length;i++){
         err[i].innerText = ""
     }
+
+    // 表示画像もリセット
+    let img = document.getElementById("question_image")
+    if(img !== undefined && img !== null){
+        img.style.visibility = "hidden";
+    }
 }
 
 //表示されているメッセージのクリア
@@ -69,14 +74,11 @@ function clear_all_message(){
     for(i=0;i<msg.length;i++){
         msg[i].innerText = ""
     }
-}
 
-//エラーチェック①,入力した問題番号がcsvにある問題番号の範囲内か調べる
-function check_input_question_num(file_index){
-    if(question_num < 1 || csv_item_list[file_index] < question_num ){
-        return true
-    }else{
-        return false
+    // 表示画像もリセット
+    let img = document.getElementById("question_image")
+    if(img !== undefined && img !== null){
+        img.style.visibility = "hidden";
     }
 }
 
@@ -151,6 +153,7 @@ function get_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = get_question_num()
 
             //チェックありならチェックマークも表示
@@ -179,7 +182,7 @@ function random_select_question(){
 
     //ファイル番号を取得、「指定なし」の時はランダムに選ぶ
     if(get_file_num() == -1){
-        file_num = getRandomInt(0,csv_item_list.length);
+        file_num = getRandomInt(0,document.getElementById("file_list").childElementCount);
     }else{
         file_num = get_file_num();
     }
@@ -203,6 +206,7 @@ function random_select_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -259,6 +263,7 @@ function worst_rate_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -315,6 +320,7 @@ function minimum_clear_question(){
             let response = resp.response
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
+            image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
             //チェックありならチェックマークも表示
@@ -353,11 +359,14 @@ function correct_register(){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
+            let img = document.getElementById("question_image")
             sentense = ""
             quiz_answer = ""
+            image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
+            img.innerHTML = ""
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -393,11 +402,14 @@ function incorrect_register(){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
+            let img = document.getElementById("question_image")
             sentense = ""
             quiz_answer = ""
+            image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
+            img.innerHTML = ""
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -493,11 +505,6 @@ function get_question_for_edit(){
     //エラーチェック、問題番号が範囲内か
     if(Number(file_num) == -1){
         set_error_message("問題ファイルを選択して下さい");
-        return false;
-    }else if(check_input_question_num(file_num)){
-        set_error_message("エラー：問題("+file_name
-                            +")の問題番号は1〜"+csv_item_list[file_num]
-                            +"の範囲内で入力して下さい");
         return false;
     }
 
@@ -1010,4 +1017,36 @@ function checked_to_selected_question(){
     //検索したファイルの番号を記録
     searched_file_num = file_num
 
+}
+
+//画像を表示
+function display_image(s3_img_dir){
+    //メッセージをクリア
+    clear_all_message();
+
+    if(image_file == ""){
+        set_error_message("画像ファイル名がありません")
+    }else{
+        // 画像要素取得
+        let img = document.getElementById("question_image")
+
+        // 送信データ作成
+        data = {
+            "filename" : image_file
+        }
+
+        //外部APIへPOST通信、ファイルを取得しにいく
+        post_data(getDownloadFilefromS3Api(),data,function(resp){
+            if(resp['statusCode'] == 200){    
+                // 画像ファイルを画面に表示する
+                img.setAttribute('src', s3_img_dir + image_file);
+                img.style.visibility = "visible";
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
+
+    }
 }
