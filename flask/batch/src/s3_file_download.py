@@ -28,7 +28,8 @@ def file_download(img_file_name):
     except Exception as e:
         return {
             "result": False,
-            "error" : traceback.format_exc()
+            "error" : "Error: 設定ファイル読み込み時にエラーが発生しました。",
+            "traceback": traceback.format_exc()
         }
 
     # ローカルの取得ファイル置き場を確認し、あるならそれを返す(True)
@@ -40,12 +41,7 @@ def file_download(img_file_name):
     # ないならS3にファイルを取得しに行く
     try:
         # ファイルの一時置き場
-        temp_path = "img/"
-        # 取得したファイルをローカルの一時ファイル置き場に置く
-        bucket.download_file(img_file_name, temp_path + img_file_name)
-
-        # 一時ファイル置き場に置いたファイルをWebの場所へ移す
-        shutil.move(temp_path + img_file_name, img_file_path)
+        bucket.download_file(img_file_name, img_file_path)
 
         # 結果を返す
         if(os.path.exists(img_file_path)):
@@ -55,14 +51,16 @@ def file_download(img_file_name):
         else:
             return {
                 "result": False,
-                "error" : "ファイル: {0} が存在しません ".format(img_file_path)
+                "error" : "ファイル: {0} が存在しません ".format(img_file_path),
+                "traceback": traceback.format_exc()
             }
         
     except Exception as e:
         # S3にない場合はFalseを返す
         return {
             "result": False,
-            "error" : traceback.format_exc()
+            "error" : "Error: S3からのファイル「{0}」ダウンロード時にエラーが発生しました".format(img_file_name),
+            "traceback": traceback.format_exc()
         }
 
 
