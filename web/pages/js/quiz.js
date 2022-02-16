@@ -1,6 +1,3 @@
-//各csvのデータの個数
-var csv_item_list = [];
-
 //ファイル名
 let file_name = "";
 //ファイル番号
@@ -82,15 +79,6 @@ function clear_all_message(){
     let img = document.getElementById("question_image")
     if(img !== undefined && img !== null){
         img.style.visibility = "hidden";
-    }
-}
-
-//エラーチェック①,入力した問題番号がcsvにある問題番号の範囲内か調べる
-function check_input_question_num(file_index){
-    if(question_num < 1 || csv_item_list[file_index] < question_num ){
-        return true
-    }else{
-        return false
     }
 }
 
@@ -194,7 +182,7 @@ function random_select_question(){
 
     //ファイル番号を取得、「指定なし」の時はランダムに選ぶ
     if(get_file_num() == -1){
-        file_num = getRandomInt(0,csv_item_list.length);
+        file_num = getRandomInt(0,document.getElementById("file_list").childElementCount);
     }else{
         file_num = get_file_num();
     }
@@ -517,11 +505,6 @@ function get_question_for_edit(){
     //エラーチェック、問題番号が範囲内か
     if(Number(file_num) == -1){
         set_error_message("問題ファイルを選択して下さい");
-        return false;
-    }else if(check_input_question_num(file_num)){
-        set_error_message("エラー：問題("+file_name
-                            +")の問題番号は1〜"+csv_item_list[file_num]
-                            +"の範囲内で入力して下さい");
         return false;
     }
 
