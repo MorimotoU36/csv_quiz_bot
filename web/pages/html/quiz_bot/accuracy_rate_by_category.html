@@ -6,12 +6,13 @@
         <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
         <script>
             // Load the Visualization API and the corechart package.
             google.charts.load('current', {'packages':['corechart']});
             
             window.onload = function(){
-                get_csv_name_list();
+                get_csv_name_list(getServerName());
             };
         </script>
     </head>
@@ -29,13 +30,13 @@
                 <td>ファイル</td>
                 <td>:</td>
                 <td>
-                    <select id="file_list" onChange="update_file_num(event)">
+                    <select id="file_list" onChange="update_file_num(event,getServerName())">
                         <option selected value="-1">指定なし</option>
                     </select>
                 </td>
             </tr>
         </table>
-        <input type="button" value="正解率表示" onClick="display_accuracy_rate_by_category()">
+        <input type="button" value="正解率表示" onClick="display_accuracy_rate_by_category(getServerName())">
         <input type="button" value="カテゴリマスタ更新" onClick="update_category_master()">
 
         <hr>
