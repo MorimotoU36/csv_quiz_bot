@@ -15,14 +15,14 @@ let image_file = ""
 let searched_file_num = -1;
 
 //ファイル名、ファイル番号の変更を反映する。カテゴリリストも変更する
-function update_file_num(event){
+function update_file_num(event,server){
     fl = document.getElementById("file_list")
     file_num = Number(fl.options[fl.selectedIndex].value)
     file_name = fl.options[fl.selectedIndex].innerText
 
     //カテゴリリスト反映
     if(document.getElementById("category_list") != null){
-        get_category_list(file_num)
+        get_category_list(server,file_num)
     }
 }
 
@@ -97,12 +97,12 @@ function getRandomIntInclusive(min, max) {
 }
 
 //問題csvのリストを取得する
-function get_csv_name_list(){
+function get_csv_name_list(server){
     //メッセージをクリア
     clear_all_message();
 
     //外部APIへCSVリストを取得しにいく
-    post_data(getCsvNameListApi(),{"text" : ''},function(resp){
+    post_data(getCsvNameListApi(server),{"text" : ''},function(resp){
         if(resp['statusCode'] == 200){    
             // ドロップダウンリストにCSVファイルのリストを定義する
             let file_list = document.getElementById("file_list");
@@ -121,7 +121,7 @@ function get_csv_name_list(){
 }
 
 //問題取得
-function get_question(){
+function get_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -146,7 +146,7 @@ function get_question(){
         "image_flag": true 
     }
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getQuestionApi(),data,function(resp){
+    post_data(getQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
@@ -176,7 +176,7 @@ function get_question(){
 }
 
 //ランダムに問題を選んで出題する
-function random_select_question(){
+function random_select_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -199,7 +199,7 @@ function random_select_question(){
         "rate": document.getElementById('max_rate').value
     }
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getRandomQuestionApi(),data,function(resp){
+    post_data(getRandomQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
@@ -229,7 +229,7 @@ function random_select_question(){
 }
 
 //正解率最低の問題を出題する
-function worst_rate_question(){
+function worst_rate_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -256,7 +256,7 @@ function worst_rate_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getWorstRateQuizApi(),data,function(resp){
+    post_data(getWorstRateQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
@@ -286,7 +286,7 @@ function worst_rate_question(){
 }
 
 //正解率最低の問題を出題する
-function minimum_clear_question(){
+function minimum_clear_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -313,7 +313,7 @@ function minimum_clear_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getMinimumClearQuizApi(),data,function(resp){
+    post_data(getMinimumClearQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
@@ -343,7 +343,7 @@ function minimum_clear_question(){
 }
 
 //問題に正解したときに正解データ登録
-function correct_register(){
+function correct_register(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -354,7 +354,7 @@ function correct_register(){
         "clear": true
     }
     //外部APIに指定した問題の正解数を登録しに行く
-    post_data(getAnswerRegisterApi(),data,function(resp){
+    post_data(getAnswerRegisterApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             //問題と答えは削除
             let question = document.getElementById("question")
@@ -386,7 +386,7 @@ function correct_register(){
 }
 
 //問題に不正解のときに正解データ登録
-function incorrect_register(){
+function incorrect_register(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -397,7 +397,7 @@ function incorrect_register(){
         "clear": false
     }
     //外部APIに指定した問題の正解数を登録しに行く
-    post_data(getAnswerRegisterApi(),data,function(resp){
+    post_data(getAnswerRegisterApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             //問題と答えは削除
             let question = document.getElementById("question")
@@ -463,7 +463,7 @@ function post_data(url,jsondata,responsed_func){
 
 
 //(クイズ追加画面)入力したCSVデータを送信して追加する
-function add_quiz(){
+function add_quiz(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -481,7 +481,7 @@ function add_quiz(){
         "data" : input_data
     }
 
-    post_data(getAddQuizApi(),data,function(resp){
+    post_data(getAddQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){  
             //正解登録完了メッセージ
             let log = document.getElementById("add_log")
@@ -498,7 +498,7 @@ function add_quiz(){
 }
 
 //(問題編集画面での)問題取得
-function get_question_for_edit(){
+function get_question_for_edit(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -516,7 +516,7 @@ function get_question_for_edit(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getQuestionApi(),data,function(resp){
+    post_data(getQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){  
             document.getElementById("question_of_file").innerText = file_name
             document.getElementById("question_num").innerText = question_num
@@ -584,7 +584,7 @@ function set_category_box(category){
 }
 
 //問題検索
-function search_question(){
+function search_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -615,7 +615,7 @@ function search_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getSearchQuizApi(),data,function(resp){
+    post_data(getSearchQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let result = resp.result
 
@@ -655,7 +655,7 @@ function search_question(){
 }
 
 //カテゴリリスト取得
-function get_category_list(file_num){
+function get_category_list(server,file_num){
 
     //指定なしの場合
     if(Number(file_num) == -1){
@@ -677,7 +677,7 @@ function get_category_list(file_num){
     }
 
     //外部APIへPOST通信、カテゴリを取得しにいく
-    post_data(getCategoryListApi(),data,function(resp){
+    post_data(getCategoryListApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let results = resp.result
 
@@ -706,7 +706,7 @@ function get_category_list(file_num){
 }
 
 //問題検索・カテゴリ設定
-function search_and_category(){
+function search_and_category(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -737,7 +737,7 @@ function search_and_category(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getSearchQuizApi(),data,function(resp){
+    post_data(getSearchQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let result = resp.result
 
@@ -839,7 +839,7 @@ function update_category_to_checked_question(){
 
 
 // カテゴリ別正解率表示
-function display_accuracy_rate_by_category(){
+function display_accuracy_rate_by_category(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -855,7 +855,7 @@ function display_accuracy_rate_by_category(){
     }
 
     //外部APIへPOST通信、カテゴリと正解率を取得しにいく
-    post_data(getAccuracyRateByCategoryApi(),data,function(resp){
+    post_data(getAccuracyRateByCategoryApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             let result = resp.result
 
@@ -927,7 +927,7 @@ function update_category_master(){
 }
 
 // 選択した問題をチェック済みにする（または外す）
-function checked_to_searched_question(){
+function checked_to_searched_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -963,7 +963,7 @@ function checked_to_searched_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getEditCheckedOfQuestionApi(),data,function(resp){
+    post_data(getEditCheckedOfQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
 
             let update_category_result = document.getElementById("update_category_result")
@@ -983,7 +983,7 @@ function checked_to_searched_question(){
 
 
 // 選択した問題をチェック済みにする（または外す）
-function checked_to_selected_question(){
+function checked_to_selected_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -1004,7 +1004,7 @@ function checked_to_selected_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getEditCheckedOfQuestionApi(),data,function(resp){
+    post_data(getEditCheckedOfQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             set_message(resp['result']);
         }else{
@@ -1020,7 +1020,7 @@ function checked_to_selected_question(){
 }
 
 //画像を表示
-function display_image(s3_img_dir){
+function display_image(server,s3_img_dir){
     //メッセージをクリア
     clear_all_message();
 
@@ -1036,7 +1036,7 @@ function display_image(s3_img_dir){
         }
 
         //外部APIへPOST通信、ファイルを取得しにいく
-        post_data(getDownloadFilefromS3Api(),data,function(resp){
+        post_data(getDownloadFilefromS3Api(server),data,function(resp){
             if(resp['statusCode'] == 200){    
                 // 画像ファイルを画面に表示する
                 img.setAttribute('src', s3_img_dir + image_file);

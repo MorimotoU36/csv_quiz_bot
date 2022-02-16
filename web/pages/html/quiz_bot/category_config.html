@@ -5,9 +5,10 @@
         <link rel="stylesheet" href="../../css/quiz.css">
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
         <script>
             window.onload = function(){
-                get_csv_name_list();
+                get_csv_name_list(getServerName());
             };
 
             // 正解率指定バーの値反映
@@ -30,7 +31,7 @@
                 <td>ファイル</td>
                 <td>:</td>
                 <td>
-                    <select id="file_list" onChange="update_file_num(event)">
+                    <select id="file_list" onChange="update_file_num(event,getServerName())">
                         <option selected value="-1">指定なし</option>
                     </select>
                 </td>
@@ -70,14 +71,14 @@
                 </td>
             </tr>
         </table>
-        <input type="button" value="検索" onClick="search_and_category()">
+        <input type="button" value="検索" onClick="search_and_category(getServerName())">
 
         <hr>
         <div id="search_result"></div>
 
         <hr>
         <p>チェックを入れた問題にカテゴリ<input type="text" id="update_category">を<input type="button" value="付与(削除))する" onClick="update_category_to_checked_question()"></p>
-        <p>チェックを入れた問題をチェック済みにする(及びチェックを外す)：<input type="button" value="チェックする(外す)" onClick="checked_to_searched_question()"></p>
+        <p>チェックを入れた問題をチェック済みにする(及びチェックを外す)：<input type="button" value="チェックする(外す)" onClick="checked_to_searched_question(getServerName())"></p>
         <p id="update_category_result" class="message"></p>
         <div class="push"></div>
     </div>

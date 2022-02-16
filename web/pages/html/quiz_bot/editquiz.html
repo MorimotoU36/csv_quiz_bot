@@ -5,9 +5,10 @@
         <link rel="stylesheet" href="../../css/quiz.css">
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
         <script>
             window.onload = function(){
-                get_csv_name_list();
+                get_csv_name_list(getServerName());
             };
         </script>
     </head>
@@ -25,7 +26,7 @@
                 <td>ファイル</td>
                 <td>:</td>
                 <td>
-                    <select id="file_list" onChange="update_file_num(event)">
+                    <select id="file_list" onChange="update_file_num(event,getServerName())">
                         <option selected value="-1">指定なし</option>
                     </select>
                 </td>
@@ -36,7 +37,7 @@
                 <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
             </tr>
         </table>
-        <input type="button" value="取得" onClick="get_question_for_edit()">
+        <input type="button" value="取得" onClick="get_question_for_edit(getServerName())">
 
         <hr>
         <table>
