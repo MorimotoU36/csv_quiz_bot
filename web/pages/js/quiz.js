@@ -1030,8 +1030,13 @@ function display_image(s3_img_dir){
         // 画像要素取得
         let img = document.getElementById("question_image")
 
+        // 送信データ作成
+        data = {
+            "filename" : image_file
+        }
+
         //外部APIへPOST通信、ファイルを取得しにいく
-        post_data(getDownloadFilefromS3Api(),{},function(resp){
+        post_data(getDownloadFilefromS3Api(),data,function(resp){
             if(resp['statusCode'] == 200){    
                 // 画像ファイルを画面に表示する
                 img.setAttribute('src', s3_img_dir + image_file);
