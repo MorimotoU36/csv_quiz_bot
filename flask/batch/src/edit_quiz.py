@@ -75,7 +75,7 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = 'Error: DB操作時にエラーが発生しました '
         try:
             conn.rollback()
         except:
