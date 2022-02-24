@@ -10,13 +10,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def worst_quiz(file_num=-1,category=None,image=True,checked=False):
+def worst_quiz(file_num=-1,category=None,checked=False):
     """最低正解率の問題を取得
 
     Args:
         file_num (int, optional): ファイル番号. Defaults to -1.
         category (str, optional): カテゴリ. Defaults to None.
-        image (bool, optional): イメージフラグ. Defaults to True.
         checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
     Returns:
@@ -31,8 +30,6 @@ def worst_quiz(file_num=-1,category=None,image=True,checked=False):
     table = table_list[file_num]['name']
     view = table_list[file_num]['name']+'_view'
     nickname = table_list[file_num]['nickname']
-
-    # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
     try:

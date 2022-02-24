@@ -32,8 +32,7 @@ def select():
     Args: JSON
     {
         "file_num": ファイル番号,
-        "quiz_num": 問題番号,
-        "image_flag": 画像取得フラグ 
+        "quiz_num": 問題番号
     }
 
     Returns:
@@ -44,10 +43,9 @@ def select():
         req = request.json
         file_num = int(req.get("file_num"))
         quiz_num = int(req.get("quiz_num"))
-        image_flag = bool(req.get("image"))
 
         # MySQLに問題を取得しにいく
-        result = select_quiz(file_num,quiz_num,image_flag)
+        result = select_quiz(file_num,quiz_num)
 
         if(result['statusCode'] == 500):
             return {
@@ -77,7 +75,6 @@ def random():
     Args: JSON
     {
         "file_num": ファイル番号(オプション),
-        "image": 画像取得フラグ(オプション),
         "rate": 正解率(オプション)
         "category": カテゴリ(オプション)
         "checked": チェック問題フラグ(オプション)
@@ -90,13 +87,12 @@ def random():
         # リクエストから値を読み取る。ない場合はデフォルト値
         req = request.json
         file_num = int(req.get("file_num",-1))
-        image_flag = bool(req.get("image",True))
         rate = float(req.get("rate",100))
         category = req.get("category",'')
         checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = random_quiz(file_num=file_num,image=image_flag,rate=rate,category=category,checked=checked)
+        result = random_quiz(file_num=file_num,rate=rate,category=category,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
@@ -126,8 +122,7 @@ def worst():
     Args: JSON
     {
         "file_num": ファイル番号(オプション),
-        "category": カテゴリ(オプション)
-        "image": 画像取得フラグ(オプション),
+        "category": カテゴリ(オプション),
         "checked": チェック問題フラグ(オプション)
     }
 
@@ -139,11 +134,10 @@ def worst():
         req = request.json
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
-        image_flag = bool(req.get("image",True))
         checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = worst_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
+        result = worst_quiz(file_num=file_num,category=category,checked=checked)
 
         if(result['statusCode'] == 500):
             return {
@@ -269,8 +263,7 @@ def minimum():
     Args: JSON
     {
         "file_num": ファイル番号(オプション),
-        "category": カテゴリ(オプション)
-        "image": 画像取得フラグ(オプション),
+        "category": カテゴリ(オプション),
         "checked": チェック問題フラグ(オプション)
     }
 
@@ -282,11 +275,10 @@ def minimum():
         req = request.json
         file_num = int(req.get("file_num",-1))
         category = req.get("category",None)
-        image_flag = bool(req.get("image",True))
         checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = minimum_quiz(file_num=file_num,category=category,image=image_flag,checked=checked)
+        result = minimum_quiz(file_num=file_num,category=category,checked=checked)
 
         # 取得結果を返す
         if(result['statusCode'] == 500):

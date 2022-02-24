@@ -9,13 +9,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def select_quiz(file_num,quiz_num,image_flag):
+def select_quiz(file_num,quiz_num):
     """ファイル番号、問題番号、イメージ取得フラグから問題を取得する関数
 
     Args:
         file_num (int): ファイル番号
         quiz_num (int): 問題番号
-        image_flag (bool): イメージ取得フラグ
 
         Returns:
             result (JSON): 取得した問題
