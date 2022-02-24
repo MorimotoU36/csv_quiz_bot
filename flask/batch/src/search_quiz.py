@@ -57,8 +57,8 @@ def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
         sql_statement += " WHERE "
         where_statement=[]
 
-        # rateによる条件追加
-        where_statement.append(" accuracy_rate <= {0} ".format(rate))
+        # rateによる条件追加(NULLも)
+        where_statement.append(" ( accuracy_rate <= {0} or accuracy_rate is null ) ".format(rate))
 
         # 入力語句による条件追加((問題・解答両方)
         if(not cond_question and not cond_answer):
