@@ -142,8 +142,7 @@ function get_question(server){
     //JSONデータ作成
     var data = {
         "file_num": file_num,
-        "quiz_num": get_question_num(),
-        "image_flag": true 
+        "quiz_num": get_question_num()
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getQuestionApi(server),data,function(resp){
