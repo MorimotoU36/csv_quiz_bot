@@ -109,11 +109,16 @@ function get_csv_name_list(server){
         if(resp['statusCode'] == 200){    
             // ドロップダウンリストにCSVファイルのリストを定義する
             let file_list = document.getElementById("file_list");
-            for(var i=0;i<resp['table'].length;i++){
-                var target = document.createElement('option');
-                target.innerText = resp['table'][i]['nickname'];
-                target.setAttribute('value',i);
-                file_list.appendChild(target);
+            if(resp['table'].length==0){
+                //内部エラー時
+                set_error_message("エラー：ファイル名が正しく読み込められませんでした");
+            }else{
+                for(var i=0;i<resp['table'].length;i++){
+                    var target = document.createElement('option');
+                    target.innerText = resp['table'][i]['nickname'];
+                    target.setAttribute('value',i);
+                    file_list.appendChild(target);
+                }    
             }
         }else{
             //内部エラー時
@@ -475,10 +480,14 @@ function post_data(url,jsondata,responsed_func){
 
     //受信して結果を表示
     xhr.onreadystatechange = function() {
-        if(xhr.readyState === 4 && xhr.status === 200) {
-            const jsonObj = JSON.parse(xhr.responseText);
-            //受信したデータを処理する      
-            responsed_func(jsonObj);
+        if(xhr.readyState === 4){
+            if(xhr.status === 200) {
+                const jsonObj = JSON.parse(xhr.responseText);
+                //受信したデータを処理する      
+                responsed_func(jsonObj);
+            }else{
+                set_error_message("エラー：APIへのアクセス時にエラーが発生しました")
+            }
         }
     }
 }
