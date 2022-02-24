@@ -403,7 +403,8 @@ def edit():
         if(result['statusCode'] == 500):
             return {
                 "statusCode" : 500,
-                "error" : result["message"]
+                "error" : result["message"],
+                "traceback" : result["traceback"]
             }
         else:
             return {

@@ -535,7 +535,7 @@ function get_question_for_edit(server){
 }
 
 //問題を編集
-function edit_question(){
+function edit_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -550,7 +550,7 @@ function edit_question(){
     }
 
     //外部APIに指定した問題の正解数を登録しに行く
-    post_data(getEditQuizApi(),data,function(resp){
+    post_data(getEditQuizApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
             //編集完了メッセージ
             set_message(resp['result']);
@@ -777,7 +777,7 @@ function search_and_category(server){
 }
 
 // 問題のカテゴリを一括設定する
-function update_category_to_checked_question(){
+function update_category_to_checked_question(server){
     //メッセージをクリア
     clear_all_message();
 
@@ -820,7 +820,7 @@ function update_category_to_checked_question(){
     }
 
     //外部APIへPOST通信、問題を取得しにいく
-    post_data(getEditCategoryOfQuestionApi(),data,function(resp){
+    post_data(getEditCategoryOfQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){    
 
             let update_category_result = document.getElementById("update_category_result")
@@ -898,13 +898,13 @@ function display_accuracy_rate_by_category(server){
 }
 
 // カテゴリマスタ更新ボタン
-function update_category_master(){
+function update_category_master(server){
     //メッセージをクリア
     clear_all_message();
 
     //XMLHttpRequest用意
     var xhr = new XMLHttpRequest();
-    xhr.open('GET', getUpdateCategoryMasterApi());
+    xhr.open('GET', getUpdateCategoryMasterApi(server));
     xhr.setRequestHeader('content-type', 'application/json;charset=UTF-8');
 
     //送信
