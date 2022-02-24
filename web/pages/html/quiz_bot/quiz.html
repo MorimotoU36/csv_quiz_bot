@@ -68,7 +68,7 @@
         <input type="button" value="最低正解率問出題" onClick="worst_rate_question(getServerName())">
         <input type="button" value="最小正解数問出題" onClick="minimum_clear_question(getServerName())">
         <input type="button" value="答え" onClick="display_answer()">
-        <input type="button" value="画像表示" onClick="display_image(getServerName(),getImgDirfromS3())">
+        <input type="button" value="画像表示" id="display_image_button" onClick="display_image(getServerName(),getImgDirfromS3())" disabled>
 
         <hr>
         <span>問題：</span>

@@ -80,6 +80,9 @@ function clear_all_message(){
     if(img !== undefined && img !== null){
         img.style.visibility = "hidden";
     }
+
+    // 画像表示ボタンは非活性化
+    document.getElementById("display_image_button").disabled = true;
 }
 
 //min以上max未満の数値をランダムに取得
@@ -160,6 +163,11 @@ function get_question(server){
                 sentense = "✅" + sentense
             }
 
+            //画像ファイルありならボタン活性化
+            if(image_file != ""){
+                document.getElementById("display_image_button").disabled = false;
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -211,6 +219,11 @@ function random_select_question(server){
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
+            }
+
+            //画像ファイルありならボタン活性化
+            if(image_file != ""){
+                document.getElementById("display_image_button").disabled = false;
             }
 
             question.textContent = sentense
@@ -270,6 +283,11 @@ function worst_rate_question(server){
                 sentense = "✅" + sentense
             }
 
+            //画像ファイルありならボタン活性化
+            if(image_file != ""){
+                document.getElementById("display_image_button").disabled = false;
+            }
+
             question.textContent = sentense
             answer.textContent = ""
 
@@ -325,6 +343,11 @@ function minimum_clear_question(server){
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
+            }
+
+            //画像ファイルありならボタン活性化
+            if(image_file != ""){
+                document.getElementById("display_image_button").disabled = false;
             }
 
             question.textContent = sentense
