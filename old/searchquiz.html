@@ -1,6 +1,6 @@
 <html>
     <head>
-        <title>カテゴリ設定</title>
+        <title>クイズ検索</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../../css/quiz.css">
         <script src="../../js/properties.js"></script>
@@ -71,15 +71,11 @@
                 </td>
             </tr>
         </table>
-        <input type="button" value="検索" onClick="search_and_category(getServerName())">
+        <input type="button" value="検索" onClick="search_question(getServerName())">
 
         <hr>
         <div id="search_result"></div>
 
-        <hr>
-        <p>チェックを入れた問題にカテゴリ<input type="text" id="update_category">を<input type="button" value="付与(削除))する" onClick="update_category_to_checked_question(getServerName())"></p>
-        <p>チェックを入れた問題をチェック済みにする(及びチェックを外す)：<input type="button" value="チェックする(外す)" onClick="checked_to_searched_question(getServerName())"></p>
-        <p id="update_category_result" class="message"></p>
         <div class="push"></div>
     </div>
 
@@ -90,8 +86,8 @@
             <a href='./quiz.html'>問題出題</a>
             <a href='./addquiz.html'>問題追加</a>
             <a href='./editquiz.html'>問題編集</a>
-            <a href='./searchquiz.html'>問題検索</a>
-            カテゴリ設定
+            問題検索
+            <a href='./category_config.html'>カテゴリ設定</a>
             <a href='./accuracy_rate_by_category.html'>カテゴリ別正解率表示</a>
         </span>
         <span class="right">
