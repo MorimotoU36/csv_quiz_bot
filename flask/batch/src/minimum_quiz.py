@@ -10,13 +10,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-def minimum_quiz(file_num=-1,category=None,image=True,checked=False):
+def minimum_quiz(file_num=-1,category=None,checked=False):
     """最小正解数の問題を取得する
 
     Args:
         file_num (int, optional): ファイル番号. Defaults to -1.
         category (str, optional): カテゴリ. Defaults to None.
-        image (bool, optional): イメージフラグ. Defaults to True.
         checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
     Returns:
@@ -30,8 +29,6 @@ def minimum_quiz(file_num=-1,category=None,image=True,checked=False):
         file_num = random.randint(0,len(table_list)-1)
     table = table_list[file_num]['name']
     nickname = table_list[file_num]['nickname']
-
-    # TODO イメージフラグの操作
         
     # MySQL への接続を確立する
     try:
