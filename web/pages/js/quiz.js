@@ -663,7 +663,7 @@ function search_question(server){
                 let categories = result[i].category.split(':');
                 let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
-                let image_file =  result[i].img_file === undefined ? "" : result[i].img_file
+                let image_file =  (result[i].img_file === undefined || result[i].img_file == "" ) ? "" : "image_registered"
 
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
@@ -671,7 +671,7 @@ function search_question(server){
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked'>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked " + image_file + " '>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
@@ -787,13 +787,15 @@ function search_and_category(server){
                 let categories = result[i].category.split(':');
                 let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
+                let image_file =  (result[i].img_file === undefined || result[i].img_file == "" ) ? "" : "image_registered"
+
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
                     category += "<span class='category-elements'>"
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td class='table_checked'><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked'>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_checked'><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked " + image_file + " '>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
