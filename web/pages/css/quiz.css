@@ -68,3 +68,7 @@ table#search_result_table {
 .table_checked {
     width: 30px;
 }
+
+.image_registered {
+    background-color: lightskyblue;
+}
