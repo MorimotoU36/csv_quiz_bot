@@ -82,7 +82,10 @@ function clear_all_message(){
     }
 
     // 画像表示ボタンは非活性化
-    document.getElementById("display_image_button").disabled = true;
+    let button = document.getElementById("display_image_button")
+    if(button !== undefined && button !== null){
+        button.disabled = true;
+    }
 }
 
 //min以上max未満の数値をランダムに取得
@@ -660,6 +663,8 @@ function search_question(server){
                 let categories = result[i].category.split(':');
                 let checked = result[i].checked == "0" ? "" : "✅"
                 let category = "";
+                let image_file =  result[i].img_file === undefined ? "" : result[i].img_file
+
                 for(let i=0;i<categories.length;i++){
                     //カテゴリ要素を作成
                     category += "<span class='category-elements'>"
