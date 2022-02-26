@@ -68,6 +68,10 @@ def select_quiz(file_num,quiz_num):
         # Select結果を取り出す
         results = cursor.fetchall()
 
+        # accuracy_rateはDecimal->str型にする(API)
+        for ri in results:
+            ri["accuracy_rate"] = str(ri["accuracy_rate"])
+
     # 結果をJSONに変形して返す
     return {
         "statusCode": 200,
@@ -75,5 +79,5 @@ def select_quiz(file_num,quiz_num):
     }
 
 if __name__=="__main__":
-    res = select_quiz(0,99,False)
+    res = select_quiz(0,97)
     print(res)
