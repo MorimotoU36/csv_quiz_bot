@@ -481,7 +481,8 @@ def garbc():
 
         return {
             "statusCode" : results['statusCode'],
-            "result" : results['result']
+            "result" : results['result'],
+            "checked_result" : results['checked_result']
         }
 
     except Exception as e:
