@@ -10,7 +10,7 @@ from dbconfig import get_connection
 from ini import get_table_list
 
 def select_quiz(file_num,quiz_num):
-    """ファイル番号、問題番号、イメージ取得フラグから問題を取得する関数
+    """ファイル番号、問題番号から問題を取得する関数
 
     Args:
         file_num (int): ファイル番号
@@ -25,6 +25,7 @@ def select_quiz(file_num,quiz_num):
     try:
         table_list = get_table_list()
         table = table_list[file_num]['name']
+        view = table+"_view"
         nickname = table_list[file_num]['nickname']
     except IndexError:
         return {
@@ -60,7 +61,7 @@ def select_quiz(file_num,quiz_num):
                 "message": 'Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count)
             }
 
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_num)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る
