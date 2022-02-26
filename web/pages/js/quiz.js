@@ -166,6 +166,9 @@ function get_question(server){
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = get_question_num()
 
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
+
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
