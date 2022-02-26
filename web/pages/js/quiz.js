@@ -901,9 +901,16 @@ function display_accuracy_rate_by_category(server){
             let result = resp.result
 
             let visualized_data = [['Name', 'Accuracy_Rate', { role: 'style' } ]]
+            // チェック済データ追加
+            let checked_result = resp.checked_result
+            for(let i=0;i<checked_result.length;i++){
+                visualized_data.push(['(チェック済問題)',parseFloat(checked_result[i].accuracy_rate),'#32CD32'])
+            }
+            // カテゴリ毎のデータ追加
             for(let i=0;i<result.length;i++){
                 visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA'])
             }
+
             // グラフ領域の縦の長さ（＝40 * データの個数）
             let graph_height = 40 * visualized_data.length
             visualized_data = google.visualization.arrayToDataTable(visualized_data)
