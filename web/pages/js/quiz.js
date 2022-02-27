@@ -924,7 +924,7 @@ function display_accuracy_rate_by_category(server){
                 chartArea: {
                     left: '15%',
                     top: 10,
-                    width: '80%',
+                    width: '75%',
                     height: graph_height-50
                 },
                 hAxis: {
