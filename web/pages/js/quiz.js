@@ -227,6 +227,9 @@ function random_select_question(server){
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
+
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
@@ -289,6 +292,9 @@ function worst_rate_question(server){
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
+
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
@@ -350,6 +356,9 @@ function minimum_clear_question(server){
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
+
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
 
             //チェックありならチェックマークも表示
             if(response.checked == 1){

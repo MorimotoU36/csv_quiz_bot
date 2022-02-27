@@ -71,7 +71,7 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
         results = cursor.fetchall()
         # accuracy_rateはstr型にする(API)
         for ri in results:
-            ri["accuracy_rate"] = str(ri["accuracy_rate"])
+            ri["accuracy_rate"] = str(0 if ri["accuracy_rate"] is None else round(ri["accuracy_rate"],1))
 
     # 結果をJSONに変形して返す
     return {

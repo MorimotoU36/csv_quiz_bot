@@ -28,6 +28,7 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
     if(file_num < 0 or len(table_list) <= file_num):
         file_num = random.randint(0,len(table_list)-1)
     table = table_list[file_num]['name']
+    view = table+"_view"
     nickname = table_list[file_num]['nickname']
         
     # MySQL への接続を確立する
@@ -56,12 +57,15 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
             else:
                 where_statement = ''
 
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} ".format(table) + where_statement +" ORDER BY clear_count LIMIT 1"
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} ".format(view) + where_statement +" ORDER BY clear_count LIMIT 1"
             cursor.execute(sql)
 
             # MySQLから帰ってきた結果を受け取る
             # Select結果を取り出す
             results = cursor.fetchall()
+            # accuracy_rateはstr型にする(API)
+            for ri in results:
+                ri["accuracy_rate"] = str(0 if ri["accuracy_rate"] is None else round(ri["accuracy_rate"],1))
 
         # 結果をJSONに変形して返す
         return {
