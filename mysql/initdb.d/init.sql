@@ -123,7 +123,7 @@ SELECT
   COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN aws_quiz as a 
 WHERE c.file_name = 'aws_quiz' 
@@ -138,7 +138,7 @@ SELECT
   COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN applied as a 
 WHERE c.file_name = 'applied' 
@@ -153,7 +153,7 @@ SELECT
   COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN lpic as a 
 WHERE c.file_name = 'lpic' 
@@ -168,7 +168,7 @@ SELECT
   COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN english_speaking as a 
 WHERE c.file_name = 'english_speaking' 
