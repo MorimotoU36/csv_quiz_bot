@@ -904,12 +904,12 @@ function display_accuracy_rate_by_category(server){
             // チェック済データ追加
             let checked_result = resp.checked_result
             for(let i=0;i<checked_result.length;i++){
-                let annotation_i = String(Math.round(parseFloat(checked_result[i].accuracy_rate)*100 *10)/10)+'% / '+String(checked_result[i].count)+'問'
+                let annotation_i = String(Math.round(parseFloat(checked_result[i].accuracy_rate) *10)/10)+'% / '+String(checked_result[i].count)+'問'
                 visualized_data.push(['(チェック済問題)',parseFloat(checked_result[i].accuracy_rate),'#32CD32',annotation_i])
             }
             // カテゴリ毎のデータ追加
             for(let i=0;i<result.length;i++){
-                let annotation_i = String(Math.round(parseFloat(result[i].accuracy_rate)*100 *10)/10)+'% / '+String(result[i].count)+'問'
+                let annotation_i = String(Math.round(parseFloat(result[i].accuracy_rate) *10)/10)+'% / '+String(result[i].count)+'問'
                 visualized_data.push([result[i].c_category,parseFloat(result[i].accuracy_rate),'#76A7FA',annotation_i])
             }
 
