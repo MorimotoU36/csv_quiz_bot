@@ -120,6 +120,7 @@ DROP VIEW IF EXISTS aws_quiz_category_view;
 CREATE VIEW aws_quiz_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
   SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
@@ -134,6 +135,7 @@ DROP VIEW IF EXISTS applied_category_view;
 CREATE VIEW applied_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
   SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
@@ -148,6 +150,7 @@ DROP VIEW IF EXISTS lpic_category_view;
 CREATE VIEW lpic_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
   SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
@@ -162,6 +165,7 @@ DROP VIEW IF EXISTS english_speaking_category_view;
 CREATE VIEW english_speaking_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
   SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
