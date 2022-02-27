@@ -46,7 +46,7 @@ def get_accuracy_rate_by_category(file_ind):
         with conn.cursor() as cursor:
             # 検索語句がカテゴリに含まれる
             # SQLを実行する
-            sql_statement = "SELECT c_category,accuracy_rate FROM {0} ORDER BY accuracy_rate ".format(table+'_category_view')
+            sql_statement = "SELECT c_category,count,accuracy_rate FROM {0} ORDER BY accuracy_rate ".format(table+'_category_view')
             cursor.execute(sql_statement)
 
             # MySQLから帰ってきた結果を受け取る
@@ -59,7 +59,7 @@ def get_accuracy_rate_by_category(file_ind):
                 results[i] = ri
 
             # (追加機能)カテゴリとは別に、チェック済の問題だけの正解率を計算して出す
-            sql_statement = "SELECT checked, SUM(clear_count) as sum_clear, SUM(fail_count) as sum_fail, ( SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate FROM {0} where checked = 1 group by checked;".format(table+"_view")
+            sql_statement = "SELECT checked, count(*) as count, SUM(clear_count) as sum_clear, SUM(fail_count) as sum_fail, ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate FROM {0} where checked = 1 group by checked;".format(table+"_view")
             cursor.execute(sql_statement)
             checked_result = cursor.fetchall()
             # Decimal -> str変換

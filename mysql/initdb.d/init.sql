@@ -120,9 +120,10 @@ DROP VIEW IF EXISTS aws_quiz_category_view;
 CREATE VIEW aws_quiz_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN aws_quiz as a 
 WHERE c.file_name = 'aws_quiz' 
@@ -134,9 +135,10 @@ DROP VIEW IF EXISTS applied_category_view;
 CREATE VIEW applied_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN applied as a 
 WHERE c.file_name = 'applied' 
@@ -148,9 +150,10 @@ DROP VIEW IF EXISTS lpic_category_view;
 CREATE VIEW lpic_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN lpic as a 
 WHERE c.file_name = 'lpic' 
@@ -162,9 +165,10 @@ DROP VIEW IF EXISTS english_speaking_category_view;
 CREATE VIEW english_speaking_category_view AS 
 SELECT 
   c.category as c_category,
+  COUNT(*) as count,
   SUM(clear_count) as sum_of_clear_count,
   SUM(fail_count) as sum_of_fail_count,
-  SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
+  100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
 CROSS JOIN english_speaking as a 
 WHERE c.file_name = 'english_speaking' 
