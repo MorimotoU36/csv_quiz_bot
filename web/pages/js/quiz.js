@@ -473,7 +473,7 @@ function incorrect_register(server){
 //答えの文を表示
 function display_answer(){
     //メッセージをクリア
-    clear_all_message();
+    //clear_all_message();
 
     if(sentense == ""){
         set_error_message("問題文がありません。")
@@ -1081,7 +1081,7 @@ function checked_to_selected_question(server){
 //画像を表示
 function display_image(server,s3_img_dir){
     //メッセージをクリア
-    clear_all_message();
+    //clear_all_message();
 
     if(image_file == ""){
         set_error_message("画像ファイル名がありません")
