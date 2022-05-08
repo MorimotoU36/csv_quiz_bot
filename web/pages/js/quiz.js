@@ -227,6 +227,9 @@ function random_select_question(server){
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
+
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
@@ -289,6 +292,9 @@ function worst_rate_question(server){
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
 
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
+
             //チェックありならチェックマークも表示
             if(response.checked == 1){
                 sentense = "✅" + sentense
@@ -350,6 +356,9 @@ function minimum_clear_question(server){
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
             question_num = Number(response.quiz_num)
+
+            //正解率を表示
+            sentense = sentense + "(正解率:"+response.accuracy_rate+"%)"
 
             //チェックありならチェックマークも表示
             if(response.checked == 1){
@@ -464,7 +473,7 @@ function incorrect_register(server){
 //答えの文を表示
 function display_answer(){
     //メッセージをクリア
-    clear_all_message();
+    //clear_all_message();
 
     if(sentense == ""){
         set_error_message("問題文がありません。")
@@ -924,7 +933,7 @@ function display_accuracy_rate_by_category(server){
                 chartArea: {
                     left: '15%',
                     top: 10,
-                    width: '80%',
+                    width: '75%',
                     height: graph_height-50
                 },
                 hAxis: {
@@ -1072,7 +1081,7 @@ function checked_to_selected_question(server){
 //画像を表示
 function display_image(server,s3_img_dir){
     //メッセージをクリア
-    clear_all_message();
+    //clear_all_message();
 
     if(image_file == ""){
         set_error_message("画像ファイル名がありません")

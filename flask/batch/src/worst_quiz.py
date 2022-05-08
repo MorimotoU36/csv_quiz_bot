@@ -72,13 +72,16 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             quiz_id = results[0]['quiz_num']
 
             # SQL作成して問題を取得する
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked FROM {0} WHERE quiz_num = {1}".format(table,quiz_id)
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_id)
             print(sql)
             cursor.execute(sql)
 
             # MySQLから帰ってきた結果を受け取る
             # Select結果を取り出す
             results = cursor.fetchall()
+            # accuracy_rateはstr型にする(API)
+            for ri in results:
+                ri["accuracy_rate"] = str(0 if ri["accuracy_rate"] is None else round(ri["accuracy_rate"],1))
 
         # 結果をJSONに変形して返す
         return {
