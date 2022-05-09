@@ -220,6 +220,7 @@ def edit_checked_of_question(data):
     try:
         # data内のクエリを１個１個見ていく
         checked_i=[]
+        unchecked_i=[]
         for data_i in data:
             # ファイル番号を取得
             file_num = data_i['file_num']
@@ -241,28 +242,33 @@ def edit_checked_of_question(data):
 
                 # チェック状態を取得
                 checked = int(results[0]['checked'])
-                print(checked)
 
                 # チェック状態を修正する
                 if(checked == 0):
                     # チェックなしならチェックありにする
                     sql = "UPDATE {0} SET checked = {1} WHERE quiz_num = {2} ".format(table,1,quiz_num)
                     cursor.execute(sql)
+                    checked_i.append(str(quiz_num))
                 else:
                     # チェックありならチェックなしにする
                     sql = "UPDATE {0} SET checked = {1} WHERE quiz_num = {2} ".format(table,0,quiz_num)
                     cursor.execute(sql)
-
-                checked_i.append(str(quiz_num))
+                    unchecked_i.append(str(quiz_num))
 
         #全て成功したらコミット
         conn.commit()
         conn.close()
 
-        checked_i = ','.join(checked_i)
+        #チェック登録解除した問題のメッセージを作成
+        message=""
+        if(len(checked_i)>0):
+            message+="checked to [" + ','.join(checked_i) + "] OK. "
+        if(len(unchecked_i)>0):
+            message+="unchecked to [" + ','.join(unchecked_i) + "] OK. "
+
         return {
             "statusCode": 200,
-            "message": "checked to ["+checked_i+"] OK."
+            "message": message
         }
 
     # DB操作失敗時はロールバック
