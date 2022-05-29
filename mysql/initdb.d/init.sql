@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS aws_quiz
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -23,7 +24,8 @@ CREATE TABLE IF NOT EXISTS applied
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -36,7 +38,8 @@ CREATE TABLE IF NOT EXISTS lpic
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -49,7 +52,8 @@ CREATE TABLE IF NOT EXISTS english_speaking
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0,
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -71,6 +75,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM aws_quiz;
 
@@ -85,6 +90,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM applied;
 
@@ -99,6 +105,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM lpic;
 
@@ -113,6 +120,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM english_speaking;
 
