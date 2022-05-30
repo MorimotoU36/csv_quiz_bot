@@ -37,37 +37,37 @@
                 <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
             </tr>
         </table>
-        <input type="button" value="取得" onClick="get_question_for_edit(getServerName())">
+        <input type="button" value="取得" onClick="get_question_for_delete(getServerName(),'pre')">
 
         <hr>
         <table>
             <tr>
                 <td>ファイル</td>
-                <td><p id="question_of_file"></p></td>
+                <td><p id="question_of_file_pre"></p></td>
             </tr>
             <tr>
                 <td>問題番号</td>
-                <td><p id="question_num"></p></td>
+                <td><p id="question_num_pre"></p></td>
             </tr>
             <tr>
                 <td>問題</td>
-                <td><input type="text" id="question_sentense" size="100"></input></td>
+                <td><p id="question_sentense_pre"></p></td>
             </tr>
             <tr>
                 <td>答え</td>
-                <td><input type="text" id="question_answer" size="100"></input></td>
+                <td><p id="question_answer_pre"></p></td>
             </tr>
             <tr>
                 <td>カテゴリ</td>
-                <td><input type="text" id="question_category" size="100"></input></td>
+                <td><p id="question_category_pre"></p></td>
             </tr>
             <tr>
                 <td>画像ファイル名</td>
-                <td><input type="text" id="question_img_file_name" size="100"></input></td>
+                <td><p id="question_img_file_name_pre"></p></td>
             </tr>
             <tr>
                 <td><!--ファイル番号--></td>
-                <td><input type="hidden" id="question_of_file_num" size="100"></input></td>
+                <td><p id="question_of_file_num_pre" hidden></p></td>
             </tr>
         </table>
         <hr>
