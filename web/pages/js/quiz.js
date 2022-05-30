@@ -575,6 +575,13 @@ function add_quiz(server){
 function get_question_for_edit(server){
     //メッセージをクリア
     clear_all_message();
+    document.getElementById("question_of_file").innerText = ""
+    document.getElementById("question_num").innerText = ""
+    document.getElementById("question_of_file_num").innerText = ""
+    document.getElementById("question_sentense").value = ""
+    document.getElementById("question_answer").value = ""
+    document.getElementById("question_category").value = ""
+    document.getElementById("question_img_file_name").value = "" 
 
     //エラーチェック、問題番号が範囲内か
     if(Number(file_num) == -1){
@@ -592,6 +599,13 @@ function get_question_for_edit(server){
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){  
+
+            // 削除フラグありならメッセージ表示して終了
+            if(resp.response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
             document.getElementById("question_of_file").innerText = file_name
             document.getElementById("question_num").innerText = question_num
             document.getElementById("question_of_file_num").innerText = get_file_num()
@@ -602,7 +616,7 @@ function get_question_for_edit(server){
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
-                                +" : "+resp['error_log']);
+                                +" : "+resp['error']);
         }
         console.log(document.getElementById("question_of_file_num").innerText)
     })
