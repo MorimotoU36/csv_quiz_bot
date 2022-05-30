@@ -37,7 +37,7 @@
                 <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
             </tr>
         </table>
-        <input type="button" value="取得" onClick="get_question_for_delete(getServerName(),'pre')">
+        <input type="button" value="取得" onClick="get_question_for_delete(getServerName())">
 
         <hr>
         <table>
@@ -74,6 +74,62 @@
         <span>この問題を削除しますか？>></span>
         <input type="button" value="削除" onClick="delete_question(getServerName())" >
         <div class="push"></div>
+
+        <hr>
+        <hr>
+
+        <p>統合先の問題</p>
+
+        <table style="border:none">
+            <!-- <tr>
+                <td>ファイル</td>
+                <td>:</td>
+                <td>
+                    <p id="integrate_question_of_file"></p>
+                </td>
+            </tr> -->
+            <tr>
+                <td>問題番号</td>
+                <td>:</td>
+                <td><input type="text" id="integrate_to_question_number"></td>
+            </tr>
+        </table>
+        <input type="button" value="取得" onClick="get_integrate_to_question(getServerName())">
+
+        <hr>
+        <table>
+            <tr>
+                <td>ファイル</td>
+                <td><p id="question_of_file_post"></p></td>
+            </tr>
+            <tr>
+                <td>問題番号</td>
+                <td><p id="question_num_post"></p></td>
+            </tr>
+            <tr>
+                <td>問題</td>
+                <td><p id="question_sentense_post"></p></td>
+            </tr>
+            <tr>
+                <td>答え</td>
+                <td><p id="question_answer_post"></p></td>
+            </tr>
+            <tr>
+                <td>カテゴリ</td>
+                <td><p id="question_category_post"></p></td>
+            </tr>
+            <tr>
+                <td>画像ファイル名</td>
+                <td><p id="question_img_file_name_post"></p></td>
+            </tr>
+            <tr>
+                <td><!--ファイル番号--></td>
+                <td><p id="question_of_file_num_post" hidden></p></td>
+            </tr>
+        </table>
+
+
+
     </div>
 
     <footer>
