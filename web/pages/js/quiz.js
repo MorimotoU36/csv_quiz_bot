@@ -1109,3 +1109,32 @@ function display_image(server,s3_img_dir){
 
     }
 }
+
+//問題を編集
+function delete_question(server){
+    //メッセージをクリア
+    clear_all_message();
+
+    //JSONデータ作成
+    var data = {
+        "file_num": document.getElementById("question_of_file_num").innerText,
+        "quiz_num": document.getElementById("question_num").innerText
+    }
+
+    //入力されてないなら削除
+    if(data.file_num === "" || data.quiz_num === ""){
+        set_error_message("ファイル番号または問題番号がありません。取得してください")
+    }else{
+        //外部APIで指定した問題を削除する
+        post_data(getDeleteQuizApi(server),data,function(resp){
+            if(resp['statusCode'] == 200){    
+                //編集完了メッセージ
+                set_message(resp['result']);
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
+    }
+}

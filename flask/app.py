@@ -16,6 +16,7 @@ from batch.src.update_category_master import update_category_master
 from batch.src.get_accuracy_rate_by_category import get_accuracy_rate_by_category
 from batch.src.edit_quiz import edit_checked_of_question
 from batch.src.s3_file_download import file_download
+from batch.src.delete_quiz import delete_quiz
 
 from flask import Flask, request
 from flask_cors import CORS
@@ -537,6 +538,46 @@ def img_download():
             }
         else:
             # ファイルが取得できなかった場合
+            return {
+                "statusCode" : 400,
+                "error" : result['error']
+            }
+
+    except Exception as e:
+        return {
+            'statusCode' : 500,
+            "error" : traceback.format_exc()
+        }
+
+
+@app.route('/delete', methods=["POST"])
+def delete_question():
+    """問題を削除する関数
+    Args:  JSON
+    {
+        "file_num" (str): ファイル番号,
+        "quiz_num" (str): 問題番号,
+    }
+
+    Returns:
+        [type]: [description]
+    """    
+    try:
+        # リクエストから値を読み取る。
+        req = request.json
+        file_num = int(req.get("file_num"))
+        quiz_num = int(req.get("quiz_num"))
+
+        # 問題削除実行
+        result = delete_quiz(file_num,quiz_num)
+        if(result['result']):
+            # 成功した場合
+            return {
+                "statusCode" : 200,
+                "result" : result['result']
+            }
+        else:
+            # エラー発生した場合
             return {
                 "statusCode" : 400,
                 "error" : result['error']
