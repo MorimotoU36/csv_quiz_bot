@@ -136,6 +136,7 @@ FROM category as c
 CROSS JOIN aws_quiz as a 
 WHERE c.file_name = 'aws_quiz' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -151,6 +152,7 @@ FROM category as c
 CROSS JOIN applied as a 
 WHERE c.file_name = 'applied' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -166,6 +168,7 @@ FROM category as c
 CROSS JOIN lpic as a 
 WHERE c.file_name = 'lpic' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -181,6 +184,7 @@ FROM category as c
 CROSS JOIN english_speaking as a 
 WHERE c.file_name = 'english_speaking' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
