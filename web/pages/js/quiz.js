@@ -1229,5 +1229,12 @@ function delete_question(server){
                                     +" : "+resp['error']);
             }
         })
+        document.getElementById("question_of_file_pre").innerText = ""
+        document.getElementById("question_num_pre").innerText = ""
+        document.getElementById("question_of_file_num_pre").innerText = ""
+        document.getElementById("question_sentense_pre").innerText = ""
+        document.getElementById("question_answer_pre").innerText = ""
+        document.getElementById("question_category_pre").innerText = ""
+        document.getElementById("question_img_file_name_pre").innerText = "" 
     }
 }
