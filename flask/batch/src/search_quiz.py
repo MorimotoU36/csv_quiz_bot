@@ -53,9 +53,12 @@ def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
     with conn.cursor() as cursor:
         # 検索語句が問題文または解答文に含まれる
         # SQLを実行する
-        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} ".format(view)
+        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} ".format(view)
         sql_statement += " WHERE "
         where_statement=[]
+
+        # 削除済の問題は取らないように設定
+        where_statement.append(" deleted != 1 ")
 
         # rateによる条件追加(NULLも)
         where_statement.append(" ( accuracy_rate <= {0} or accuracy_rate is null ) ".format(rate))
