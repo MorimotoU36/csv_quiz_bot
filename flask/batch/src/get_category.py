@@ -45,7 +45,7 @@ def get_category(file_num):
     with conn.cursor() as cursor:
         # 検索語句がカテゴリに含まれる
         # SQLを実行する
-        sql_statement = "SELECT DISTINCT category FROM {0} ".format(table)
+        sql_statement = "SELECT DISTINCT category FROM {0} WHERE deleted != 1 ".format(table)
         cursor.execute(sql_statement)
 
         # MySQLから帰ってきた結果を受け取る
