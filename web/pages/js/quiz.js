@@ -301,6 +301,13 @@ function worst_rate_question(server){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
+
+            // 削除フラグありならメッセージ表示して終了
+            if(response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
