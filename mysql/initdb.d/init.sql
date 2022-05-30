@@ -53,7 +53,7 @@ CREATE TABLE IF NOT EXISTS english_speaking
   category VARCHAR(256),
   img_file VARCHAR(128),
   checked BOOLEAN DEFAULT 0,
-  deleted BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
