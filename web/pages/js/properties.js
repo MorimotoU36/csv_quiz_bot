@@ -72,3 +72,13 @@ function getEditCheckedOfQuestionApi(server){
 function getDownloadFilefromS3Api(server){
     return server + 's3_file_download'
 }
+
+//問題削除API
+function getDeleteQuizApi(server){
+    return server + 'delete'
+}
+
+//問題統合API
+function getIntegrateQuizApi(server){
+    return server + 'integrate'
+}

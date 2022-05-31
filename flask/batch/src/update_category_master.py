@@ -50,7 +50,7 @@ def update_category_master():
             # テーブル毎にカテゴリのリストを取得してマスタに更新
             for i in range(len(table)):
                 # 問題テーブルからカテゴリのリストを取得
-                sql_statement = "SELECT DISTINCT category FROM {0} ".format(table[i])
+                sql_statement = "SELECT DISTINCT category FROM {0} WHERE deleted != 1 ".format(table[i])
                 cursor.execute(sql_statement)
                 results = cursor.fetchall()
 

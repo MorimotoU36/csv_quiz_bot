@@ -48,6 +48,9 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     # rateによる条件追加
     where_statement.append(" accuracy_rate <= {0} ".format(rate))
 
+    # 削除済問題を取らない条件追加
+    where_statement.append(" deleted != 1 ")
+
     # カテゴリによる条件追加
     if(len(category)>0):
         where_statement.append(" category LIKE '%" + category + "%' ")
@@ -63,7 +66,7 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     # テーブル名からSQLを作成して投げる
     with conn.cursor() as cursor:
         # SQL作成して問題を取得する。結果のうちランダムに1つ取得する
-        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} {1} ORDER BY RAND() LIMIT 1".format(view,where_statement)
+        sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} {1} ORDER BY RAND() LIMIT 1".format(view,where_statement)
         cursor.execute(sql)
 
         # MySQLから帰ってきた結果を受け取る

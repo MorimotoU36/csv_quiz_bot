@@ -47,6 +47,10 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             # 指定したテーブルの正解率が最も低い問題を調べる
             # カテゴリが指定されている場合は条件文を追加する
             where_statement = []
+
+            # 削除済問題を取らない条件追加
+            where_statement.append(" deleted != 1 ")
+
             if(category is not None):
                 where_statement.append(" category LIKE '%"+category+"%' ")
             if(checked):

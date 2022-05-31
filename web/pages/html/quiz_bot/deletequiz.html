@@ -1,0 +1,157 @@
+<html>
+    <head>
+        <title>クイズ削除・統合</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="../../css/quiz.css">
+        <script src="../../js/properties.js"></script>
+        <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
+        <script>
+            window.onload = function(){
+                get_csv_name_list(getServerName());
+            };
+        </script>
+    </head>
+<body>
+    <div id="wrapper">
+        <h1>CSV Quiz Bot</h1>
+
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
+        </div>
+
+        <div class="integrate_data">
+            <p>削除する(統合元の)問題</p>
+
+            <table style="border:none">
+                <tr>
+                    <td>ファイル</td>
+                    <td>:</td>
+                    <td>
+                        <select id="file_list" onChange="update_file_num(event,getServerName())">
+                            <option selected value="-1">指定なし</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>問題番号</td>
+                    <td>:</td>
+                    <td><input type="text" id="question_number" onChange="update_question_num(event)"></td>
+                </tr>
+            </table>
+            <input type="button" value="取得" onClick="get_question_for_delete(getServerName())">
+
+            <hr>
+            <table>
+                <tr>
+                    <td>ファイル</td>
+                    <td><p id="question_of_file_pre"></p></td>
+                </tr>
+                <tr>
+                    <td>問題番号</td>
+                    <td><p id="question_num_pre"></p></td>
+                </tr>
+                <tr>
+                    <td>問題</td>
+                    <td><p id="question_sentense_pre"></p></td>
+                </tr>
+                <tr>
+                    <td>答え</td>
+                    <td><p id="question_answer_pre"></p></td>
+                </tr>
+                <tr>
+                    <td>カテゴリ</td>
+                    <td><p id="question_category_pre"></p></td>
+                </tr>
+                <tr>
+                    <td>画像ファイル名</td>
+                    <td><p id="question_img_file_name_pre"></p></td>
+                </tr>
+                <tr>
+                    <td><!--ファイル番号--></td>
+                    <td><p id="question_of_file_num_pre" hidden></p></td>
+                </tr>
+            </table>
+            <hr>
+            <span>この問題を削除しますか？>></span>
+            <input type="button" value="削除" onClick="delete_question(getServerName())" >
+        </div>
+
+        <div class="integrate_data">
+            <p>統合先の問題</p>
+
+            <table style="border:none">
+                <tr>
+                    <td>　</td>
+                    <td>　</td>
+                    <td>
+                        <p id="integrate_question_of_file"></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>問題番号</td>
+                    <td>:</td>
+                    <td><input type="text" id="integrate_to_question_number"></td>
+                </tr>
+            </table>
+            <input type="button" value="取得" onClick="get_integrate_to_question(getServerName())">
+
+            <hr>
+            <table>
+                <tr>
+                    <td>ファイル</td>
+                    <td><p id="question_of_file_post"></p></td>
+                </tr>
+                <tr>
+                    <td>問題番号</td>
+                    <td><p id="question_num_post"></p></td>
+                </tr>
+                <tr>
+                    <td>問題</td>
+                    <td><p id="question_sentense_post"></p></td>
+                </tr>
+                <tr>
+                    <td>答え</td>
+                    <td><p id="question_answer_post"></p></td>
+                </tr>
+                <tr>
+                    <td>カテゴリ</td>
+                    <td><p id="question_category_post"></p></td>
+                </tr>
+                <tr>
+                    <td>画像ファイル名</td>
+                    <td><p id="question_img_file_name_post"></p></td>
+                </tr>
+                <tr>
+                    <td><!--ファイル番号--></td>
+                    <td><p id="question_of_file_num_post" hidden></p></td>
+                </tr>
+            </table>
+            <hr>
+            <span>左の問題をこの問題に統合しますか？(左の問題は削除されます)>></span>
+            <input type="button" value="統合" onClick="integrate_question(getServerName())" >
+        </div>
+        <div class="push"></div>
+
+
+    </div>
+
+    <footer>
+        <hr>
+        <span class="left">
+            <a href='../top.html'>トップ</a>
+            <a href='./quiz.html'>問題出題</a>
+            <a href='./addquiz.html'>問題追加</a>
+            <a href='./editquiz.html'>問題編集</a>
+            <a href='./searchquiz.html'>問題検索</a>
+            問題削除
+            <a href='./accuracy_rate_by_category.html'>カテゴリ別正解率表示</a>
+        </span>
+        <span class="right">
+        ©️ Tatsuroh Wakasugi
+        </span>
+    </footer>
+</body>
+</html>
+

@@ -10,7 +10,8 @@ CREATE TABLE IF NOT EXISTS aws_quiz
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -23,7 +24,8 @@ CREATE TABLE IF NOT EXISTS applied
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -36,7 +38,8 @@ CREATE TABLE IF NOT EXISTS lpic
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -49,7 +52,8 @@ CREATE TABLE IF NOT EXISTS english_speaking
   fail_count INT DEFAULT 0,
   category VARCHAR(256),
   img_file VARCHAR(128),
-  checked BOOLEAN DEFAULT 0
+  checked BOOLEAN DEFAULT 0,
+  deleted BOOLEAN DEFAULT 0
 ) DEFAULT CHARACTER
   SET=utf8;
 
@@ -71,6 +75,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM aws_quiz;
 
@@ -85,6 +90,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM applied;
 
@@ -99,6 +105,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM lpic;
 
@@ -113,6 +120,7 @@ SELECT
   category,
   img_file,
   checked,
+  deleted,
   100 * clear_count / (clear_count + fail_count) AS accuracy_rate
 FROM english_speaking;
 
@@ -128,6 +136,7 @@ FROM category as c
 CROSS JOIN aws_quiz as a 
 WHERE c.file_name = 'aws_quiz' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -143,6 +152,7 @@ FROM category as c
 CROSS JOIN applied as a 
 WHERE c.file_name = 'applied' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -158,6 +168,7 @@ FROM category as c
 CROSS JOIN lpic as a 
 WHERE c.file_name = 'lpic' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 
@@ -173,6 +184,7 @@ FROM category as c
 CROSS JOIN english_speaking as a 
 WHERE c.file_name = 'english_speaking' 
 AND a.category LIKE concat('%',c.category,'%')
+AND a.deleted != 1
 GROUP BY c_category
 ORDER BY c_category;
 

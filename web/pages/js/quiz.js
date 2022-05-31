@@ -161,6 +161,13 @@ function get_question(server){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
+
+            // 削除フラグありならメッセージ表示して終了
+            if(response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
@@ -222,6 +229,13 @@ function random_select_question(server){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
+
+            // 削除フラグありならメッセージ表示して終了
+            if(response.deleted == 1){
+                set_error_message("エラー : 問題["+response.quiz_num+"] は削除済です");
+                return false
+            }
+
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
@@ -287,6 +301,13 @@ function worst_rate_question(server){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
+
+            // 削除フラグありならメッセージ表示して終了
+            if(response.deleted == 1){
+                set_error_message("エラー : 問題["+response.quiz_num+"] は削除済です");
+                return false
+            }
+
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
@@ -319,7 +340,7 @@ function worst_rate_question(server){
     })
 }
 
-//正解率最低の問題を出題する
+//正解数最低の問題を出題する
 function minimum_clear_question(server){
     //メッセージをクリア
     clear_all_message();
@@ -352,6 +373,13 @@ function minimum_clear_question(server){
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
             let response = resp.response
+
+            // 削除フラグありならメッセージ表示して終了
+            if(response.deleted == 1){
+                set_error_message("エラー : 問題["+response.quiz_num+"] は削除済です");
+                return false
+            }
+
             sentense = response.quiz_sentense === undefined ? "" : "["+response.quiz_num+"]"+response.quiz_sentense
             quiz_answer =  response.answer === undefined ? "" : "["+response.quiz_num+"]"+response.answer
             image_file =  response.img_file === undefined ? "" : response.img_file
@@ -547,6 +575,13 @@ function add_quiz(server){
 function get_question_for_edit(server){
     //メッセージをクリア
     clear_all_message();
+    document.getElementById("question_of_file").innerText = ""
+    document.getElementById("question_num").innerText = ""
+    document.getElementById("question_of_file_num").innerText = ""
+    document.getElementById("question_sentense").value = ""
+    document.getElementById("question_answer").value = ""
+    document.getElementById("question_category").value = ""
+    document.getElementById("question_img_file_name").value = "" 
 
     //エラーチェック、問題番号が範囲内か
     if(Number(file_num) == -1){
@@ -564,6 +599,13 @@ function get_question_for_edit(server){
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getQuestionApi(server),data,function(resp){
         if(resp['statusCode'] == 200){  
+
+            // 削除フラグありならメッセージ表示して終了
+            if(resp.response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
             document.getElementById("question_of_file").innerText = file_name
             document.getElementById("question_num").innerText = question_num
             document.getElementById("question_of_file_num").innerText = get_file_num()
@@ -574,7 +616,7 @@ function get_question_for_edit(server){
         }else{
             //内部エラー時
             set_error_message(resp['statusCode']
-                                +" : "+resp['error_log']);
+                                +" : "+resp['error']);
         }
         console.log(document.getElementById("question_of_file_num").innerText)
     })
@@ -1107,5 +1149,200 @@ function display_image(server,s3_img_dir){
             }
         })
 
+    }
+}
+
+//削除する問題の情報を取得
+function get_question_for_delete(server){
+    //メッセージをクリア
+    clear_all_message();
+    document.getElementById("question_of_file_pre").innerText = ""
+    document.getElementById("question_num_pre").innerText = ""
+    document.getElementById("question_of_file_num_pre").innerText = ""
+    document.getElementById("question_sentense_pre").innerText = ""
+    document.getElementById("question_answer_pre").innerText = ""
+    document.getElementById("question_category_pre").innerText = ""
+    document.getElementById("question_img_file_name_pre").innerText = "" 
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": file_num,
+        "quiz_num": question_num,
+        "image_flag": true 
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getQuestionApi(server),data,function(resp){
+        if(resp['statusCode'] == 200){  
+
+            // 削除フラグありならメッセージ表示して終了
+            if(resp.response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
+            document.getElementById("question_of_file_pre").innerText = file_name
+            document.getElementById("question_num_pre").innerText = question_num
+            document.getElementById("question_of_file_num_pre").innerText = get_file_num()
+            document.getElementById("question_sentense_pre").innerText = resp.response.quiz_sentense === undefined ? "" : resp.response.quiz_sentense
+            document.getElementById("question_answer_pre").innerText = resp.response.answer === undefined ? "" : resp.response.answer
+            document.getElementById("question_category_pre").innerText = resp.response.category === undefined ? "" : resp.response.category
+            document.getElementById("question_img_file_name_pre").innerText = resp.response.img_file === undefined ? "" : resp.response.img_file
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
+
+//問題を削除
+function delete_question(server){
+    //メッセージをクリア
+    clear_all_message();
+
+    //JSONデータ作成
+    var data = {
+        "file_num": document.getElementById("question_of_file_num_pre").innerText,
+        "quiz_num": document.getElementById("question_num_pre").innerText
+    }
+
+    //入力されてないなら削除
+    if(data.file_num === "" || data.quiz_num === ""){
+        set_error_message("ファイル番号または問題番号がありません。取得してください")
+    }else{
+        //外部APIで指定した問題を削除する
+        post_data(getDeleteQuizApi(server),data,function(resp){
+            if(resp['statusCode'] == 200){    
+                //編集完了メッセージ
+                set_message(resp['result']);
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
+        document.getElementById("question_of_file_pre").innerText = ""
+        document.getElementById("question_num_pre").innerText = ""
+        document.getElementById("question_of_file_num_pre").innerText = ""
+        document.getElementById("question_sentense_pre").innerText = ""
+        document.getElementById("question_answer_pre").innerText = ""
+        document.getElementById("question_category_pre").innerText = ""
+        document.getElementById("question_img_file_name_pre").innerText = "" 
+    }
+}
+
+
+//統合する先の問題の情報を取得
+function get_integrate_to_question(server){
+    //メッセージをクリア
+    clear_all_message();
+    document.getElementById("question_num_post").innerText = ""
+    document.getElementById("question_of_file_num_post").innerText = ""
+    document.getElementById("question_sentense_post").innerText = ""
+    document.getElementById("question_answer_post").innerText = ""
+    document.getElementById("question_category_post").innerText = ""
+    document.getElementById("question_img_file_name_post").innerText = "" 
+
+    //エラーチェック、問題番号が範囲内か
+    if(Number(file_num) == -1){
+        set_error_message("問題ファイルを選択して下さい");
+        return false;
+    }else if(document.getElementById("question_of_file_pre").innerText == ""){
+        set_error_message("先に削除する問題を選択して下さい");
+        return false;
+    }else if(document.getElementById("integrate_to_question_number").value == ""){
+        set_error_message("統合先の問題番号を入力して下さい");
+        return false;
+    }
+
+    //JSONデータ作成
+    var data = {
+        "file_num": document.getElementById("question_of_file_num_pre").innerText,
+        "quiz_num": document.getElementById("integrate_to_question_number").value,
+        "image_flag": true 
+    }
+
+    //外部APIへPOST通信、問題を取得しにいく
+    post_data(getQuestionApi(server),data,function(resp){
+        if(resp['statusCode'] == 200){  
+
+            // 削除フラグありならメッセージ表示して終了
+            if(resp.response.deleted == 1){
+                set_error_message("エラー : 問題["+data.quiz_num+"] は削除済です");
+                return false
+            }
+
+            document.getElementById("question_of_file_post").innerText = file_name
+            document.getElementById("question_num_post").innerText = data.quiz_num
+            document.getElementById("question_of_file_num_post").innerText = data.file_num
+            document.getElementById("question_sentense_post").innerText = resp.response.quiz_sentense === undefined ? "" : resp.response.quiz_sentense
+            document.getElementById("question_answer_post").innerText = resp.response.answer === undefined ? "" : resp.response.answer
+            document.getElementById("question_category_post").innerText = resp.response.category === undefined ? "" : resp.response.category
+            document.getElementById("question_img_file_name_post").innerText = resp.response.img_file === undefined ? "" : resp.response.img_file
+        }else{
+            //内部エラー時
+            set_error_message(resp['statusCode']
+                                +" : "+resp['error']);
+        }
+    })
+}
+
+//問題を統合
+function integrate_question(server){
+    //メッセージをクリア
+    clear_all_message();
+
+    //JSONデータ作成
+    var data = {
+        "pre": {
+            "file_num": document.getElementById("question_of_file_num_pre").innerText,
+            "quiz_num": document.getElementById("question_num_pre").innerText
+        },
+        "post": {
+            "file_num": document.getElementById("question_of_file_num_pre").innerText,
+            "quiz_num": document.getElementById("question_num_post").innerText
+        }
+    }
+
+    //入力されてないなら削除
+    if(data.pre.file_num === "" || data.pre.quiz_num === "" ||
+        data.post.file_num === "" || data.post.quiz_num === ""){
+        set_error_message("ファイル番号または問題番号がありません。取得してください")
+    }else{
+        //外部APIで指定した問題を削除する
+        post_data(getIntegrateQuizApi(server),data,function(resp){
+            if(resp['statusCode'] == 200){    
+                //編集完了メッセージ
+                set_message(resp['result']);
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
+        
+        document.getElementById("question_of_file_pre").innerText = ""
+        document.getElementById("question_num_pre").innerText = ""
+        document.getElementById("question_of_file_num_pre").innerText = ""
+        document.getElementById("question_sentense_pre").innerText = ""
+        document.getElementById("question_answer_pre").innerText = ""
+        document.getElementById("question_category_pre").innerText = ""
+        document.getElementById("question_img_file_name_pre").innerText = "" 
+
+        document.getElementById("question_of_file_post").innerText = ""
+        document.getElementById("question_num_post").innerText = ""
+        document.getElementById("question_of_file_num_post").innerText = ""
+        document.getElementById("question_sentense_post").innerText = ""
+        document.getElementById("question_answer_post").innerText = ""
+        document.getElementById("question_category_post").innerText = ""
+        document.getElementById("question_img_file_name_post").innerText = "" 
     }
 }
