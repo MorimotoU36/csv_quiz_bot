@@ -1294,3 +1294,55 @@ function get_integrate_to_question(server){
         }
     })
 }
+
+//問題を統合
+function integrate_question(server){
+    //メッセージをクリア
+    clear_all_message();
+
+    //JSONデータ作成
+    var data = {
+        "pre": {
+            "file_num": document.getElementById("question_of_file_num_pre").innerText,
+            "quiz_num": document.getElementById("question_num_pre").innerText
+        },
+        "post": {
+            "file_num": document.getElementById("question_of_file_num_pre").innerText,
+            "quiz_num": document.getElementById("question_num_post").innerText
+        }
+    }
+
+    //入力されてないなら削除
+    if(data.pre.file_num === "" || data.pre.quiz_num === "" ||
+        data.post.file_num === "" || data.post.quiz_num === ""){
+        set_error_message("ファイル番号または問題番号がありません。取得してください")
+    }else{
+        //外部APIで指定した問題を削除する
+        post_data(getIntegrateQuizApi(server),data,function(resp){
+            if(resp['statusCode'] == 200){    
+                //編集完了メッセージ
+                set_message(resp['result']);
+            }else{
+                //内部エラー時
+                set_error_message(resp['statusCode']
+                                    +" : "+resp['error']);
+            }
+        })
+        
+        document.getElementById("question_of_file_pre").innerText = ""
+        document.getElementById("question_num_pre").innerText = ""
+        document.getElementById("question_of_file_num_pre").innerText = ""
+        document.getElementById("question_sentense_pre").innerText = ""
+        document.getElementById("question_answer_pre").innerText = ""
+        document.getElementById("question_category_pre").innerText = ""
+        document.getElementById("question_img_file_name_pre").innerText = "" 
+
+        document.getElementById("question_of_file_post").innerText = ""
+        document.getElementById("question_num_post").innerText = ""
+        document.getElementById("question_of_file_num_post").innerText = ""
+        document.getElementById("question_sentense_post").innerText = ""
+        document.getElementById("question_answer_post").innerText = ""
+        document.getElementById("question_category_post").innerText = ""
+        document.getElementById("question_img_file_name_post").innerText = "" 
+    }
+}

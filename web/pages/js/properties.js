@@ -77,3 +77,8 @@ function getDownloadFilefromS3Api(server){
 function getDeleteQuizApi(server){
     return server + 'delete'
 }
+
+//問題統合API
+function getIntegrateQuizApi(server){
+    return server + 'integrate'
+}
