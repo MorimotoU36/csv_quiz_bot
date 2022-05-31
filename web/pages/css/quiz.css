@@ -72,3 +72,12 @@ table#search_result_table {
 .image_registered {
     background-color: lightskyblue;
 }
+
+.integrate_data {
+    border-style: solid;
+    border-width: thin;
+    margin:3px;
+    padding: 3px;
+    width: 40%;
+    float: left;
+}
