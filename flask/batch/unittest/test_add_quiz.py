@@ -27,7 +27,7 @@ class TestAddQuiz(unittest.TestCase):
         # 入力データ
         input_data = "add_quizテスト1問題,add_quizテスト1答え,add_quizテスト1カテゴリ,add_quizテスト1画像"
         # 使用ファイル番号（テスト用テーブル）
-        file_num = 3
+        file_num = 0
 
         # 設定ファイルを呼び出してファイル番号からテーブル名を取得
         # (変なファイル番号ならエラー終了)
@@ -103,7 +103,7 @@ class TestAddQuiz(unittest.TestCase):
                     "add_quizテスト1-2問題,add_quizテスト1-2答え,add_quizテスト1-2カテゴリ,add_quizテスト1-2画像",
                     "add_quizテスト1-3問題,add_quizテスト1-3答え,add_quizテスト1-3カテゴリ,add_quizテスト1-3画像"])
         # 使用ファイル番号（テスト用テーブル）
-        file_num = 3
+        file_num = 0
 
         # 設定ファイルを呼び出してファイル番号からテーブル名を取得
         # (変なファイル番号ならエラー終了)
@@ -200,7 +200,7 @@ class TestAddQuiz(unittest.TestCase):
                     "add_quizテスト2-2問題,add_quizテスト2-2答え,add_quizテスト2-2カテゴリ,add_quizテスト2-2画像",
                     "add_quizテスト2-3問題,add_quizテスト2-3答え,add_quizテスト2-3カテゴリ,add_quizテスト2-3画像"])
         # 使用ファイル番号（テスト用テーブル）
-        file_num = 3
+        file_num = 0
 
         # 設定ファイルを呼び出してファイル番号からテーブル名を取得
         # (変なファイル番号ならエラー終了)
