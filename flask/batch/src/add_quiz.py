@@ -14,7 +14,7 @@ def add_quiz(file_num,input_data):
 
     Args:
         file_num (int): ファイル番号
-        input_data (str): 入力されたデータ(テスト問題,正解,カテゴリ,画像ファイル名)*x行
+        input_data (str): 入力されたデータ(テスト問題,正解,カテゴリ,画像ファイル名)*x行（<-改行区切り）
 
         Returns:
             result (JSON): 取得した問題
@@ -72,7 +72,6 @@ def add_quiz(file_num,input_data):
                 # 削除済問題のところにデータを更新する形でいれる
                 with conn.cursor() as cursor:
                     sql = "UPDATE {0} SET quiz_sentense = '{1}', answer = '{2}', clear_count = 0, fail_count = 0, category = '{3}', img_file = '{4}', checked = 0, deleted = 0 WHERE quiz_num = {5} ".format(table,question,answer,category,img_file,new_quiz_id)
-                    print(sql)
                     cursor.execute(sql)
 
                     result.append("Added!! [{0}-{1}]:{2},{3}".format(nickname,str(new_quiz_id),question,answer))
@@ -94,7 +93,6 @@ def add_quiz(file_num,input_data):
                 with conn.cursor() as cursor:
                     # データを挿入する
                     sql = "INSERT INTO {0} VALUES({1},'{2}','{3}',0,0,'{4}','{5}',0,0)".format(table,new_quiz_id,question,answer,category,img_file)
-                    print(sql)
                     cursor.execute(sql)
 
                     result.append("Added!! [{0}-{1}]:{2},{3}".format(nickname,str(new_quiz_id),question,answer))
