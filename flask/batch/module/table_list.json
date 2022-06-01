@@ -11,6 +11,10 @@
         {
             "name":"lpic",
             "nickname":"LPIC"
+        },
+        {
+            "name":"unit_test",
+            "nickname":"単体テスト用"
         }
     ],
     "english_table":{
