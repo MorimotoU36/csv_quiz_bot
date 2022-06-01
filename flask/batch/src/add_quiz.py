@@ -125,5 +125,4 @@ def add_quiz(file_num,input_data):
     }
 
 if __name__=="__main__":
-    res = add_quiz(2,"data1,data2,,\ndata5,data6,data7,data8")
-    print(res)
+    print("add_quiz!")
