@@ -25,5 +25,6 @@ def get_table_list():
     json_open = open(os.path.dirname(__file__)+'/table_list.json', 'r')
     # 開いたJSONファイルを読み込む
     json_load = json.load(json_open)
+    json_open.close()
     # テーブルのリストJSONを返す
     return json_load['table']
