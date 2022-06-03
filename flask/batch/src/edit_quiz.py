@@ -287,38 +287,4 @@ def edit_checked_of_question(data):
 
 
 if __name__=="__main__":
-#    res = edit_quiz(2,99,"ques1","ans2","cat3","img4")
-    # data = [
-    #     {
-    #         "file_num" : 2,
-    #         "quiz_num" : 93,
-    #         "category" : "テスト"
-    #     },
-    #     {
-    #         "file_num" : 2,
-    #         "quiz_num" : 94,
-    #         "category" : "テスト"
-    #     },
-    #     {
-    #         "file_num" : 2,
-    #         "quiz_num" : 95,
-    #         "category" : "テスト"
-    #     }
-    # ]
-    # res = edit_category_of_question(data)
-    data = [
-        {
-            "file_num" : 2,
-            "quiz_num" : 93
-        },
-        {
-            "file_num" : 2,
-            "quiz_num" : 94
-        },
-        {
-            "file_num" : 2,
-            "quiz_num" : 95
-        }
-    ]
-    res = edit_checked_of_question(data)
-    print(res)
+    print("edit_quiz!")
