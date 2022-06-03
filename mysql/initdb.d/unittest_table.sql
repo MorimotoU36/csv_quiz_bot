@@ -38,7 +38,7 @@ SELECT
   SUM(fail_count) as sum_of_fail_count,
   100 * SUM(clear_count) / (SUM(clear_count) + SUM(fail_count) ) AS accuracy_rate
 FROM category as c 
-CROSS JOIN aws_quiz as a 
+CROSS JOIN unit_test as a 
 WHERE c.file_name = 'unit_test' 
 AND a.category LIKE concat('%',c.category,'%')
 AND a.deleted != 1
