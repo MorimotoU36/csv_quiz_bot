@@ -76,7 +76,7 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             quiz_id = results[0]['quiz_num']
 
             # SQL作成して問題を取得する
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_id)
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_id)
             print(sql)
             cursor.execute(sql)
 
