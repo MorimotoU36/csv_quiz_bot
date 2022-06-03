@@ -107,5 +107,4 @@ def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
     }
 
 if __name__=="__main__":
-    res = search_quiz('VPC',0)
-    print(res)
+    print("search_quiz!")

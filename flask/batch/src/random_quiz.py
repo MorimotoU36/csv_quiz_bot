@@ -83,5 +83,4 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     }
 
 if __name__=="__main__":
-    res = random_quiz(file_num=0,category='')
-    print(res)
+    print("random_quiz!")

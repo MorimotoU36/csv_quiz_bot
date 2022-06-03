@@ -100,5 +100,4 @@ def worst_quiz(file_num=-1,category=None,checked=False):
         }
 
 if __name__=="__main__":
-    res = worst_quiz(file_num=0,category="SAA",checked=True)
-    print(res)
+    print("worst_quiz!")
