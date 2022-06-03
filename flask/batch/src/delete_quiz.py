@@ -54,7 +54,6 @@ def delete_quiz(file_num,quiz_num):
             # テーブルに問題を削除しにいく（削除フラグを更新する）
             update_deleteflag = " deleted = 1 "
             sql = "UPDATE {0} SET {1} WHERE quiz_num = {2} ".format(table,update_deleteflag,quiz_num)
-            print(sql)
             cursor.execute(sql)
 
             result = "Success!! [{0}-{1}]: deleted!".format(nickname,str(quiz_num))
@@ -85,14 +84,4 @@ def delete_quiz(file_num,quiz_num):
 
 
 if __name__=="__main__":
-
-    # # 削除用ダミーデータ追加
-    # add_ress = add_quiz(2,"削除用テストデータ１の問題,削除用テストデータ１の答え,削除用テストデータ１のカテゴリ,削除用テストデータ１のimgfile")
-    # add_ress2 = add_quiz(2,"削除用テストデータ２の問題,削除用テストデータ２の答え,削除用テストデータ２のカテゴリ,削除用テストデータ２のimgfile")
-    # print(add_ress)
-    # print(add_ress2)
-
-    # # ダミーデータ1つ削除
-    # res = delete_quiz(2,98)
-    # print(res)
-    print("delete quiz test")
+    print("delete_quiz!!")
