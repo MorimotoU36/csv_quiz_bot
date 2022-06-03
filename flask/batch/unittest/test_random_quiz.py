@@ -16,7 +16,7 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list
 
-class TestSelectQuiz(unittest.TestCase):
+class TestRandomQuiz(unittest.TestCase):
 
     # 問題を1つ取ってくるテスト
     def test_random_quiz(self):
