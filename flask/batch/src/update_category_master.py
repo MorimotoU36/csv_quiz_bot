@@ -97,4 +97,4 @@ def update_category_master():
     }
 
 if __name__=="__main__":
-    update_category_master()
+    print('update_category_master!')

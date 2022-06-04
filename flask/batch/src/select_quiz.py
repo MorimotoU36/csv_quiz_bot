@@ -79,5 +79,4 @@ def select_quiz(file_num,quiz_num):
     }
 
 if __name__=="__main__":
-    res = select_quiz(0,97)
-    print(res)
+    print("select_quiz!")

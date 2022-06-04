@@ -45,8 +45,8 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     # WHERE文
     where_statement = []
 
-    # rateによる条件追加
-    where_statement.append(" accuracy_rate <= {0} ".format(rate))
+    # rateによる条件追加(正解数・不正解数0回の時は正解率NULLになる)
+    where_statement.append(" ( accuracy_rate <= {0} OR accuracy_rate IS NULL ) ".format(rate))
 
     # 削除済問題を取らない条件追加
     where_statement.append(" deleted != 1 ")
@@ -83,5 +83,4 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     }
 
 if __name__=="__main__":
-    res = random_quiz(file_num=0,category='')
-    print(res)
+    print("random_quiz!")

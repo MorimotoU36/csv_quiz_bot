@@ -63,5 +63,4 @@ def get_category(file_num):
     }
 
 if __name__=="__main__":
-    res = get_category(0)
-    print(res)
+    print("get_category!")

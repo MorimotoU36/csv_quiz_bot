@@ -95,5 +95,4 @@ def answer_input(file_num,quiz_num,clear):
     }
 
 if __name__=="__main__":
-    res = answer_input(0,1,"true")
-    print(res)
+    print("answer_inputters")

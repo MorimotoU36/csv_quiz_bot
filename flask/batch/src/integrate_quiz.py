@@ -80,18 +80,15 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
             # 統合データ作成
             new_clear_count = int(pre_results[0]['clear_count']) + int(post_results[0]['clear_count'])
             new_fail_count  = int(pre_results[0]['fail_count']) + int(post_results[0]['fail_count'])
-            new_category    = ':'.join(list(set(pre_results[0]['category'].split(':')) | set(post_results[0]['category'].split(':')) ))
-            print(new_category)
+            new_category    = ':'.join(sorted(list(set(pre_results[0]['category'].split(':')) | set(post_results[0]['category'].split(':')) )))
 
             # 統合データ更新
             sql = "UPDATE {0} SET clear_count = {1}, fail_count = {2}, category = '{3}' WHERE quiz_num = {4} ".format(table,new_clear_count,new_fail_count,new_category,post_quiz_num)
-            print(sql)
             cursor.execute(sql)
 
             # 統合元データ削除
             update_deleteflag = " deleted = 1 "
             sql = "UPDATE {0} SET {1} WHERE quiz_num = {2} ".format(table,update_deleteflag,pre_quiz_num)
-            print(sql)
             cursor.execute(sql)
 
             result = "Success!! Integrated:[{0}:{1}->{2}] and deleted [{1}]".format(nickname,pre_quiz_num,post_quiz_num)
@@ -122,7 +119,4 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
 
 
 if __name__=="__main__":
-
-    print("integrate quiz test")
-    # res = integrate_quiz(2,98,2,99)
-    # print(res)
+    print("integrate quiz!")
