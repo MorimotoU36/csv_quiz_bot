@@ -10,7 +10,7 @@ from dbconfig import get_connection
 from ini import get_table_list
 
 def update_category_master():
-    """ファイル番号からカテゴリを取得する関数
+    """問題ファイルからカテゴリを取得しマスタに登録する関数
 
     Args:
         なし
@@ -41,12 +41,17 @@ def update_category_master():
             "traceback": traceback.format_exc()
         }
 
-    # # SQLを作成して投げる
+    # SQLを作成して投げる
     try:
         # 追加するカテゴリ数
         insert_categories = 0
 
         with conn.cursor() as cursor:
+            # カテゴリマスタのデータを全削除
+            sql_statement = "DELETE FROM category "
+            cursor.execute(sql_statement)
+            results = cursor.fetchall()
+
             # テーブル毎にカテゴリのリストを取得してマスタに更新
             for i in range(len(table)):
                 # 問題テーブルからカテゴリのリストを取得
@@ -58,20 +63,11 @@ def update_category_master():
                 for ri in results:
                     categories = categories | set(list(ri['category'].split(':')))
 
-                # カテゴリマスタから既にあるカテゴリを取得
-                sql_statement = "SELECT DISTINCT category FROM category WHERE file_name = '{0}' ".format(table[i])
-                cursor.execute(sql_statement)
-                results = cursor.fetchall()
-                already_exists_category = set([ri['category'] for ri in results])
-
-                # マスタに入れるカテゴリリストを作る
-                categories = list(categories - already_exists_category)
-                insert_categories += len(categories)
-
                 # カテゴリマスタにデータを入れる
                 for ci in categories:
                     sql_statement = "INSERT INTO category VALUES('{0}','{1}') ".format(table[i],ci)
                     cursor.execute(sql_statement)
+                insert_categories += len(categories)
         
         #全て成功したらコミット
         conn.commit()
@@ -93,7 +89,7 @@ def update_category_master():
     # 結果をJSONに変形して返す
     return {
         "statusCode": 200,
-        "message": "カテゴリマスタの更新が完了しました（新規カテゴリ数：{0}）".format(insert_categories),
+        "message": "カテゴリマスタの更新が完了しました（カテゴリ数：{0}）".format(insert_categories),
     }
 
 if __name__=="__main__":
