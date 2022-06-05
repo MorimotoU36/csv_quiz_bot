@@ -89,14 +89,15 @@ def random():
         # リクエストから値を読み取る。ない場合はデフォルト値
         req = request.json
         file_num = int(req.get("file_num",-1))
-        rate = float(req.get("rate",100))
+        min_rate = float(req.get("min_rate",0))
+        max_rate = float(req.get("max_rate",100))
         category = req.get("category",'')
         checked = bool(req.get("checked",False))
 
         # MySQLに問題を取得しにいく
-        result = random_quiz(file_num=file_num,rate=rate,category=category,checked=checked)
+        result = random_quiz(file_num=file_num,min_rate=min_rate,max_rate=max_rate,category=category,checked=checked)
 
-        if(result['statusCode'] == 500):
+        if(result['statusCode'] == 500 or result['statusCode'] == 400):
             return {
                 "statusCode" : 500,
                 "error" : result["message"]
@@ -104,7 +105,7 @@ def random():
         elif(len(result['result'])==0):
             return {
                 "statusCode" : 404,
-                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, rate:{1}, category:{2}, checked:{3})".format(file_num,rate,category,checked)
+                "error" : "Not Found,指定された条件でのデータはありません(file_num:{0}, rate:{1}~{2}, category:{3}, checked:{4})".format(file_num,min_rate,max_rate,category,checked)
             }
         else:
             # 取得結果を返す

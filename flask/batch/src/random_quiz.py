@@ -10,12 +10,13 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
 from ini import get_table_list, get_messages_ini
 
-def random_quiz(file_num=-1,rate=100,category="",checked=False):
+def random_quiz(file_num=-1,min_rate=0,max_rate=100,category="",checked=False):
     """問題を１問、ランダムに取得するAPI
 
     Args:
         file_num (int, optional): ファイル番号. Defaults to -1.
-        rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100., 0 ~ 100
+        min_rate (float, optional): 取得する問題の正解率の最小値. Defaults to   0., 0 ~ 100
+        max_rate (float, optional): 取得する問題の正解率の最大値. Defaults to 100., 0 ~ 100
         category (str, optional): 取得する問題のカテゴリ Defaults to ''
         checked (bool, optional): チェックした問題だけから出題するかのフラグ. Defaults to False.
 
@@ -38,7 +39,14 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
             "statusCode": 500,
             "message": messages['ERR_0001']
         }
-        
+
+    # min_rate > max_rateの場合はエラー終了
+    if(min_rate > max_rate):
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0011'].format(min_rate,max_rate)
+        }
+
     # MySQL への接続を確立する
     try:
         conn = get_connection()
@@ -53,7 +61,12 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     where_statement = []
 
     # rateによる条件追加(正解数・不正解数0回の時は正解率NULLになる)
-    where_statement.append(" ( accuracy_rate <= {0} OR accuracy_rate IS NULL ) ".format(rate))
+    if(min_rate <= 0):
+        where_statement.append(" ( {0} <= accuracy_rate OR accuracy_rate IS NULL ) ".format(min_rate))
+    else:
+        where_statement.append(" {0} <= accuracy_rate ".format(min_rate))
+
+    where_statement.append(" accuracy_rate <= {0} ".format(max_rate))
 
     # 削除済問題を取らない条件追加
     where_statement.append(" deleted != 1 ")
