@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def get_category(file_num):
     """ファイル番号からカテゴリを取得する関数
@@ -21,14 +21,15 @@ def get_category(file_num):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = table_list[file_num]['name']
         nickname = table_list[file_num]['nickname']
     except IndexError:
         return {
             "statusCode": 500,
-            "message": 'Error: ファイル番号が正しくありません'
+            "message": messages['ERR_0001']
         }
 
     # MySQL への接続を確立する
@@ -37,7 +38,7 @@ def get_category(file_num):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 

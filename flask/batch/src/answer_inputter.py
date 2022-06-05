@@ -8,7 +8,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def answer_input(file_num,quiz_num,clear):
     """正解不正解データを受け取ってデータを登録する
@@ -30,6 +30,7 @@ def answer_input(file_num,quiz_num,clear):
     result = ""
 
     # 設定ファイルを呼び出す
+    messages = get_messages_ini()
     table_list = get_table_list()
 
     # MySQL への接続を確立する
@@ -38,7 +39,7 @@ def answer_input(file_num,quiz_num,clear):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
         
@@ -74,13 +75,18 @@ def answer_input(file_num,quiz_num,clear):
         conn.commit()
         conn.close()
 
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0001']
+        }
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,

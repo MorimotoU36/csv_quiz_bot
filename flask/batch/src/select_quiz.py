@@ -22,9 +22,9 @@ def select_quiz(file_num,quiz_num):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        messages = get_messages_ini()
-        table_list = get_table_list()
         table = table_list[file_num]['name']
         view = table+"_view"
         nickname = table_list[file_num]['nickname']

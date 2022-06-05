@@ -7,7 +7,7 @@ import traceback
 import shutil
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from ini import get_ini_parser
+from ini import get_ini_parser, get_messages_ini
 
 def file_download(img_file_name):
     """S3からファイルをダウンロードするAPI
@@ -22,13 +22,14 @@ def file_download(img_file_name):
     s3 = boto3.resource('s3')
 
     # 設定ファイルを呼び出してS3バケット名を取得
+    messages = get_messages_ini()
     try:
         ini = get_ini_parser()
         bucket = s3.Bucket(ini['AWS']['S3_BUCKET_NAME'])
     except Exception as e:
         return {
             "result": False,
-            "error" : "Error: 設定ファイル読み込み時にエラーが発生しました。",
+            "error" : messages['ERR_0007'],
             "traceback": traceback.format_exc()
         }
 
@@ -51,7 +52,7 @@ def file_download(img_file_name):
         else:
             return {
                 "result": False,
-                "error" : "ファイル: {0} が存在しません ".format(img_file_path),
+                "error" : messages['ERR_0008'].format(img_file_path),
                 "traceback": traceback.format_exc()
             }
         
@@ -59,10 +60,10 @@ def file_download(img_file_name):
         # S3にない場合はFalseを返す
         return {
             "result": False,
-            "error" : "Error: S3からのファイル「{0}」ダウンロード時にエラーが発生しました".format(img_file_name),
+            "error" : messages['ERR_0009'].format(img_file_name),
             "traceback": traceback.format_exc()
         }
 
 
 if __name__=="__main__":
-    file_download("img.jpg")
+    print('s3_file_download!!')
