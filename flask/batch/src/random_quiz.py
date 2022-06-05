@@ -60,13 +60,8 @@ def random_quiz(file_num=-1,min_rate=0,max_rate=100,category="",checked=False):
     # WHERE文
     where_statement = []
 
-    # rateによる条件追加(正解数・不正解数0回の時は正解率NULLになる)
-    if(min_rate <= 0):
-        where_statement.append(" ( {0} <= accuracy_rate OR accuracy_rate IS NULL ) ".format(min_rate))
-    else:
-        where_statement.append(" {0} <= accuracy_rate ".format(min_rate))
-
-    where_statement.append(" accuracy_rate <= {0} ".format(max_rate))
+    # rateによる条件追加(正解数・不正解数0回の時は正解率NULLになるが、それは正解率指定に関係なく出させる事にする。)
+    where_statement.append(" ( accuracy_rate IS NULL OR ( {0} <= accuracy_rate AND accuracy_rate <= {1} ) )".format(min_rate,max_rate))
 
     # 削除済問題を取らない条件追加
     where_statement.append(" deleted != 1 ")
