@@ -81,3 +81,7 @@ table#search_result_table {
     width: 40%;
     float: left;
 }
+
+#all_checkbox_area {
+    margin: 10px 0px;
+}

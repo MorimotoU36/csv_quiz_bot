@@ -850,10 +850,11 @@ function search_and_category(server){
                     category += categories[i]
                     category += "</span><br>"
                 }
-                result_table += "<tr><td class='table_checked'><input type='checkbox'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked " + image_file + " '>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
+                result_table += "<tr><td class='table_checked'><input type='checkbox' class='search_result_check'></td><td class='table_id'>"+ result[i].quiz_num +"</td><td class='table_checked " + image_file + " '>"+checked+"</td><td class='table_sentense'>"+ sentense +"</td><td class='table_answer'>"+ answer +"</td><td>"+ category +"</td></tr>"
             }
 
             result_table += "</table>"
+            result_table += "<div id='all_checkbox_area'><input type='checkbox' id='all_checkbox' onchange='all_check()'><label for='all_checkbox'>チェック全ON/OFF</label></input></div>"
 
             let search_result = document.getElementById("search_result")
             search_result.innerHTML = result_table

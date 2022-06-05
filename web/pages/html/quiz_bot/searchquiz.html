@@ -15,6 +15,26 @@
             function rate_change_value(){
                 document.getElementById('max_rate_value').innerHTML = document.getElementById('max_rate').value;
             }
+
+            // 検索結果チェックボックス全ON/OFF
+            function all_check(){
+                let checkbox_list = document.getElementsByClassName("search_result_check");
+                if(document.getElementById('all_checkbox').checked){
+                    //全てON
+                    for (let i in checkbox_list) {
+                        if (checkbox_list.hasOwnProperty(i)) {
+                            checkbox_list[i].checked = true;
+                        }
+                    }
+                }else{
+                    //全てOFF
+                    for (let i in checkbox_list) {
+                        if (checkbox_list.hasOwnProperty(i)) {
+                            checkbox_list[i].checked = false;
+                        }
+                    }
+                }
+            }
         </script>
     </head>
 <body>
