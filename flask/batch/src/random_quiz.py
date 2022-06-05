@@ -8,7 +8,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def random_quiz(file_num=-1,rate=100,category="",checked=False):
     """問題を１問、ランダムに取得するAPI
@@ -25,12 +25,19 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号の時はランダムに選ぶ)
+    messages = get_messages_ini()
     table_list = get_table_list()
-    if(file_num < 0 or len(table_list) <= file_num):
-        file_num = random.randint(0,len(table_list)-1)
-    table = table_list[file_num]['name']
-    view = table+"_view"
-    nickname = table_list[file_num]['nickname']
+    try:
+        if(file_num < 0 or len(table_list) <= file_num):
+            file_num = random.randint(0,len(table_list)-1)
+        table = table_list[file_num]['name']
+        view = table+"_view"
+        nickname = table_list[file_num]['nickname']
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0001']
+        }
         
     # MySQL への接続を確立する
     try:
@@ -38,7 +45,7 @@ def random_quiz(file_num=-1,rate=100,category="",checked=False):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
     

@@ -8,7 +8,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def minimum_quiz(file_num=-1,category=None,checked=False):
     """最小正解数の問題を取得する
@@ -24,20 +24,28 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号の時はランダムに選ぶ)
+    messages = get_messages_ini()
     table_list = get_table_list()
-    if(file_num < 0 or len(table_list) <= file_num):
-        file_num = random.randint(0,len(table_list)-1)
-    table = table_list[file_num]['name']
-    view = table+"_view"
-    nickname = table_list[file_num]['nickname']
-        
+    try:
+        table_list = get_table_list()
+        if(file_num < 0 or len(table_list) <= file_num):
+            file_num = random.randint(0,len(table_list)-1)
+        table = table_list[file_num]['name']
+        view = table+"_view"
+        nickname = table_list[file_num]['nickname']
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0001']
+        }
+
     # MySQL への接続を確立する
     try:
         conn = get_connection()
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
     
@@ -79,7 +87,7 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB操作時にエラーが発生しました',
+            "message": messages['ERR_0004'],
             "traceback": traceback.format_exc()
         }
 

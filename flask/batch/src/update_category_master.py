@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def update_category_master():
     """問題ファイルからカテゴリを取得しマスタに登録する関数
@@ -21,14 +21,15 @@ def update_category_master():
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = [ table_list[i]['name'] for i in range (len(table_list)) ]
         nickname = [ table_list[i]['nickname'] for i in range (len(table_list)) ]
     except IndexError:
         return {
             "statusCode": 500,
-            "message": 'Error: ファイル読み取りに失敗しました'
+            "message": messages['ERR_0001']
         }
 
     # MySQL への接続を確立する
@@ -37,7 +38,7 @@ def update_category_master():
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -74,11 +75,11 @@ def update_category_master():
         conn.close()
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,

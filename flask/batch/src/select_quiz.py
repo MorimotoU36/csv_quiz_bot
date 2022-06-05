@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def select_quiz(file_num,quiz_num):
     """ファイル番号、問題番号から問題を取得する関数
@@ -22,15 +22,16 @@ def select_quiz(file_num,quiz_num):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = table_list[file_num]['name']
         view = table+"_view"
         nickname = table_list[file_num]['nickname']
     except IndexError:
         return {
             "statusCode": 500,
-            "message": 'Error: ファイル番号が正しくありません'
+            "message": messages['ERR_0001']
         }
 
     # MySQL への接続を確立する
@@ -39,7 +40,7 @@ def select_quiz(file_num,quiz_num):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -58,7 +59,7 @@ def select_quiz(file_num,quiz_num):
         if(quiz_num < 1 or count < quiz_num):
             return {
                 "statusCode": 500,
-                "message": 'Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count)
+                "message": messages['ERR_0003'].format(nickname,count)
             }
 
         sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_num)

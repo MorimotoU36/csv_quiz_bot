@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
     """入力データで問題を統合する関数
@@ -22,23 +22,24 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
         [type]: [description]
     """
 
-    # 統合前と先でファイル番号が違うなら終了（同じファイル間で統合できるようにする）
-    if(pre_file_num != post_file_num):
-        return {
-            "statusCode": 400,
-            "message": 'Error: 統合前と統合先の問題は同じファイルにして下さい'
-        }
-
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = table_list[pre_file_num]['name']
         nickname = table_list[pre_file_num]['nickname']
     except IndexError:
         return {
             "statusCode": 400,
-            "message": 'Error: ファイル番号が正しくありません'
+            "message": messages['ERR_0001']
+        }
+
+    # 統合前と先でファイル番号が違うなら終了（同じファイル間で統合できるようにする）
+    if(pre_file_num != post_file_num):
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0010']
         }
 
     # MySQL への接続を確立する
@@ -47,7 +48,7 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -64,7 +65,7 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
             if( (pre_quiz_num < 1 or count < pre_quiz_num) or (post_quiz_num < 1 or count < post_quiz_num) ):
                 return {
                     "statusCode": 500,
-                    "message": 'Error: {0}の問題番号は1~{1}の間で入力してください'.format(nickname,count)
+                    "message": messages['ERR_0003'].format(nickname,count)
                 }
 
             # 統合される側の問題のデータを取得
@@ -99,11 +100,11 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB操作時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,

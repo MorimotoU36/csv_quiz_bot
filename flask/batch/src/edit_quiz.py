@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
     """入力データで問題を編集する関数
@@ -24,23 +24,24 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
         [type]: [description]
     """
 
-    # 入力内容確認
-    if (question is None or len(question.strip())==0) and (answer is None or len(answer.strip())==0) and (category is None or len(category.strip())==0) and (img_file is None or len(img_file.strip())==0):
-        return {
-            "statusCode": 500,
-            "message": 'Error: 入力内容がありません'
-        }
-
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = table_list[file_num]['name']
         nickname = table_list[file_num]['nickname']
     except IndexError:
         return {
             "statusCode": 500,
-            "message": 'Error: ファイル番号が正しくありません'
+            "message": messages['ERR_0001']
+        }
+
+    # 入力内容確認
+    if (question is None or len(question.strip())==0) and (answer is None or len(answer.strip())==0) and (category is None or len(category.strip())==0) and (img_file is None or len(img_file.strip())==0):
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0006']
         }
 
     # MySQL への接続を確立する
@@ -49,7 +50,7 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -74,11 +75,11 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB操作時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,
@@ -105,7 +106,8 @@ def edit_category_of_question(data):
         }
     """
 
-    # テーブルリスト取得
+    # 設定値取得
+    messages = get_messages_ini()
     table_list = get_table_list()
 
     # MySQL への接続を確立する
@@ -114,7 +116,7 @@ def edit_category_of_question(data):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -175,13 +177,18 @@ def edit_category_of_question(data):
             "message": "All OK."
         }
 
+    except IndexError:
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0001']
+        }
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,
@@ -203,7 +210,8 @@ def edit_checked_of_question(data):
         }
     """
 
-    # テーブルリスト取得
+    # 設定ファイルを呼び出す
+    messages = get_messages_ini()
     table_list = get_table_list()
 
     # MySQL への接続を確立する
@@ -212,7 +220,7 @@ def edit_checked_of_question(data):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -272,11 +280,11 @@ def edit_checked_of_question(data):
 
     # DB操作失敗時はロールバック
     except Exception as e:
-        message = 'Error: DB接続時にエラーが発生しました '
+        message = messages['ERR_0004']
         try:
             conn.rollback()
         except:
-            message += '( ロールバックにも失敗しました )'
+            message = messages['ERR_0005']
         finally:
             return {
                 "statusCode": 500,

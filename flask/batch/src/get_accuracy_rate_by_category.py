@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list
+from ini import get_table_list, get_messages_ini
 
 def get_accuracy_rate_by_category(file_ind):
     """ファイル番号からカテゴリ毎の正解率を取得する関数
@@ -21,14 +21,15 @@ def get_accuracy_rate_by_category(file_ind):
 
     # 設定ファイルを呼び出してファイル番号からテーブル名を取得
     # (変なファイル番号ならエラー終了)
+    messages = get_messages_ini()
+    table_list = get_table_list()
     try:
-        table_list = get_table_list()
         table = table_list[file_ind]['name']
         nickname = table_list[file_ind]['nickname']
     except IndexError:
         return {
             "statusCode": 500,
-            "message": 'Error: ファイル番号が正しくありません'
+            "message": messages['ERR_0001']
         }
 
     # MySQL への接続を確立する
@@ -37,7 +38,7 @@ def get_accuracy_rate_by_category(file_ind):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB接続時にエラーが発生しました',
+            "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
 
@@ -77,11 +78,10 @@ def get_accuracy_rate_by_category(file_ind):
     except Exception as e:
         return {
             "statusCode": 500,
-            "message": 'Error: DB操作時にエラーが発生しました',
+            "message": messages['ERR_0004'],
             "traceback": traceback.format_exc()
         }
 
 
 if __name__=="__main__":
-    res = get_accuracy_rate_by_category(0)
-    print(res)
+    print('get_accuracy_rate_by_category')
