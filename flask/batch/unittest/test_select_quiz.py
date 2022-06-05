@@ -89,5 +89,75 @@ class TestSelectQuiz(unittest.TestCase):
         conn.commit()
         conn.close()
 
+    # エラーメッセージのテスト
+    def test_config_error(self):
+
+        # データ取得
+        response = select_quiz.select_quiz(99999999,1)
+
+        # 取得データ確認
+        self.assertEqual(response['statusCode'],500)
+        self.assertEqual(response['message'],'Error: ファイル番号が正しくありません')
+
+    # エラーメッセージのテスト２
+    def test_data_num_error(self):
+        # 入力データ
+        input_data = "select_quizテスト1問題,select_quizテスト1答え,select_quizテスト1カテゴリ,select_quizテスト1画像"
+        # 使用ファイル番号（テスト用テーブル）
+        file_num = 0
+
+        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
+        # (変なファイル番号ならエラー終了)
+        try:
+            table_list = get_table_list()
+            table = table_list[file_num]['name']
+            nickname = table_list[file_num]['nickname']
+        except IndexError:
+            return {
+                "statusCode": 500,
+                "message": 'Error: ファイル番号が正しくありません'
+            }
+
+        # MySQL への接続を確立する
+        try:
+            conn = get_connection()
+        except Exception as e:
+            return {
+                "statusCode": 500,
+                "message": 'Error: DB接続時にエラーが発生しました',
+                "traceback": traceback.format_exc()
+            }
+
+        with conn.cursor() as cursor:
+            # テスト用テーブルのデータ全件削除
+            sql = "DELETE FROM {0} ".format(table)
+            cursor.execute(sql)
+            # 全件削除されたか確認
+            sql = "SELECT count(*) FROM {0} ".format(table)
+            cursor.execute(sql)
+            sql_results = cursor.fetchall()
+            self.assertEqual(sql_results[0]['count(*)'],0)
+            # コミット
+            conn.commit()
+
+        # データ追加
+        add_quiz.add_quiz(file_num,input_data)
+
+        # データ取得（エラー）
+        response = select_quiz.select_quiz(file_num,999999)
+
+        # 取得データ確認
+        self.assertEqual(response['statusCode'],500)
+        self.assertEqual(response['message'],'Error: 単体テスト用の問題番号は1~1の間で入力してください')
+
+        with conn.cursor() as cursor:
+            # 終わったらテストデータ削除
+            sql = "DELETE FROM {0} ".format(table)
+            cursor.execute(sql)
+
+        # 全て成功したらコミット
+        conn.commit()
+        conn.close()
+
 if __name__ == '__main__':
     unittest.main()
