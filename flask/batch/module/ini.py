@@ -29,3 +29,17 @@ def get_table_list():
     json_open.close()
     # テーブルのリストJSONを返す
     return json_load['table']
+
+def get_messages_ini():
+    """メッセージの設定ファイルを返す
+
+    Returns:
+        configparser.Configparser(): 読み込んだ設定ファイルの内容        
+    """    
+    # 設定ファイル読み込み
+    ini = get_ini_parser()
+    # メッセージ設定ファイル読み込み
+    messages_ini = configparser.ConfigParser()
+    messages_ini.read(ini['CONFIGFILE']['MESSAGE_FILE'])
+    # メッセージファイルを返す
+    return messages_ini['MESSAGES']
