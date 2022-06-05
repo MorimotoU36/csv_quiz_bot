@@ -221,7 +221,8 @@ function random_select_question(server){
         "file_num": file_num,
         "category": selected_category == -1 ? "" : selected_category,
         "checked": document.getElementById("only_checked").checked,
-        "rate": document.getElementById('max_rate').value
+        "min_rate": document.getElementById('min_rate').value,
+        "max_rate": document.getElementById('max_rate').value
     }
     //外部APIへPOST通信、問題を取得しにいく
     post_data(getRandomQuestionApi(server),data,function(resp){

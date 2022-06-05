@@ -13,6 +13,7 @@
 
             // 正解率指定バーの値反映
             function rate_change_value(){
+                document.getElementById('min_rate_value').innerHTML = document.getElementById('min_rate').value;
                 document.getElementById('max_rate_value').innerHTML = document.getElementById('max_rate').value;
             }
         </script>
@@ -49,6 +50,11 @@
                         <option selected value="-1">指定なし</option>
                     </select>
                 </td>
+            </tr>
+            <tr>
+                <td>正解率(%)以上指定</td>
+                <td>:</td>
+                <td><input type="range" id="min_rate" min="0" max="100" value="0" step="1" oninput="rate_change_value()"><span id="min_rate_value">0</span></td>
             </tr>
             <tr>
                 <td>正解率(%)以下指定</td>
