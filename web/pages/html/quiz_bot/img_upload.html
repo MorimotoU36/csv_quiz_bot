@@ -1,0 +1,97 @@
+<html>
+    <head>
+        <title>画像アップロード</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="../../css/quiz.css">
+        <script src="../../js/properties.js"></script>
+        <script src="../../js/quiz.js"></script>
+        <script src="../../js/env.js"></script>
+        <script>
+            window.onload = function(){
+                var fileArea = document.getElementById('dragDropArea');
+                var fileInput = document.getElementById('fileInput');
+                fileArea.addEventListener('dragover', function(evt){
+                evt.preventDefault();
+                fileArea.classList.add('dragover');
+                });
+                fileArea.addEventListener('dragleave', function(evt){
+                    evt.preventDefault();
+                    fileArea.classList.remove('dragover');
+                });
+                fileArea.addEventListener('drop', function(evt){
+                    evt.preventDefault();
+                    fileArea.classList.remove('dragenter');
+                    var files = evt.dataTransfer.files;
+                    console.log("DRAG & DROP");
+                    console.table(files);
+                    fileInput.files = files;
+                    photoPreview('onChenge',files[0]);
+                });
+            };
+
+            function photoPreview(event, f = null) {
+                var file = f;
+                if(file === null){
+                    file = event.target.files[0];
+                }
+                var reader = new FileReader();
+                var preview = document.getElementById("previewArea");
+                var previewImage = document.getElementById("previewImage");
+
+                if(previewImage != null) {
+                    preview.removeChild(previewImage);
+                }
+                reader.onload = function(event) {
+                    var img = document.createElement("img");
+                    img.setAttribute("src", reader.result);
+                    img.setAttribute("id", "previewImage");
+                    preview.appendChild(img);
+                };
+
+                reader.readAsDataURL(file);
+            }
+        </script>
+    </head>
+<body>
+    <div id="wrapper">
+        <h1>CSV Quiz Bot</h1>
+
+        <div id="message_area">
+            <p id="error" class="error message" style="color:red"></p>
+            <p id="result" class="message" style="color:black"></p>
+        </div>
+
+        <div id="dragDropArea">
+            <div class="drag-drop-inside">
+                <p class="drag-drop-info">ここにファイルをドロップ</p>
+                <p>または</p>
+                <p class="drag-drop-buttons">
+                    <input id="fileInput" type="file" accept="image/*" value="ファイルを選択" name="photo" onChange="photoPreview(event)">
+                </p>
+                <div id="previewArea"></div>
+            </div>
+        </div>
+
+        <input type="button" value="アップロード" onClick="">
+
+        <hr>
+    </div>
+
+    <footer>
+        <hr>
+        <span class="left">
+            <a href='../top.html'>トップ</a>
+            <a href='./quiz.html'>問題出題</a>
+            <a href='./addquiz.html'>問題追加</a>
+            <a href='./editquiz.html'>問題編集</a>
+            <a href='./searchquiz.html'>問題検索</a>
+            <a href='./accuracy_rate_by_category.html'>カテゴリ別正解率表示</a>
+            画像アップロード
+        </span>
+        <span class="right">
+        ©️ Tatsuroh Wakasugi
+        </span>
+    </footer>
+</body>
+</html>
+
