@@ -3,9 +3,12 @@
         <title>画像アップロード</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../../css/quiz.css">
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1149.0.min.js"></script>
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
         <script src="../../js/env.js"></script>
+        <script src="../../js/aws_s3.js"></script>
+        <script>listData();</script>
         <script>
             window.onload = function(){
                 var fileArea = document.getElementById('dragDropArea');
@@ -75,6 +78,9 @@
         <input type="button" value="アップロード" onClick="">
 
         <hr>
+            <h1>Photo Album Viewer</h1>
+            <div id="viewer"></div>
+
     </div>
 
     <footer>
