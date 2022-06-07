@@ -8,7 +8,6 @@
         <script src="../../js/quiz.js"></script>
         <script src="../../js/env.js"></script>
         <script src="../../js/aws_s3.js"></script>
-        <script>listData();</script>
         <script>
             window.onload = function(){
                 var fileArea = document.getElementById('dragDropArea');
@@ -75,11 +74,9 @@
             </div>
         </div>
 
-        <input type="button" value="アップロード" onClick="">
+        <input type="button" value="アップロード" onClick="addImage(getAWSData())">
 
         <hr>
-            <h1>Photo Album Viewer</h1>
-            <div id="viewer"></div>
 
     </div>
 
