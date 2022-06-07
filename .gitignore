@@ -13,3 +13,9 @@ application.ini
 application_local_container.ini
 application_ut.ini
 img/
+env.js
+release_memo.txt
+local_to_ec2_file_deploy.sh
+*.csv
+*.png
+backup.sh
