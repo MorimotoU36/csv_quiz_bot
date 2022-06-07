@@ -16,3 +16,5 @@ img/
 env.js
 release_memo.txt
 local_to_ec2_file_deploy.sh
+*.csv
+*.png
