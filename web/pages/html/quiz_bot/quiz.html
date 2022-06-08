@@ -3,9 +3,11 @@
         <title>クイズ出題</title>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="../../css/quiz.css">
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1149.0.min.js"></script>
         <script src="../../js/properties.js"></script>
         <script src="../../js/quiz.js"></script>
         <script src="../../js/env.js"></script>
+        <script src="../../js/aws_s3.js"></script>
         <script>
             window.onload = function(){
                 get_csv_name_list(getServerName());
@@ -74,7 +76,8 @@
         <input type="button" value="最低正解率問出題" onClick="worst_rate_question(getServerName())">
         <input type="button" value="最小正解数問出題" onClick="minimum_clear_question(getServerName())">
         <input type="button" value="答え" onClick="display_answer()">
-        <input type="button" value="画像表示" id="display_image_button" onClick="display_image(getServerName(),getImgDirfromS3())" disabled>
+        <!-- <input type="button" value="画像表示" id="display_image_button" onClick="display_image(getServerName(),getImgDirfromS3())" disabled> -->
+        <input type="button" value="画像表示" id="display_image_button" onClick="viewImage(getAWSData())" disabled>
 
         <hr>
         <span>問題：</span>
@@ -86,7 +89,9 @@
         <span>答え：</span>
         <span id="answer"></span>
         <hr>
-        <img id="question_image" src="" height="300" style="visibility:hidden" onerror="this.onerror=null;this.src='../../static/no_image_square.jpg ';"/>
+        <div id="viewer">
+            <img class="question_image" src="" height="300" style="visibility:hidden" onerror="this.onerror=null;this.src='../../static/no_image_square.jpg ';"/>
+        </div>
         <hr>
         <input type="button" value="正解した！" onClick="correct_register(getServerName())" >
         <input type="button" value="間違えた・・" onClick="incorrect_register(getServerName())">

@@ -62,9 +62,11 @@ function clear_error_message(){
     }
 
     // 表示画像もリセット
-    let img = document.getElementById("question_image")
+    let img = document.getElementsByClassName("question_image")
     if(img !== undefined && img !== null){
-        img.style.visibility = "hidden";
+        for(i=0;i<img.length;i++){
+            img[i].style.visibility = "hidden";
+        }
     }
 }
 
@@ -76,9 +78,11 @@ function clear_all_message(){
     }
 
     // 表示画像もリセット
-    let img = document.getElementById("question_image")
+    let img = document.getElementsByClassName("question_image")
     if(img !== undefined && img !== null){
-        img.style.visibility = "hidden";
+        for(i=0;i<img.length;i++){
+            img[i].style.visibility = "hidden";
+        }
     }
 
     // 画像表示ボタンは非活性化
@@ -430,14 +434,16 @@ function correct_register(server){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
-            let img = document.getElementById("question_image")
+            let img = document.getElementsByClassName("question_image")
             sentense = ""
             quiz_answer = ""
             image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
-            img.innerHTML = ""
+            for(i=0;i<img.length;i++){
+                img[i].innerHTML = ""
+            }
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -473,14 +479,16 @@ function incorrect_register(server){
             //問題と答えは削除
             let question = document.getElementById("question")
             let answer = document.getElementById("answer")
-            let img = document.getElementById("question_image")
+            let img = document.getElementsByClassName("question_image")
             sentense = ""
             quiz_answer = ""
             image_file =  ""
 
             question.textContent = ""
             answer.textContent = ""
-            img.innerHTML = ""
+            for(i=0;i<img.length;i++){
+                img[i].innerHTML = ""
+            }
 
             //正解登録完了メッセージ
             set_message(resp['result']);
@@ -1131,7 +1139,7 @@ function display_image(server,s3_img_dir){
         set_error_message("画像ファイル名がありません")
     }else{
         // 画像要素取得
-        let img = document.getElementById("question_image")
+        let img = document.getElementsByClassName("question_image")
 
         // 送信データ作成
         data = {
@@ -1142,8 +1150,10 @@ function display_image(server,s3_img_dir){
         post_data(getDownloadFilefromS3Api(server),data,function(resp){
             if(resp['statusCode'] == 200){    
                 // 画像ファイルを画面に表示する
-                img.setAttribute('src', s3_img_dir + image_file);
-                img.style.visibility = "visible";
+                for(i=0;i<img.length;i++){
+                    img.setAttribute('src', s3_img_dir + image_file);
+                    img.style.visibility = "visible";
+                }
             }else{
                 //内部エラー時
                 set_error_message(resp['statusCode']
@@ -1347,4 +1357,54 @@ function integrate_question(server){
         document.getElementById("question_category_post").innerText = ""
         document.getElementById("question_img_file_name_post").innerText = "" 
     }
+}
+
+
+// Show the photos
+function viewImage(aws_config) {
+
+    if(image_file == ""){
+        return set_error_message("画像ファイル名がありません")
+    }
+
+    // bucket name.
+    var bucketName = aws_config.s3.bucketName;
+
+    // config, cognito
+    AWS.config.region = aws_config.config.region; // Region
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+        IdentityPoolId: aws_config.cognito.IdPool_id,
+    });
+
+    // Create a new service object
+    var s3 = new AWS.S3({
+        apiVersion: "2006-03-01",
+        params: { Bucket: bucketName },
+    });
+
+    var albumPhotosKey = encodeURIComponent(image_file);
+    s3.listObjects({ Prefix: albumPhotosKey }, function (err, data) {
+        if (err) {
+            return set_error_message('There was an error viewing your image: ' + err.message);
+        }
+
+        // 'this' references the AWS.Request instance that represents the response
+        var href = this.request.httpRequest.endpoint.href;
+        var bucketUrl = href + bucketName + '/';
+
+        var photos = data.Contents.map(function (photo) {
+            var photoKey = photo.Key;
+            var photoUrl = bucketUrl + encodeURIComponent(photoKey);
+            return getHtml([
+                '<div>',
+                '<img class="question_image" style="height:300;" src="' + photoUrl + '"/>',
+                '</div>',
+            ]);
+        });
+        var htmlTemplate = [
+            getHtml(photos)
+        ]
+        document.getElementById('viewer').innerHTML = getHtml(htmlTemplate);
+//        document.getElementsByTagName('img')[0].setAttribute('style', 'display:none;');
+    });
 }
