@@ -3,6 +3,10 @@
         {
             "name":"unit_test",
             "nickname":"単体テスト用"
+        },
+        {
+            "name":"aws_quiz",
+            "nickname":"AWSテスト用"
         }
     ]
 }
