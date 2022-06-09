@@ -2,7 +2,7 @@
 
 ```mermaid
 flowchart LR
-    トップ --> クイズ選択
+    トップ
 ```
 flowchart LR
     トップ --> クイズ選択
