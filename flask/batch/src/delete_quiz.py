@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def delete_quiz(file_num,quiz_num):
     """入力データで問題を削除する関数
@@ -24,18 +24,8 @@ def delete_quiz(file_num,quiz_num):
         [type]: [description]
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_num]['name']
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -47,6 +37,17 @@ def delete_quiz(file_num,quiz_num):
             "traceback": traceback.format_exc()
         }
 
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
+
+
 
     try:
         # 入力内容からSQLを作成して投げる
@@ -54,7 +55,7 @@ def delete_quiz(file_num,quiz_num):
         with conn.cursor() as cursor:
             # テーブルに問題を削除しにいく（削除フラグを更新する）
             update_deleteflag = " deleted = 1 "
-            sql = "UPDATE {0} SET {1} WHERE quiz_num = {2} ".format(table,update_deleteflag,quiz_num)
+            sql = "UPDATE quiz SET {0} WHERE file_num = {1} AND quiz_num = {2} ".format(update_deleteflag,file_num,quiz_num)
             cursor.execute(sql)
 
             result = "Success!! [{0}-{1}]: deleted!".format(nickname,str(quiz_num))

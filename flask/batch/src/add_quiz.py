@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def add_quiz(file_num,input_data):
     """問題を追加する関数
@@ -23,18 +23,8 @@ def add_quiz(file_num,input_data):
     # 入力データを１行ずつに分割
     input_data = list(input_data.split('\n'))
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_num]['name']
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -44,6 +34,16 @@ def add_quiz(file_num,input_data):
             "statusCode": 500,
             "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
+        }
+
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
         }
 
     try:
@@ -64,7 +64,7 @@ def add_quiz(file_num,input_data):
             new_quiz_id = -1
             with conn.cursor() as cursor:
                 # 削除済問題がある場合はその番号に入れる
-                sql = "SELECT quiz_num FROM {0} WHERE deleted = 1 ORDER BY quiz_num LIMIT 1 ".format(table)
+                sql = "SELECT quiz_num FROM quiz WHERE file_num = {0} AND deleted = 1 ORDER BY quiz_num LIMIT 1 ".format(file_num)
                 cursor.execute(sql)
                 sql_results = cursor.fetchall()
 
@@ -72,7 +72,7 @@ def add_quiz(file_num,input_data):
                 new_quiz_id = sql_results[0]['quiz_num']
                 # 削除済問題のところにデータを更新する形でいれる
                 with conn.cursor() as cursor:
-                    sql = "UPDATE {0} SET quiz_sentense = '{1}', answer = '{2}', clear_count = 0, fail_count = 0, category = '{3}', img_file = '{4}', checked = 0, deleted = 0 WHERE quiz_num = {5} ".format(table,question,answer,category,img_file,new_quiz_id)
+                    sql = "UPDATE quiz SET quiz_sentense = '{0}', answer = '{1}', clear_count = 0, fail_count = 0, category = '{2}', img_file = '{3}', checked = 0, deleted = 0 WHERE file_num = {4} AND quiz_num = {5} ".format(question,answer,category,img_file,file_num,new_quiz_id)
                     cursor.execute(sql)
 
                     result.append("Added!! [{0}-{1}]:{2},{3}".format(nickname,str(new_quiz_id),question,answer))
@@ -82,7 +82,7 @@ def add_quiz(file_num,input_data):
                 # データ全件数から番号を決定する
                 with conn.cursor() as cursor:
                     # 指定したテーブルの件数を調べる
-                    sql = "SELECT count(*) FROM {0}".format(table)
+                    sql = "SELECT count(*) FROM quiz WHERE file_num = {0}".format(file_num)
                     cursor.execute(sql)
                     results = cursor.fetchall()
                     new_quiz_id = results[0]['count(*)']
@@ -93,7 +93,7 @@ def add_quiz(file_num,input_data):
                 # SQLを実行する
                 with conn.cursor() as cursor:
                     # データを挿入する
-                    sql = "INSERT INTO {0} VALUES({1},'{2}','{3}',0,0,'{4}','{5}',0,0)".format(table,new_quiz_id,question,answer,category,img_file)
+                    sql = "INSERT INTO quiz VALUES({0},{1},'{2}','{3}',0,0,'{4}','{5}',0,0)".format(file_num,new_quiz_id,question,answer,category,img_file)
                     cursor.execute(sql)
 
                     result.append("Added!! [{0}-{1}]:{2},{3}".format(nickname,str(new_quiz_id),question,answer))

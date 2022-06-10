@@ -15,8 +15,10 @@ import add_quiz
 import delete_quiz
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
+
+from ut_common import delete_all_quiz_of_file
 
 # テストクラス作成(Testから始まる名前にする、unittest.TestCaseを継承する)
 class TestAddQuiz(unittest.TestCase):
@@ -29,18 +31,8 @@ class TestAddQuiz(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -52,32 +44,35 @@ class TestAddQuiz(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # ファイル番号からテーブル名を取得
+        messages = get_messages_ini()
+        table_info = get_file_info(conn,file_num)
+        if(table_info['statusCode'] == 200):
+            nickname = table_info['result']['file_nickname']
+        else:
+            return {
+                "statusCode": 400,
+                "message": messages['ERR_0001']
+            }
+
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
 
         with conn.cursor() as cursor:
             # 件数確認(1件追加されたか)
-            sql = "SELECT count(*) FROM {0} ".format(table)
+            sql = "SELECT count(*) FROM quiz WHERE file_num = {0} ".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
             self.assertEqual(sql_results[0]['count(*)'],1)
 
             # 追加されたデータを確認
-            sql = "SELECT * FROM {0} LIMIT 1".format(table)
+            sql = "SELECT * FROM quiz WHERE file_num = {0} LIMIT 1".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
+            self.assertEqual(sql_results[0]['file_num'],0)
             self.assertEqual(sql_results[0]['quiz_num'],1)
             self.assertEqual(sql_results[0]['quiz_sentense'],'add_quizテスト1問題')
             self.assertEqual(sql_results[0]['answer'],'add_quizテスト1答え')
@@ -89,8 +84,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[0]['deleted'],0)
 
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+            self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # 全て成功したらコミット
         conn.commit()
@@ -106,18 +100,8 @@ class TestAddQuiz(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -129,32 +113,35 @@ class TestAddQuiz(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # ファイル番号からテーブル名を取得
+        messages = get_messages_ini()
+        table_info = get_file_info(conn,file_num)
+        if(table_info['statusCode'] == 200):
+            nickname = table_info['result']['file_nickname']
+        else:
+            return {
+                "statusCode": 400,
+                "message": messages['ERR_0001']
+            }
+
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
 
         with conn.cursor() as cursor:
             # 件数確認(3件追加されたか)
-            sql = "SELECT count(*) FROM {0} ".format(table)
+            sql = "SELECT count(*) FROM quiz WHERE file_num = {0} ".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
             self.assertEqual(sql_results[0]['count(*)'],3)
 
             # 追加されたデータを確認
-            sql = "SELECT * FROM {0} ORDER BY quiz_sentense".format(table)
+            sql = "SELECT * FROM quiz WHERE file_num = {0} ORDER BY quiz_sentense".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
+            self.assertEqual(sql_results[0]['file_num'],0)
             self.assertEqual(sql_results[0]['quiz_num'],1)
             self.assertEqual(sql_results[0]['quiz_sentense'],'add_quizテスト1-1問題')
             self.assertEqual(sql_results[0]['answer'],'add_quizテスト1-1答え')
@@ -165,6 +152,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[0]['checked'],0)
             self.assertEqual(sql_results[0]['deleted'],0)
 
+            self.assertEqual(sql_results[1]['file_num'],0)
             self.assertEqual(sql_results[1]['quiz_num'],2)
             self.assertEqual(sql_results[1]['quiz_sentense'],'add_quizテスト1-2問題')
             self.assertEqual(sql_results[1]['answer'],'add_quizテスト1-2答え')
@@ -175,6 +163,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[1]['checked'],0)
             self.assertEqual(sql_results[1]['deleted'],0)
 
+            self.assertEqual(sql_results[2]['file_num'],0)
             self.assertEqual(sql_results[2]['quiz_num'],3)
             self.assertEqual(sql_results[2]['quiz_sentense'],'add_quizテスト1-3問題')
             self.assertEqual(sql_results[2]['answer'],'add_quizテスト1-3答え')
@@ -186,8 +175,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[2]['deleted'],0)
 
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+            self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # 全て成功したらコミット
         conn.commit()
@@ -204,18 +192,8 @@ class TestAddQuiz(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -227,12 +205,19 @@ class TestAddQuiz(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # コミット
-            conn.commit()
+        # ファイル番号からテーブル名を取得
+        messages = get_messages_ini()
+        table_info = get_file_info(conn,file_num)
+        if(table_info['statusCode'] == 200):
+            nickname = table_info['result']['file_nickname']
+        else:
+            return {
+                "statusCode": 400,
+                "message": messages['ERR_0001']
+            }
+
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         resp = add_quiz.add_quiz(file_num,input_data)
@@ -242,13 +227,13 @@ class TestAddQuiz(unittest.TestCase):
 
         with conn.cursor() as cursor:
             # 件数確認(3件追加されたか)
-            sql = "SELECT count(*) FROM {0} ".format(table)
+            sql = "SELECT count(*) FROM quiz WHERE file_num = {0} ".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
             self.assertEqual(sql_results[0]['count(*)'],3)
 
             # 件数確認(削除されたデータ)
-            sql = "SELECT count(*) FROM {0} WHERE deleted = 1 ".format(table)
+            sql = "SELECT count(*) FROM quiz WHERE file_num = {0} AND deleted = 1 ".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
             self.assertEqual(sql_results[0]['count(*)'],2)
@@ -261,9 +246,10 @@ class TestAddQuiz(unittest.TestCase):
 
         with conn.cursor() as cursor:
             # 追加されたデータを確認
-            sql = "SELECT * FROM {0} ORDER BY quiz_num".format(table)
+            sql = "SELECT * FROM quiz WHERE file_num = {0} ORDER BY quiz_num".format(file_num)
             cursor.execute(sql)
             sql_results = cursor.fetchall()
+            self.assertEqual(sql_results[0]['file_num'],0)
             self.assertEqual(sql_results[0]['quiz_num'],1)
             self.assertEqual(sql_results[0]['quiz_sentense'],'add_quizテスト2-4問題')
             self.assertEqual(sql_results[0]['answer'],'add_quizテスト2-4答え')
@@ -274,6 +260,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[0]['checked'],0)
             self.assertEqual(sql_results[0]['deleted'],0)
 
+            self.assertEqual(sql_results[1]['file_num'],0)
             self.assertEqual(sql_results[1]['quiz_num'],2)
             self.assertEqual(sql_results[1]['quiz_sentense'],'add_quizテスト2-2問題')
             self.assertEqual(sql_results[1]['answer'],'add_quizテスト2-2答え')
@@ -284,6 +271,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[1]['checked'],0)
             self.assertEqual(sql_results[1]['deleted'],1)
 
+            self.assertEqual(sql_results[2]['file_num'],0)
             self.assertEqual(sql_results[2]['quiz_num'],3)
             self.assertEqual(sql_results[2]['quiz_sentense'],'add_quizテスト2-3問題')
             self.assertEqual(sql_results[2]['answer'],'add_quizテスト2-3答え')
@@ -295,8 +283,7 @@ class TestAddQuiz(unittest.TestCase):
             self.assertEqual(sql_results[2]['deleted'],0)
 
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+            self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # 全て成功したらコミット
         conn.commit()
