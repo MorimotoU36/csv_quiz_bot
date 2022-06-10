@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import pymysql
 import pymysql.cursors
+import traceback
 
-from ini import get_ini_parser
+from ini import get_ini_parser, get_messages_ini
 
 def get_connection():
     """
@@ -23,4 +24,30 @@ def get_connection():
                                 cursorclass=pymysql.cursors.DictCursor)
     
     return connection
+
+# 指定したファイル番号からファイル名などの情報を取得
+def get_file_info(conn,file_num):
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT file_num, file_name, file_nickname FROM quiz_file WHERE file_num = {0} ".format(file_num)
+            cursor.execute(sql)
+            sql_results = cursor.fetchall()
+
+            if(len(sql_results) > 0):
+                return {
+                    "statusCode": 200,
+                    "result": sql_results[0]
+                }
+            elif(len(sql_results) == 0):
+                return {
+                    "statusCode": 404,
+                    "result": sql_results
+                }
+    except Exception as e:
+        messages = get_messages_ini()
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0004'],
+            "traceback": traceback.format_exc()
+        }
 
