@@ -45,7 +45,6 @@ class TestAddQuiz(unittest.TestCase):
             }
 
         # ファイル番号からテーブル名を取得
-        messages = get_messages_ini()
         table_info = get_file_info(conn,file_num)
         if(table_info['statusCode'] == 200):
             nickname = table_info['result']['file_nickname']
@@ -114,7 +113,6 @@ class TestAddQuiz(unittest.TestCase):
             }
 
         # ファイル番号からテーブル名を取得
-        messages = get_messages_ini()
         table_info = get_file_info(conn,file_num)
         if(table_info['statusCode'] == 200):
             nickname = table_info['result']['file_nickname']
@@ -206,7 +204,6 @@ class TestAddQuiz(unittest.TestCase):
             }
 
         # ファイル番号からテーブル名を取得
-        messages = get_messages_ini()
         table_info = get_file_info(conn,file_num)
         if(table_info['statusCode'] == 200):
             nickname = table_info['result']['file_nickname']

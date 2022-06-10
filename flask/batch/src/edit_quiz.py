@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
     """入力データで問題を編集する関数
@@ -24,18 +24,8 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
         [type]: [description]
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_num]['name']
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # 入力内容確認
     if (question is None or len(question.strip())==0) and (answer is None or len(answer.strip())==0) and (category is None or len(category.strip())==0) and (img_file is None or len(img_file.strip())==0):
@@ -54,6 +44,15 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
             "traceback": traceback.format_exc()
         }
 
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
 
     try:
         # 入力内容からSQLを作成して投げる
@@ -64,7 +63,7 @@ def edit_quiz(file_num,quiz_num,question,answer,category,img_file):
             update_answer   = "" if answer is None or len(answer.strip())==0 else " answer = '{0}', ".format(answer)
             update_category = "" if category is None or len(category.strip())==0 else " category = '{0}', ".format(category)
             update_img_file = " img_file = '' " if img_file is None else " img_file = '{0}' ".format(img_file)
-            sql = "UPDATE {0} SET {1} {2} {3} {4} WHERE quiz_num = {5} ".format(table,update_question,update_answer,update_category,update_img_file,quiz_num)
+            sql = "UPDATE quiz SET {0} {1} {2} {3} WHERE file_num = {4} AND quiz_num = {5} ".format(update_question,update_answer,update_category,update_img_file,file_num,quiz_num)
             cursor.execute(sql)
 
             result = "Success!! [{0}-{1}]:{2},{3},{4},{5}".format(nickname,str(quiz_num),question,answer,category,img_file)
@@ -108,7 +107,6 @@ def edit_category_of_question(data):
 
     # 設定値取得
     messages = get_messages_ini()
-    table_list = get_table_list()
 
     # MySQL への接続を確立する
     try:
@@ -130,13 +128,19 @@ def edit_category_of_question(data):
             # 追加・削除するカテゴリを取得
             query_category = data_i['category']
 
-            # テーブル名取得
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
+            # ファイル番号からテーブル名を取得
+            table_info = get_file_info(conn,file_num)
+            if(table_info['statusCode'] == 200):
+                nickname = table_info['result']['file_nickname']
+            else:
+                return {
+                    "statusCode": 400,
+                    "message": messages['ERR_0001']
+                }
 
             with conn.cursor() as cursor:
                 # まずは問題を取得
-                sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+                sql = "SELECT file_num, quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file FROM quiz WHERE file_num = {0} AND quiz_num = {1}".format(file_num,quiz_num)
                 cursor.execute(sql)
 
                 # MySQLから帰ってきた結果を受け取る
@@ -165,7 +169,7 @@ def edit_category_of_question(data):
                         category = category + ":" + query_category
                 
                 # アップデート
-                sql = "UPDATE {0} SET category = '{1}' WHERE quiz_num = {2} ".format(table,category,quiz_num)
+                sql = "UPDATE quiz SET category = '{0}' WHERE file_num = {1} AND quiz_num = {2} ".format(category,file_num,quiz_num)
                 cursor.execute(sql)
         
         #全て成功したらコミット
@@ -212,7 +216,6 @@ def edit_checked_of_question(data):
 
     # 設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
 
     # MySQL への接続を確立する
     try:
@@ -234,13 +237,19 @@ def edit_checked_of_question(data):
             # 問題番号を取得
             quiz_num = data_i['quiz_num']
 
-            # テーブル名取得
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
+            # ファイル番号からテーブル名を取得
+            table_info = get_file_info(conn,file_num)
+            if(table_info['statusCode'] == 200):
+                nickname = table_info['result']['file_nickname']
+            else:
+                return {
+                    "statusCode": 400,
+                    "message": messages['ERR_0001']
+                }
 
             with conn.cursor() as cursor:
                 # まずは問題を取得
-                sql = "SELECT checked FROM {0} WHERE quiz_num = {1}".format(table,quiz_num)
+                sql = "SELECT checked FROM quiz WHERE file_num = {0} AND quiz_num = {1}".format(file_num,quiz_num)
                 cursor.execute(sql)
 
                 # MySQLから帰ってきた結果を受け取る
@@ -253,12 +262,12 @@ def edit_checked_of_question(data):
                 # チェック状態を修正する
                 if(checked == 0):
                     # チェックなしならチェックありにする
-                    sql = "UPDATE {0} SET checked = {1} WHERE quiz_num = {2} ".format(table,1,quiz_num)
+                    sql = "UPDATE quiz SET checked = {0} WHERE file_num = {1} AND quiz_num = {2} ".format(1,file_num,quiz_num)
                     cursor.execute(sql)
                     checked_i.append(str(quiz_num))
                 else:
                     # チェックありならチェックなしにする
-                    sql = "UPDATE {0} SET checked = {1} WHERE quiz_num = {2} ".format(table,0,quiz_num)
+                    sql = "UPDATE quiz SET checked = {0} WHERE file_num = {1} AND quiz_num = {2} ".format(0,file_num,quiz_num)
                     cursor.execute(sql)
                     unchecked_i.append(str(quiz_num))
 
