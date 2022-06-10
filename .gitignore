@@ -19,3 +19,5 @@ local_to_ec2_file_deploy.sh
 *.csv
 *.png
 backup.sh
+export.sh
+import.sh
