@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from ini import get_messages_ini
 
 def get_category(file_num):
     """ファイル番号からカテゴリを取得する関数
@@ -19,18 +19,8 @@ def get_category(file_num):
             result [JSON]: 取得したカテゴリのリスト
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # 設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_num]['name']
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -46,7 +36,7 @@ def get_category(file_num):
     with conn.cursor() as cursor:
         # 検索語句がカテゴリに含まれる
         # SQLを実行する
-        sql_statement = "SELECT DISTINCT category FROM {0} WHERE deleted != 1 ".format(table)
+        sql_statement = "SELECT DISTINCT category FROM quiz WHERE file_num = {0} AND deleted != 1 ".format(file_num)
         cursor.execute(sql_statement)
 
         # MySQLから帰ってきた結果を受け取る

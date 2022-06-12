@@ -13,8 +13,10 @@ import get_category
 import add_quiz
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
+
+from ut_common import delete_all_quiz_of_file
 
 class TestGetCategory(unittest.TestCase):
 
@@ -30,18 +32,8 @@ class TestGetCategory(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -53,17 +45,8 @@ class TestGetCategory(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
@@ -81,10 +64,8 @@ class TestGetCategory(unittest.TestCase):
         self.assertEqual(result[3],'get_categoryテスト4カテゴリ')
         self.assertEqual(result[4],'get_categoryテスト5カテゴリ')
 
-        with conn.cursor() as cursor:
-            # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+        # 終わったらテストデータ削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # 全て成功したらコミット
         conn.commit()
