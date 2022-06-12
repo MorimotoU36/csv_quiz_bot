@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
     """入力データで問題を統合する関数
@@ -22,25 +22,15 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
         [type]: [description]
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
-    messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[pre_file_num]['name']
-        nickname = table_list[pre_file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 400,
-            "message": messages['ERR_0001']
-        }
-
     # 統合前と先でファイル番号が違うなら終了（同じファイル間で統合できるようにする）
     if(pre_file_num != post_file_num):
         return {
             "statusCode": 400,
             "message": messages['ERR_0010']
         }
+
+    # メッセージ設定ファイルを呼び出す
+    messages = get_messages_ini()
 
     # MySQL への接続を確立する
     try:
@@ -52,11 +42,20 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
             "traceback": traceback.format_exc()
         }
 
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,pre_file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
 
     try:
         with conn.cursor() as cursor:
             # 指定したテーブルの件数を調べる
-            sql = "SELECT count(*) FROM {0}".format(table)
+            sql = "SELECT count(*) FROM quiz WHERE file_num = {0}".format(pre_file_num)
             cursor.execute(sql)
             results = cursor.fetchall()
             count = results[0]['count(*)']
@@ -69,12 +68,12 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
                 }
 
             # 統合される側の問題のデータを取得
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted FROM {0} WHERE quiz_num = {1}".format(table,pre_quiz_num)
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted FROM quiz WHERE file_num = {0} AND quiz_num = {1}".format(pre_file_num,pre_quiz_num)
             cursor.execute(sql)
             pre_results = cursor.fetchall()
 
             # 統合先の問題のデータを取得
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted FROM {0} WHERE quiz_num = {1}".format(table,post_quiz_num)
+            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted FROM quiz WHERE file_num = {0} AND quiz_num = {1}".format(post_file_num,post_quiz_num)
             cursor.execute(sql)
             post_results = cursor.fetchall()
 
@@ -84,12 +83,12 @@ def integrate_quiz(pre_file_num,pre_quiz_num,post_file_num,post_quiz_num):
             new_category    = ':'.join(sorted(list(set(pre_results[0]['category'].split(':')) | set(post_results[0]['category'].split(':')) )))
 
             # 統合データ更新
-            sql = "UPDATE {0} SET clear_count = {1}, fail_count = {2}, category = '{3}' WHERE quiz_num = {4} ".format(table,new_clear_count,new_fail_count,new_category,post_quiz_num)
+            sql = "UPDATE quiz SET clear_count = {0}, fail_count = {1}, category = '{2}' WHERE file_num = {3} AND quiz_num = {4} ".format(new_clear_count,new_fail_count,new_category,post_file_num,post_quiz_num)
             cursor.execute(sql)
 
             # 統合元データ削除
             update_deleteflag = " deleted = 1 "
-            sql = "UPDATE {0} SET {1} WHERE quiz_num = {2} ".format(table,update_deleteflag,pre_quiz_num)
+            sql = "UPDATE quiz SET {0} WHERE file_num = {1} AND quiz_num = {2} ".format(update_deleteflag,pre_file_num,pre_quiz_num)
             cursor.execute(sql)
 
             result = "Success!! Integrated:[{0}:{1}->{2}] and deleted [{1}]".format(nickname,pre_quiz_num,post_quiz_num)

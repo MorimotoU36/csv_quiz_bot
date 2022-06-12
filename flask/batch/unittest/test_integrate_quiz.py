@@ -14,7 +14,9 @@ import add_quiz
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from ini import get_messages_ini
+
+from ut_common import delete_all_quiz_of_file
 
 class TestIntegrateQuiz(unittest.TestCase):
 
@@ -30,18 +32,8 @@ class TestIntegrateQuiz(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -53,26 +45,17 @@ class TestIntegrateQuiz(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
 
         with conn.cursor() as cursor:
             # 正解数操作
-            sql = "UPDATE {0} SET clear_count = {1}, fail_count = {2} WHERE quiz_num = {3} ".format(table,20,10,1)
+            sql = "UPDATE quiz SET clear_count = {0}, fail_count = {1} WHERE file_num = {2} AND quiz_num = {3} ".format(20,10,file_num,1)
             cursor.execute(sql)
-            sql = "UPDATE {0} SET clear_count = {1}, fail_count = {2} WHERE quiz_num = {3} ".format(table,1,2,2)
+            sql = "UPDATE quiz SET clear_count = {0}, fail_count = {1} WHERE file_num = {2} AND quiz_num = {3} ".format(1,2,file_num,2)
             cursor.execute(sql)
             # コミット
             conn.commit()
@@ -82,7 +65,7 @@ class TestIntegrateQuiz(unittest.TestCase):
 
         # データ取得
         with conn.cursor() as cursor:
-            sql = "SELECT * FROM {0} ORDER BY quiz_num".format(table)
+            sql = "SELECT * FROM quiz WHERE file_num = {0} ORDER BY quiz_num".format(file_num)
             cursor.execute(sql)
             result = cursor.fetchall()
             self.assertEqual(len(result),5)
@@ -106,10 +89,8 @@ class TestIntegrateQuiz(unittest.TestCase):
             self.assertEqual(result[1]['checked'],0)
             self.assertEqual(result[1]['deleted'],0)
 
-        with conn.cursor() as cursor:
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+            self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # 全て成功したらコミット
         conn.commit()
