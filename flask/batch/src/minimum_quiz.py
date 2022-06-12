@@ -7,8 +7,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def minimum_quiz(file_num=-1,category=None,checked=False):
     """最小正解数の問題を取得する
@@ -22,22 +22,8 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
         results [JSON]: 取得した問題
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号の時はランダムに選ぶ)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table_list = get_table_list()
-        if(file_num < 0 or len(table_list) <= file_num):
-            file_num = random.randint(0,len(table_list)-1)
-        table = table_list[file_num]['name']
-        view = table+"_view"
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -48,13 +34,23 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
             "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
+
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
     
     # テーブル名からSQLを作成して投げる
     try:
         with conn.cursor() as cursor:
             # 指定したテーブルの正解数が最も低い問題を調べる
             # カテゴリが指定されている場合は条件文を追加する
-            where_statement = []
+            where_statement = [" file_num = {0} ".format(file_num)]
 
             # 削除済問題を取らない条件追加
             where_statement.append(" deleted != 1 ")
@@ -69,7 +65,7 @@ def minimum_quiz(file_num=-1,category=None,checked=False):
             else:
                 where_statement = ''
 
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} ".format(view) + where_statement +" ORDER BY clear_count LIMIT 1"
+            sql = "SELECT file_num, quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM quiz_view " + where_statement +" ORDER BY clear_count LIMIT 1"
             cursor.execute(sql)
 
             # MySQLから帰ってきた結果を受け取る
