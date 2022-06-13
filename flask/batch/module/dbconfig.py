@@ -51,3 +51,41 @@ def get_file_info(conn,file_num):
             "traceback": traceback.format_exc()
         }
 
+# 全ファイルの情報を取得
+def get_all_file_info():
+    # メッセージ設定ファイルを呼び出す
+    messages = get_messages_ini()
+
+    # MySQL への接続を確立する
+    try:
+        conn = get_connection()
+    except Exception as e:
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0002'],
+            "traceback": traceback.format_exc()
+        }
+
+    try:
+        with conn.cursor() as cursor:
+            sql = "SELECT file_num, file_name, file_nickname FROM quiz_file ORDER BY file_num "
+            cursor.execute(sql)
+            sql_results = cursor.fetchall()
+
+            if(len(sql_results) > 0):
+                return {
+                    "statusCode": 200,
+                    "result": sql_results
+                }
+            elif(len(sql_results) == 0):
+                return {
+                    "statusCode": 404,
+                    "result": sql_results
+                }
+    except Exception as e:
+        messages = get_messages_ini()
+        return {
+            "statusCode": 500,
+            "message": messages['ERR_0004'],
+            "traceback": traceback.format_exc()
+        }
