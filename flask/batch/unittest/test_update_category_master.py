@@ -14,7 +14,9 @@ import add_quiz
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from ini import get_messages_ini
+
+from ut_common import delete_all_quiz_of_file
 
 class TestUpdateCategoryMaster(unittest.TestCase):
 
@@ -30,18 +32,8 @@ class TestUpdateCategoryMaster(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -53,17 +45,8 @@ class TestUpdateCategoryMaster(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
@@ -73,7 +56,7 @@ class TestUpdateCategoryMaster(unittest.TestCase):
 
         # データ確認
         with conn.cursor() as cursor:
-            sql = "SELECT * FROM category WHERE file_name = '{0}' ORDER BY category ".format(table)
+            sql = "SELECT * FROM category WHERE file_num = {0} ORDER BY category ".format(file_num)
             cursor.execute(sql)
             results = cursor.fetchall()
             self.assertEqual(len(results),5)
@@ -85,11 +68,12 @@ class TestUpdateCategoryMaster(unittest.TestCase):
             # コミット
             conn.commit()
 
+        # 終わったらテストデータ削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
+
         with conn.cursor() as cursor:
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql = "DELETE FROM category WHERE file_name = '{0}' ".format(table)
+            sql = "DELETE FROM category WHERE file_num = {0} ".format(file_num)
             cursor.execute(sql)
 
         # 全て成功したらコミット
@@ -106,18 +90,8 @@ class TestUpdateCategoryMaster(unittest.TestCase):
         # 使用ファイル番号（テスト用テーブル）
         file_num = 0
 
-        # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-        # (変なファイル番号ならエラー終了)
+        # メッセージ設定ファイルを呼び出す
         messages = get_messages_ini()
-        table_list = get_table_list()
-        try:
-            table = table_list[file_num]['name']
-            nickname = table_list[file_num]['nickname']
-        except IndexError:
-            return {
-                "statusCode": 500,
-                "message": messages['ERR_0001']
-            }
 
         # MySQL への接続を確立する
         try:
@@ -129,17 +103,9 @@ class TestUpdateCategoryMaster(unittest.TestCase):
                 "traceback": traceback.format_exc()
             }
 
-        with conn.cursor() as cursor:
-            # テスト用テーブルのデータ全件削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            # 全件削除されたか確認
-            sql = "SELECT count(*) FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql_results = cursor.fetchall()
-            self.assertEqual(sql_results[0]['count(*)'],0)
-            # コミット
-            conn.commit()
+        # テスト用テーブルのデータ全件削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
+
 
         # データ追加
         add_quiz.add_quiz(file_num,input_data)
@@ -149,7 +115,7 @@ class TestUpdateCategoryMaster(unittest.TestCase):
 
         # データ確認
         with conn.cursor() as cursor:
-            sql = "SELECT * FROM category WHERE file_name = '{0}' ORDER BY category ".format(table)
+            sql = "SELECT * FROM category WHERE file_num = {0} ORDER BY category ".format(file_num)
             cursor.execute(sql)
             results = cursor.fetchall()
             self.assertEqual(len(results),3)
@@ -157,9 +123,8 @@ class TestUpdateCategoryMaster(unittest.TestCase):
             self.assertEqual(results[1]['category'],'update_category_masterテスト2カテゴリ')
             self.assertEqual(results[2]['category'],'update_category_masterテスト3カテゴリ')
 
-            # 確認したら、一回テストデータは削除する
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
+            # 終わったらテストデータ削除
+            self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
             # コミット
             conn.commit()
 
@@ -176,7 +141,7 @@ class TestUpdateCategoryMaster(unittest.TestCase):
 
         # データ確認（入力データその２　カテゴリのみになっているか）
         with conn.cursor() as cursor:
-            sql = "SELECT * FROM category WHERE file_name = '{0}' ORDER BY category ".format(table)
+            sql = "SELECT * FROM category WHERE file_num = {0} ORDER BY category ".format(file_num)
             cursor.execute(sql)
             results = cursor.fetchall()
             self.assertEqual(len(results),2)
@@ -185,11 +150,12 @@ class TestUpdateCategoryMaster(unittest.TestCase):
             # コミット
             conn.commit()
 
+        # 終わったらテストデータ削除
+        self.assertEqual(delete_all_quiz_of_file(conn,file_num),0)
+
         with conn.cursor() as cursor:
             # 終わったらテストデータ削除
-            sql = "DELETE FROM {0} ".format(table)
-            cursor.execute(sql)
-            sql = "DELETE FROM category WHERE file_name = '{0}' ".format(table)
+            sql = "DELETE FROM category WHERE file_num = {0} ".format(file_num)
             cursor.execute(sql)
 
         # 全て成功したらコミット
