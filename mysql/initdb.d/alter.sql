@@ -7,5 +7,7 @@ DROP VIEW IF EXISTS lpic_view;
 DROP VIEW IF EXISTS lpic_category_view;
 DROP VIEW IF EXISTS unit_test_view;
 DROP VIEW IF EXISTS unit_test_category_view;
+DROP VIEW IF EXISTS english_speaking_view;
+DROP VIEW IF EXISTS english_speaking_category_view;
 DROP TABLE IF EXISTS category;
 
