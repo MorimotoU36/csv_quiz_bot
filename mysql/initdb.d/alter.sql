@@ -1,5 +1,13 @@
 USE quiz_db;
-ALTER TABLE aws_quiz ADD COLUMN deleted BOOLEAN DEFAULT 0;
-ALTER TABLE applied ADD COLUMN deleted BOOLEAN DEFAULT 0;
-ALTER TABLE lpic ADD COLUMN deleted BOOLEAN DEFAULT 0;
-ALTER TABLE english_speaking ADD COLUMN deleted BOOLEAN DEFAULT 0;
+DROP VIEW IF EXISTS aws_quiz_view;
+DROP VIEW IF EXISTS aws_quiz_category_view;
+DROP VIEW IF EXISTS applied_view;
+DROP VIEW IF EXISTS applied_category_view;
+DROP VIEW IF EXISTS lpic_view;
+DROP VIEW IF EXISTS lpic_category_view;
+DROP VIEW IF EXISTS unit_test_view;
+DROP VIEW IF EXISTS unit_test_category_view;
+DROP VIEW IF EXISTS english_speaking_view;
+DROP VIEW IF EXISTS english_speaking_category_view;
+DROP TABLE IF EXISTS category;
+

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 import os
-import json
 import configparser
 
 def get_ini_parser():
@@ -14,21 +13,6 @@ def get_ini_parser():
     config.read(os.environ['INI'])
 
     return config
-
-def get_table_list():
-    """テーブル名のリストを示したJSONを返す
-
-    Returns:
-        json : テーブル名のリストを示したJSON
-    """
-    # テーブルのリストが書かれたJSONファイルを開く(設定ファイルから)
-    ini = get_ini_parser()
-    json_open = open(os.path.dirname(__file__)+'/'+ini['QUIZFILE']['TABLE_LIST'], 'r')
-    # 開いたJSONファイルを読み込む
-    json_load = json.load(json_open)
-    json_open.close()
-    # テーブルのリストJSONを返す
-    return json_load['table']
 
 def get_messages_ini():
     """メッセージの設定ファイルを返す

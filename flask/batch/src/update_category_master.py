@@ -7,7 +7,7 @@ import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
 from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from ini import get_messages_ini
 
 def update_category_master():
     """問題ファイルからカテゴリを取得しマスタに登録する関数
@@ -19,18 +19,8 @@ def update_category_master():
         なし
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = [ table_list[i]['name'] for i in range (len(table_list)) ]
-        nickname = [ table_list[i]['nickname'] for i in range (len(table_list)) ]
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -48,15 +38,20 @@ def update_category_master():
         insert_categories = 0
 
         with conn.cursor() as cursor:
+            # ファイル情報取得
+            sql_statement = "SELECT file_num, file_name, file_nickname FROM quiz_file"
+            cursor.execute(sql_statement)
+            table_info = cursor.fetchall()
+
             # カテゴリマスタのデータを全削除
             sql_statement = "DELETE FROM category "
             cursor.execute(sql_statement)
             results = cursor.fetchall()
 
             # テーブル毎にカテゴリのリストを取得してマスタに更新
-            for i in range(len(table)):
+            for i in range(len(table_info)):
                 # 問題テーブルからカテゴリのリストを取得
-                sql_statement = "SELECT DISTINCT category FROM {0} WHERE deleted != 1 ".format(table[i])
+                sql_statement = "SELECT DISTINCT category FROM quiz WHERE file_num = {0} AND deleted != 1 ".format(table_info[i]['file_num'])
                 cursor.execute(sql_statement)
                 results = cursor.fetchall()
 
@@ -66,7 +61,7 @@ def update_category_master():
 
                 # カテゴリマスタにデータを入れる
                 for ci in categories:
-                    sql_statement = "INSERT INTO category VALUES('{0}','{1}') ".format(table[i],ci)
+                    sql_statement = "INSERT INTO category VALUES('{0}','{1}') ".format(table_info[i]['file_num'],ci)
                     cursor.execute(sql_statement)
                 insert_categories += len(categories)
         

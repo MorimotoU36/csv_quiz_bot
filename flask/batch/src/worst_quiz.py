@@ -7,8 +7,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def worst_quiz(file_num=-1,category=None,checked=False):
     """最低正解率の問題を取得
@@ -22,22 +22,9 @@ def worst_quiz(file_num=-1,category=None,checked=False):
         results: 取得した問題
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号の時はランダムに選ぶ)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        if(file_num < 0 or len(table_list) <= file_num):
-            file_num = random.randint(0,len(table_list)-1)
-        table = table_list[file_num]['name']
-        view = table_list[file_num]['name']+'_view'
-        nickname = table_list[file_num]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
-        
+
     # MySQL への接続を確立する
     try:
         conn = get_connection()
@@ -47,13 +34,23 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             "message": messages['ERR_0002'],
             "traceback": traceback.format_exc()
         }
+
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
     
     # テーブル名からSQLを作成して投げる
     try:
         with conn.cursor() as cursor:
             # 指定したテーブルの正解率が最も低い問題を調べる
             # カテゴリが指定されている場合は条件文を追加する
-            where_statement = []
+            where_statement = [" file_num = {0} ".format(file_num)]
 
             # 削除済問題を取らない条件追加
             where_statement.append(" deleted != 1 ")
@@ -63,12 +60,9 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             if(checked):
                 where_statement.append(" checked != 0 ")
             
-            if(len(where_statement) > 0):
-                where_statement = ' WHERE ' + ' AND '.join(where_statement)
-            else:
-                where_statement = ''
+            where_statement = ' WHERE ' + ' AND '.join(where_statement)
 
-            sql = "SELECT quiz_num FROM {0} ".format(view) + where_statement + " ORDER BY accuracy_rate LIMIT 1"
+            sql = "SELECT quiz_num FROM quiz_view " + where_statement + " ORDER BY accuracy_rate LIMIT 1"
             cursor.execute(sql)
             results = cursor.fetchall()
 
@@ -82,7 +76,7 @@ def worst_quiz(file_num=-1,category=None,checked=False):
             quiz_id = results[0]['quiz_num']
 
             # SQL作成して問題を取得する
-            sql = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} WHERE quiz_num = {1}".format(view,quiz_id)
+            sql = "SELECT file_num, quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM quiz_view WHERE file_num = {0} AND quiz_num = {1}".format(file_num,quiz_id)
             cursor.execute(sql)
 
             # MySQLから帰ってきた結果を受け取る

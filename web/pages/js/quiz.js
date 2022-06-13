@@ -112,18 +112,19 @@ function get_csv_name_list(server){
     clear_all_message();
 
     //外部APIへCSVリストを取得しにいく
-    post_data(getCsvNameListApi(server),{"text" : ''},function(resp){
+    post_data(getCsvNameListApi(server),{},function(resp){
         if(resp['statusCode'] == 200){    
             // ドロップダウンリストにCSVファイルのリストを定義する
             let file_list = document.getElementById("file_list");
-            if(resp['table'].length==0){
+            let tables = resp['table']['result']
+            if(tables === undefined || tables.length==0){
                 //内部エラー時
                 set_error_message("エラー：ファイル名が正しく読み込められませんでした");
             }else{
-                for(var i=0;i<resp['table'].length;i++){
+                for(var i=0;i<tables.length;i++){
                     var target = document.createElement('option');
-                    target.innerText = resp['table'][i]['nickname'];
-                    target.setAttribute('value',i);
+                    target.innerText = tables[i]['file_nickname'];
+                    target.setAttribute('value',tables[i]['file_num']);
                     file_list.appendChild(target);
                 }    
             }

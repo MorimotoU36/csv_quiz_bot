@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def get_accuracy_rate_by_category(file_ind):
     """ファイル番号からカテゴリ毎の正解率を取得する関数
@@ -19,18 +19,8 @@ def get_accuracy_rate_by_category(file_ind):
             result [JSON]: 取得した結果のリスト
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_ind]['name']
-        nickname = table_list[file_ind]['nickname']
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -42,12 +32,22 @@ def get_accuracy_rate_by_category(file_ind):
             "traceback": traceback.format_exc()
         }
 
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_ind)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
+
     # # SQLを作成して投げる
     try:
         with conn.cursor() as cursor:
             # 検索語句がカテゴリに含まれる
             # SQLを実行する
-            sql_statement = "SELECT c_category,count,accuracy_rate FROM {0} ORDER BY accuracy_rate ".format(table+'_category_view')
+            sql_statement = "SELECT file_num, c_category,count,accuracy_rate FROM category_view WHERE file_num = {0} ORDER BY accuracy_rate ".format(file_ind)
             cursor.execute(sql_statement)
 
             # MySQLから帰ってきた結果を受け取る
@@ -60,7 +60,7 @@ def get_accuracy_rate_by_category(file_ind):
                 results[i] = ri
 
             # (追加機能)カテゴリとは別に、チェック済の問題だけの正解率を計算して出す
-            sql_statement = "SELECT checked, count(*) as count, SUM(clear_count) as sum_clear, SUM(fail_count) as sum_fail, ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate FROM {0} where checked = 1 and deleted != 1 group by checked;".format(table+"_view")
+            sql_statement = "SELECT checked, count(*) as count, SUM(clear_count) as sum_clear, SUM(fail_count) as sum_fail, ( 100 * SUM(clear_count) / ( SUM(clear_count) + SUM(fail_count) ) ) as accuracy_rate FROM quiz where file_num = {0} and checked = 1 and deleted != 1 group by checked;".format(file_ind)
             cursor.execute(sql_statement)
             checked_result = cursor.fetchall()
             # Decimal -> str変換

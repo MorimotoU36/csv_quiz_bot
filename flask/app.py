@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import json
 import traceback
+
 from batch.src.select_quiz import select_quiz
 from batch.src.random_quiz import random_quiz
 from batch.src.worst_quiz import worst_quiz
@@ -9,7 +10,7 @@ from batch.src.search_quiz import search_quiz
 from batch.src.minimum_quiz import minimum_quiz
 from batch.src.add_quiz import add_quiz
 from batch.src.edit_quiz import edit_quiz
-from batch.module.ini import get_table_list
+from batch.module.dbconfig import get_all_file_info
 from batch.src.get_category import get_category
 from batch.src.edit_quiz import edit_category_of_question
 from batch.src.update_category_master import update_category_master
@@ -317,7 +318,7 @@ def namelist():
         # テーブル名のリストを(JSON形式で)返す
         return { 
             'statusCode' : 200,
-            'table' : get_table_list() 
+            'table' : get_all_file_info() 
         }
     except Exception as e:
         return {
