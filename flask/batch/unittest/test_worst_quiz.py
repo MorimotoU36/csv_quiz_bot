@@ -13,7 +13,7 @@ import worst_quiz
 import add_quiz
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection, get_file_info
+from dbconfig import get_connection
 from ini import get_messages_ini
 
 from ut_common import delete_all_quiz_of_file
@@ -43,16 +43,6 @@ class TestWorstQuiz(unittest.TestCase):
                 "statusCode": 500,
                 "message": messages['ERR_0002'],
                 "traceback": traceback.format_exc()
-            }
-
-        # ファイル番号からテーブル名を取得
-        table_info = get_file_info(conn,file_num)
-        if(table_info['statusCode'] == 200):
-            nickname = table_info['result']['file_nickname']
-        else:
-            return {
-                "statusCode": 400,
-                "message": messages['ERR_0001']
             }
 
         # テスト用テーブルのデータ全件削除
