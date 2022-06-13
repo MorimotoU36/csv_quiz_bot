@@ -6,7 +6,7 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection, get_file_info
+from dbconfig import get_connection
 from ini import get_messages_ini
 
 def update_category_master():
