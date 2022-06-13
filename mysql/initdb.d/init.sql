@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS quiz_file
 (
   file_num INT NOT NULL PRIMARY KEY,
   file_name VARCHAR(256) NOT NULL,
-  file_nickname VARCHAR(256) NOT NULL,
+  file_nickname VARCHAR(256) NOT NULL
 ) DEFAULT CHARACTER
   SET=utf8;
 
