@@ -6,8 +6,8 @@ import pymysql
 import pymysql.cursors
 
 sys.path.append(os.path.join(os.path.dirname(__file__), '../module'))
-from dbconfig import get_connection
-from ini import get_table_list, get_messages_ini
+from dbconfig import get_connection, get_file_info
+from ini import get_messages_ini
 
 def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
     """検索語句から問題を取得する関数
@@ -24,21 +24,11 @@ def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
             result [JSON]: 取得した問題のリスト
     """
 
-    # 設定ファイルを呼び出してファイル番号からテーブル名を取得
-    # (変なファイル番号ならエラー終了)
+    cond_question = cond.get('question',False)
+    cond_answer = cond.get('answer',False)
+
+    # メッセージ設定ファイルを呼び出す
     messages = get_messages_ini()
-    table_list = get_table_list()
-    try:
-        table = table_list[file_num]['name']
-        view = table+"_view"
-        nickname = table_list[file_num]['nickname']
-        cond_question = cond.get('question',False)
-        cond_answer = cond.get('answer',False)
-    except IndexError:
-        return {
-            "statusCode": 500,
-            "message": messages['ERR_0001']
-        }
 
     # MySQL への接続を確立する
     try:
@@ -50,13 +40,23 @@ def search_quiz(query,file_num,cond={},category="",rate=100,checked=False):
             "traceback": traceback.format_exc()
         }
 
+    # ファイル番号からテーブル名を取得
+    table_info = get_file_info(conn,file_num)
+    if(table_info['statusCode'] == 200):
+        nickname = table_info['result']['file_nickname']
+    else:
+        return {
+            "statusCode": 400,
+            "message": messages['ERR_0001']
+        }
+
     # テーブル名と問題番号からSQLを作成して投げる
     with conn.cursor() as cursor:
         # 検索語句が問題文または解答文に含まれる
         # SQLを実行する
-        sql_statement = "SELECT quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM {0} ".format(view)
+        sql_statement = "SELECT file_num, quiz_num, quiz_sentense, answer, clear_count, fail_count, category, img_file, checked, deleted, accuracy_rate FROM quiz_view "
         sql_statement += " WHERE "
-        where_statement=[]
+        where_statement=[" file_num = {0} ".format(file_num)]
 
         # 削除済の問題は取らないように設定
         where_statement.append(" deleted != 1 ")
